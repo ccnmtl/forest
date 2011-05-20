@@ -4,10 +4,10 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title>forest: {% block title %}{% endblock %}</title>
-	<link rel="stylesheet" href="/site_media/css/main.css" media="screen" />
-	<link rel="stylesheet" href="/site_media/css/print.css" media="print" />
+	<link rel="stylesheet" href="/site_media/css/main.css?site=forest" media="screen" />
+	<link rel="stylesheet" href="/site_media/css/print.css?site=forest" media="print" />
 	<!--[if IE 6]>
-	<link rel="stylesheet" href="/site_media/css/main_ie6_1col.css" media="screen" />
+	<link rel="stylesheet" href="/site_media/css/main_ie6_1col.css?site=forest" media="screen" />
 	<![endif]-->
 	<link rel="shortcut icon" href="/site_media/img/favicon.ico" type="image/x-icon" />
 	{% block css %}{% endblock %}
@@ -63,7 +63,14 @@
 </ul>
 
 {% endblock %}
-			{% block usernav %}{% endblock %}
+
+{% block usernav %}
+<div id="usernav">{% if request.user.is_anonymous %}
+<a href="/accounts/login/?next=/">login</a>
+{% else %}
+logged in as {{request.user.first_name}} {{request.user.last_name}} [<a href="/logout/">logout</a>]
+{% endif %}</div>
+{% endblock %}
 
 		</div><!-- id="leftside/rightside" -->
 	</div><!-- id="primarynav" -->

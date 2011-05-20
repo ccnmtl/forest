@@ -183,7 +183,7 @@ img, img a
 	margin: 0;
 	padding: 0;
 	border: 0;
-	background: #fffbc7 url('../img/bg_header.jpg') left top no-repeat;
+	background: #fffbc7 url('../img/bg_header.jpg?site=forest') left top no-repeat;
 }
 
 #header #logo_project
@@ -281,8 +281,8 @@ img, img a
 	margin: 0;
 	padding: 0;
 	border: 0;
-	border-top: 1px solid #fc6;
-	background-color: #fff;
+	border-top: 1px solid #666;
+	background-color: #6a9;
 }
 
 #primarynav div.encase
@@ -347,13 +347,13 @@ img, img a
 {
 	background: transparent;
 	font-weight: bold;
-	color: #fc6;
+	color: #ccc;
 	
 }
 
 #primarynav #usernav li a
 {
-	color: #fc6;
+	color: #ccc;
 	
 }
 
@@ -367,7 +367,7 @@ img, img a
 {
 	background: transparent;
 	font-weight: bold;
-	color: #fc6;
+	color: #fff;
 	
 }
 

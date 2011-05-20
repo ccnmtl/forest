@@ -76,12 +76,15 @@ var saveOrderOfPageBlocks = function() {
 <div id="tabber">
 
 <ul>
+{% if section.pageblock_set.count %}
   <li><a href="#edit-blocks-tab">Edit Blocks</a></li>
+{% endif %}
   <li><a href="#children-tab">Children</a></li>
   <li><a href="#add-pageblock-tab">Add Pageblock</a></li>
   <li><a href="#edit-page-tab">Edit Section</a></li>
 </ul>
 
+{% if section.pageblock_set.count %}
 <div id="edit-blocks-tab"/>
 {% for block in section.pageblock_set.all %}
 <div class="block-edit draggable" id="pageblock-{{block.id}}">
@@ -107,7 +110,7 @@ var saveOrderOfPageBlocks = function() {
 </div>
 {% endfor %}
 </div>
-
+{% endif %}
 <div id="children-tab">
 <ul id="children-order-list">
 {% for child in section.get_children %}

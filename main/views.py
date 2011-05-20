@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
 from django.shortcuts import render_to_response
 from pagetree.helpers import get_hierarchy, get_section_from_path, get_module, needs_submit, submitted
 from django.template import RequestContext
-
+from django.contrib.auth.decorators import login_required
 
 class rendered_with(object):
     def __init__(self, template_name):
@@ -34,6 +34,7 @@ def page(request,path):
 def instructor_page(request,path):
     return HttpResponse("instructor page")
 
+@login_required
 @rendered_with('main/edit_page.html')
 def edit_page(request,path):
     hierarchy = request.get_host()

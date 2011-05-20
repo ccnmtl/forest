@@ -574,12 +574,6 @@ img, img a
 	z-index: 5;
 }
 
-#squish
-{
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
 
 .three_columns #content
 {
@@ -593,10 +587,6 @@ img, img a
 	width: 699px;
 }
 
-.two_columns_right #squish
-{
-	margin: 0 0 0 10px;
-}
 
 .one_column #content
 {
@@ -788,10 +778,6 @@ body.fluid #content
 	width: 100%;
 }
 
-.three_columns.fluid #squish
-{
-	margin: 0 210px;
-}
 
 .two_columns_left.fluid #content,
 .two_columns_right.fluid #content
@@ -805,19 +791,10 @@ body.fluid #content
 	margin-right: 0;
 }
 
-.two_columns_left.fluid #squish
-{
-	margin: 0 0 0 210px;
-}
 
 .two_columns_right.fluid #content
 {
 	margin-left: 0;
-}
-
-.two_columns_right.fluid #squish
-{
-	margin: 0 210px 0 10px;
 }
 
 .one_column.fluid #content
@@ -828,12 +805,6 @@ body.fluid #content
 	margin: 0;
 }
 
-.one_column.fluid #squish
-{
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
 
 #secondary_navigation
 {
@@ -866,4 +837,161 @@ body.fluid #content
         border: 0;
 }
 
+#secondary_navigation .block
+{
+	display: block;
+	width: 180px;
+	margin: 0 0 20px 20px;
+	padding: 0;
+	border: 0;
+	font-size: 0.95em;
+}
 
+#secondary_navigation .block h3
+{
+	display: block;
+	width: 165px;
+	margin: 0 0 10px 0;
+	padding: 0;
+	border: 0;
+	border-bottom: 1px dotted #666;
+	color: #000;
+	font-weight: bold;
+}
+
+#secondary_navigation .block ul
+{
+	display: block;
+	width: 171px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	list-style: none;	
+}
+
+#secondary_navigation .block ul li
+{
+	margin: 0 0 2px 0;
+	padding: 0;
+	border: 0;
+	padding-left: 13px;
+	background: url('../img/bullet.gif') left 4px no-repeat;
+}
+
+#secondary_navigation .block ul ul
+{
+	display: block;
+	width: 151px;
+	margin: 0 0 0 0;
+	padding: 0;
+	border: 0;
+	list-style: none;	
+}
+
+#secondary_navigation .block ul ul li
+{
+	margin: 0 0 2px 0;
+	padding: 0;
+	border: 0;
+	padding-left: 13px;
+	background: url('../img/bullet_diamond.gif') left 4px no-repeat;
+}
+
+#secondary_navigation .block ul ul ul
+{
+	display: block;
+	width: 130px;
+	margin: 0 0 0 0;
+	padding: 0;
+	border: 0;
+	list-style: none;	
+}
+
+#secondary_navigation .block ul ul ul li
+{
+	margin: 0 0 2px 0;
+	padding: 0;
+	border: 0;
+	padding-left: 13px;
+	background: url('../img/bullet_diamond_hollow.gif') left 4px no-repeat;
+}
+
+#content
+{
+	display: block;
+	float: left;
+	width: 670px;
+	margin: 20px 15px 0 20px;
+	padding: 0;
+	border: 0;
+
+}
+
+.content_one_column
+{
+	display: block;
+	float: none;
+	width: 860px !important;
+	margin: 20px 25px !important;
+	padding: 0;
+	border: 0 !important;
+}
+
+#content h1
+{
+	margin: 0 0 0.5em 0;
+	padding: 0;
+	border: 0;
+	font: normal 28px "lucida grande", arial, helvetica, sans-serif;
+	color: #000;
+}
+
+#content h2
+{
+	margin: 1em 0 0.5em 0;
+	padding: 0;
+	border: 0;
+	font: normal 20px "lucida grande", arial, helvetica, sans-serif;
+	color: #000;
+}
+
+#content h3
+{
+	margin: 1em 0 0.5em 0;
+	padding: 0;
+	border: 0;
+	font: normal 20px "lucida grande", arial, helvetica, sans-serif;
+	color: #000;
+}
+
+#content p
+{
+	line-height: 140%;
+}
+
+#content .content-nav
+{
+	height: 1.5em;
+	margin: 2em 0 0 0;
+	padding: 0.5em 0;
+	border: 0;
+	border-top: 1px dotted #666;
+	border-bottom: 1px dotted #666;
+}
+
+#content .content-nav a#previous
+{
+	display: block;
+	float: left;
+	width: auto;
+	line-height: 1.5em;
+}
+
+#content .content-nav a#next
+{
+	display: block;
+	float: right;
+	width: auto;
+	line-height: 1.5em;
+	text-align: right;
+}

@@ -25,6 +25,16 @@ def page(request,path):
     # TODO: handle POST requests for quiz type blocks
     root = section.hierarchy.get_root()
     module = get_module(section)
+    if section.id == root.id:
+        # trying to visit the root page
+        if section.get_next():
+            # just send them to the first child
+            return HttpResponseRedirect(section.get_next().get_absolute_url())
+        else:
+            # send them to the edit interface so they can start
+            # creating pages
+            # eventually, this will be a Stand admin panel page
+            return HttpResponseRedirect("/edit/")
     return dict(section=section,
                 module=module,
                 modules=root.get_children(),

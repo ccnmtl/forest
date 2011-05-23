@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response
 from pagetree.helpers import get_hierarchy, get_section_from_path, get_module, needs_submit, submitted
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from models import *
 
 class rendered_with(object):
     def __init__(self, template_name):

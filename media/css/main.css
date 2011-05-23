@@ -927,6 +927,10 @@ body.fluid #content
 
 }
 
+#content p {
+margin: 2em;
+}
+
 .content_one_column
 {
 	display: block;
@@ -972,7 +976,7 @@ body.fluid #content
 #content .content-nav
 {
 	height: 1.5em;
-	margin: 2em 0 0 0;
+	margin: 2em 2em 0 2em;
 	padding: 0.5em 0;
 	border: 0;
 	border-top: 1px dotted #666;

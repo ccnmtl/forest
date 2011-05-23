@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form action="." method="post">
+<table>
+{{form.as_table}}
+</table>
+<input type="submit" value="save" />
+</form>
+<p>Or go to the <a href="/edit/">Page edit interface</a></p>
+
+{% endblock %}

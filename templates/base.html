@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>forest: {% block title %}{% endblock %}</title>
+	<title>{{stand.title}}: {% block title %}{% endblock %}</title>
 	<link rel="stylesheet" href="/site_media/css/main.css?site=forest" media="screen" />
 	<link rel="stylesheet" href="/site_media/css/print.css?site=forest" media="print" />
 	<!--[if IE 6]>
@@ -13,6 +13,12 @@
 	{% block css %}{% endblock %}
 	{% block js %}{% endblock %}
 	{% block feeds %}{% endblock %}
+	{% if stand %}
+	{% if stand.css %}
+	<!-- stand specific CSS -->
+	<link rel="stylesheet" type="text/css" href="/_stand/css/?hash={{stand.css_hash}}"
+	{% endif %}
+	{% endif %}
 </head>
 <body class="one_column {% block widthtype %}fixed{% endblock %}">
 {% comment %}
@@ -29,7 +35,7 @@
 {% block masthead %}
 	<!-- ###### Site banner ###### -->
 	<div id="header">
-		<!-- Project title/logo --><h1 id="logo_project"><a href="./" title="Project Title: Project Django"><span>Project Title: Project Django </span></a></h1>	
+		<!-- Project title/logo --><h1 id="logo_project"><a href="./" title="{{stand.title}}"><span>{{stand.title}}</span></a></h1>	
 		{% block standardnav %}
 		<ul id="standardnav">
 

@@ -78,11 +78,8 @@ class StandSetting(models.Model):
     name = models.CharField(max_length=256,db_index=True)
     value = models.CharField(max_length=256)
 
-def get_or_create_stand(hostname,user=None):
+def get_stand(hostname,user=None):
     r = Stand.objects.filter(hostname=hostname)
     if r.count() > 0:
         return r[0]
-    s = Stand.objects.create(hostname=hostname,title=hostname)
-    if user:
-        su = StandUser.objects.create(stand=s,user=user,access="admin")
-    return s
+    return None

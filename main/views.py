@@ -22,12 +22,14 @@ class rendered_with(object):
 
 @rendered_with('main/page.html')
 def page(request,path):
+    stand = get_stand(request.get_host())
+    if not stand:
+        return HttpResponse("no such site")
     hierarchy = request.get_host()
     section = get_section_from_path(path,hierarchy=hierarchy)
     # TODO: handle POST requests for quiz type blocks
     root = section.hierarchy.get_root()
     module = get_module(section)
-    stand = get_or_create_stand(request.get_host())
     if not stand.can_view(request.user):
         return HttpResponse("you do not have permission")
     can_edit = stand.can_edit(request.user)
@@ -55,9 +57,11 @@ def instructor_page(request,path):
 @login_required
 @rendered_with('main/edit_page.html')
 def edit_page(request,path):
+    stand = get_stand(request.get_host())
+    if not stand:
+        return HttpResponse("no such site")
     hierarchy = request.get_host()
     section = get_section_from_path(path,hierarchy=hierarchy)
-    stand = get_or_create_stand(request.get_host())
     if not stand.can_edit(request.user):
         return HttpResponse("you do not have admin permission")
     can_admin = stand.can_admin(request.user)
@@ -69,13 +73,19 @@ def edit_page(request,path):
                 root=section.hierarchy.get_root())
 
 def css(request):
-    stand = get_or_create_stand(request.get_host())
+    stand = get_stand(request.get_host())
+    if not stand:
+        return HttpResponse("no such site")
+
     return HttpResponse(stand.css,content_type="text/css")
 
 @login_required
 @rendered_with('main/edit_stand.html')
 def edit_stand(request):
-    stand = get_or_create_stand(request.get_host())
+    stand = get_stand(request.get_host())
+    if not stand:
+        return HttpResponse("no such site")
+
     if not stand.can_admin(request.user):
         return HttpResponse("you do not have admin permission")
     if request.method == "POST":

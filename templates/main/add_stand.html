@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if created %}
+<p>Your new stand has been created. You can either wait for the DNS
+  registration to complete, or you can modify your /etc/hosts and
+  then click <a href="//{{stand.hostname}}/_stand/">here</a> to begin configuring and adding content.</p>
+<p>[insert instructions here on on editing /etc/hosts]</p>
+{% else %}
+<h2>Create a new Stand</h2>
+<form action="." method="post">
+<table>
+{{form.as_table}}
+</table>
+<input type="submit" value="add" />
+</form>
+{% endif %}
+{% endblock %}

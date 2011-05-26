@@ -96,3 +96,15 @@ def edit_stand(request):
     else:
         return dict(stand=stand,
                     form=StandForm(instance=stand))
+
+@login_required
+@rendered_with("main/add_stand.html")
+def add_stand(request):
+    form = StandForm()
+    if request.method == "POST":
+        form = StandForm(request.POST)
+        if form.is_valid():
+            stand = form.save()
+            su = StandUser.objects.create(stand=stand,user=request.user,access="admin")
+            return dict(created=True,stand=stand)
+    return dict(form=form)

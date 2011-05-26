@@ -75,6 +75,14 @@
 <a href="/accounts/login/?next=/">login</a>
 {% else %}
 logged in as {{request.user.first_name}} {{request.user.last_name}} [<a href="/logout/">logout</a>]
+{% if can_edit %}
+[<a href="/edit{{request.path}}">edit</a>]
+{% endif %}
+
+{% if can_admin %}
+[<a href="/_stand/">admin</a>]
+{% endif %}
+
 {% endif %}</div>
 {% endblock %}
 

@@ -28,6 +28,10 @@ def page(request,path):
     root = section.hierarchy.get_root()
     module = get_module(section)
     stand = get_or_create_stand(request.get_host())
+    if not stand.can_view(request.user):
+        return HttpResponse("you do not have permission")
+    can_edit = stand.can_edit(request.user)
+    can_admin = stand.can_admin(request.user)
     if section.id == root.id:
         # trying to visit the root page
         if section.get_next():
@@ -40,7 +44,9 @@ def page(request,path):
                 module=module,
                 stand=stand,
                 modules=root.get_children(),
-                root=section.hierarchy.get_root()
+                root=section.hierarchy.get_root(),
+                can_edit=can_edit,
+                can_admin=can_admin,
                 )
 
 def instructor_page(request,path):
@@ -52,9 +58,14 @@ def edit_page(request,path):
     hierarchy = request.get_host()
     section = get_section_from_path(path,hierarchy=hierarchy)
     stand = get_or_create_stand(request.get_host())
+    if not stand.can_edit(request.user):
+        return HttpResponse("you do not have admin permission")
+    can_admin = stand.can_admin(request.user)
+
     return dict(section=section,
                 module=get_module(section),
                 stand=stand,
+                can_admin=can_admin,
                 root=section.hierarchy.get_root())
 
 def css(request):
@@ -65,6 +76,8 @@ def css(request):
 @rendered_with('main/edit_stand.html')
 def edit_stand(request):
     stand = get_or_create_stand(request.get_host())
+    if not stand.can_admin(request.user):
+        return HttpResponse("you do not have admin permission")
     if request.method == "POST":
         form = StandForm(request.POST,instance=stand)
         if form.is_valid():

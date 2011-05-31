@@ -27,7 +27,7 @@ def page(request,path):
         return HttpResponse("no such site")
     hierarchy = request.get_host()
     section = get_section_from_path(path,hierarchy=hierarchy)
-    # TODO: handle POST requests for quiz type blocks
+
     root = section.hierarchy.get_root()
     module = get_module(section)
     if not stand.can_view(request.user):
@@ -42,14 +42,52 @@ def page(request,path):
         else:
             # send them to the stand admin interface
             return HttpResponseRedirect("/_stand/")
-    return dict(section=section,
-                module=module,
-                stand=stand,
-                modules=root.get_children(),
-                root=section.hierarchy.get_root(),
-                can_edit=can_edit,
-                can_admin=can_admin,
-                )
+
+    if request.method == "POST":
+        # user has submitted a form. deal with it
+        if request.POST.get('action','') == 'reset':
+            # it's a reset request
+            for p in section.pageblock_set.all():
+                if hasattr(p.block(),'needs_submit'):
+                    if p.block().needs_submit():
+                        p.block().clear_user_submissions(request.user)
+            return HttpResponseRedirect(section.get_absolute_url())
+        proceed = True
+        for p in section.pageblock_set.all():
+            if hasattr(p.block(),'needs_submit'):
+                if p.block().needs_submit():
+                    prefix = "pageblock-%d-" % p.id
+                    data = dict()
+                    for k in request.POST.keys():
+                        if k.startswith(prefix):
+                            # handle lists for multi-selects
+                            v = request.POST.getlist(k)
+                            if len(v) == 1:
+                                data[k[len(prefix):]] = request.POST[k]
+                            else:
+                                data[k[len(prefix):]] = v
+                    p.block().submit(request.user,data)
+                    if hasattr(p.block(),'redirect_to_self_on_submit'):
+                        # semi bug here?
+                        # proceed will only be set by the last submittable
+                        # block on the page. previous ones get ignored.
+                        proceed = not p.block().redirect_to_self_on_submit()
+        if proceed:
+            return HttpResponseRedirect(section.get_next().get_absolute_url())
+        else:
+            # giving them feedback before they proceed
+            return HttpResponseRedirect(section.get_absolute_url())
+    else:
+        return dict(section=section,
+                    module=module,
+                    needs_submit=needs_submit(section),
+                    is_submitted=submitted(section,request.user),
+                    stand=stand,
+                    modules=root.get_children(),
+                    root=section.hierarchy.get_root(),
+                    can_edit=can_edit,
+                    can_admin=can_admin,
+                    )
 
 def instructor_page(request,path):
     return HttpResponse("instructor page")

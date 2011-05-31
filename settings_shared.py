@@ -72,13 +72,16 @@ INSTALLED_APPS = (
     'pagetree',
     'pageblocks',
     'main',
+    'quizblock',
 )
 
 PAGEBLOCKS = ['pageblocks.TextBlock',
               'pageblocks.HTMLBlock',
               'pageblocks.PullQuoteBlock',
               'pageblocks.ImageBlock',
-              'pageblocks.ImagePullQuoteBlock']
+              'pageblocks.ImagePullQuoteBlock',
+              'quizblock.Quiz',
+]
 
 import logging
 from sentry.client.handlers import SentryHandler

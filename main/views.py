@@ -108,3 +108,20 @@ def add_stand(request):
             su = StandUser.objects.create(stand=stand,user=request.user,access="admin")
             return dict(created=True,stand=stand)
     return dict(form=form)
+
+@login_required
+def stand_add_group(request):
+    pass
+
+@login_required
+def stand_add_user(request):
+    pass
+
+
+@login_required
+def stand_groups(request):
+    pass
+
+@login_required
+def stand_users(request):
+    pass

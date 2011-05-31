@@ -999,3 +999,16 @@ margin: 2em;
 	line-height: 1.5em;
 	text-align: right;
 }
+.yours {
+border: #999 dotted 2px;
+}
+
+.expert {color: orange;}
+
+//.incorrect { background-color: #f00; color: #fff;}
+.correct {background-color: #cfc;}
+
+.correctanswer {background-color: #090 solid 1px;}
+.incorrectanswer { background-color: #f00; color: #fff; }
+
+.answer-inner {color: #000;}

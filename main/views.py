@@ -161,5 +161,12 @@ def stand_groups(request):
     pass
 
 @login_required
+@rendered_with("main/stand_users.html")
 def stand_users(request):
-    pass
+    stand = get_stand(request.get_host())
+    if not stand:
+        return HttpResponse("no such site")
+
+    if not stand.can_admin(request.user):
+        return HttpResponse("you do not have admin permission")    
+    return dict(stand=stand)

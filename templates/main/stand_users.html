@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table>
+{% for standuser in stand.standuser_set.all %}
+<tr class="{% cycle 'even' 'odd' %}">
+<th>
+<a href="{{standuser.id}}/">{% if standuser.user.first_name %}
+{{standuser.user.first_name}} {{standuser.user.last_name}}
+({{standuser.user.username}})
+{% else %}
+{{standuser.user.username}}
+{% endif %}</a>
+</th>
+<td>{{standuser.access}}</td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

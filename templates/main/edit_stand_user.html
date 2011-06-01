@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if standuser.user.first_name %}
+{{standuser.user.last_name}}, {{standuser.user.first_name}} 
+({{standuser.user.username}})
+{% else %}
+{{standuser.user.username}}
+{% endif %}
+
+<b>{{standuser.access}}</b>
+{% endblock %}

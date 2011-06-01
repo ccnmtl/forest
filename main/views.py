@@ -20,6 +20,23 @@ class rendered_with(object):
 
         return rendered_func
 
+class stand_admin(object):
+    def __init__(*args,**kwargs):
+        pass
+
+    def __call__(self, func):
+        def admin_func(request,*args,**kwargs):
+            stand = get_stand(request.get_host())
+            if not stand:
+                return HttpResponse("no such site")
+            if not stand.can_admin(request.user):
+                return HttpResponse("you do not have admin permission")
+            items = func(request, *args, **kwargs)
+            if type(items) == type({}):
+                items['stand'] = stand
+            return items
+        return admin_func
+
 @rendered_with('main/page.html')
 def page(request,path):
     stand = get_stand(request.get_host())
@@ -119,13 +136,9 @@ def css(request):
 
 @login_required
 @rendered_with('main/edit_stand.html')
+@stand_admin()
 def edit_stand(request):
     stand = get_stand(request.get_host())
-    if not stand:
-        return HttpResponse("no such site")
-
-    if not stand.can_admin(request.user):
-        return HttpResponse("you do not have admin permission")
     if request.method == "POST":
         form = StandForm(request.POST,instance=stand)
         if form.is_valid():
@@ -148,18 +161,14 @@ def add_stand(request):
     return dict(form=form)
 
 @login_required
+@stand_admin()
 def stand_add_group(request):
     pass
 
 @login_required
+@stand_admin()
 def stand_add_user(request):
     stand = get_stand(request.get_host())
-    if not stand:
-        return HttpResponse("no such site")
-
-    if not stand.can_admin(request.user):
-        return HttpResponse("you do not have admin permission")    
-
     if request.method == "POST":
         username = request.POST.get('user','')
         u = User.objects.get(username=username)
@@ -168,30 +177,18 @@ def stand_add_user(request):
     return HttpResponseRedirect("/_stand/users/")
 
 @login_required
+@stand_admin()
 def stand_groups(request):
     pass
 
 @login_required
 @rendered_with("main/edit_stand_user.html")
+@stand_admin()
 def edit_stand_user(request,id):
-    stand = get_stand(request.get_host())
-    if not stand:
-        return HttpResponse("no such site")
-
-    if not stand.can_admin(request.user):
-        return HttpResponse("you do not have admin permission")    
-
-    return dict(stand=stand,
-                standuser = StandUser.objects.get(id=id))
+    return dict(standuser = StandUser.objects.get(id=id))
 
 @login_required
 @rendered_with("main/stand_users.html")
+@stand_admin()
 def stand_users(request):
-    stand = get_stand(request.get_host())
-    if not stand:
-        return HttpResponse("no such site")
-
-    if not stand.can_admin(request.user):
-        return HttpResponse("you do not have admin permission")    
-    return dict(stand=stand,
-                all_users=User.objects.all())
+    return dict(all_users=User.objects.all())

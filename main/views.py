@@ -198,7 +198,9 @@ def edit_stand_user(request,id):
 @login_required
 @stand_admin()
 def delete_stand_user(request,id):
-    return dict(standuser = StandUser.objects.get(id=id))
+    standuser = StandUser.objects.get(id=id)
+    standuser.delete()
+    return HttpResponseRedirect("/_stand/users/")
 
 
 @login_required

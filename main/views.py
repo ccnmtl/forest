@@ -153,8 +153,19 @@ def stand_add_group(request):
 
 @login_required
 def stand_add_user(request):
-    pass
+    stand = get_stand(request.get_host())
+    if not stand:
+        return HttpResponse("no such site")
 
+    if not stand.can_admin(request.user):
+        return HttpResponse("you do not have admin permission")    
+
+    if request.method == "POST":
+        username = request.POST.get('user','')
+        u = User.objects.get(username=username)
+        access = request.POST.get('access')
+        su = StandUser.objects.create(stand=stand,user=u,access=access)
+    return HttpResponseRedirect("/_stand/users/")
 
 @login_required
 def stand_groups(request):
@@ -169,4 +180,5 @@ def stand_users(request):
 
     if not stand.can_admin(request.user):
         return HttpResponse("you do not have admin permission")    
-    return dict(stand=stand)
+    return dict(stand=stand,
+                all_users=User.objects.all())

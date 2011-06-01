@@ -193,7 +193,12 @@ def stand_groups(request):
 @rendered_with("main/edit_stand_user.html")
 @stand_admin()
 def edit_stand_user(request,id):
-    return dict(standuser = StandUser.objects.get(id=id))
+    standuser = StandUser.objects.get(id=id)
+    if request.method == "POST":
+        standuser.access = request.POST.get("access","student")
+        standuser.save()
+        return HttpResponseRedirect("/_stand/users/")
+    return dict(standuser=standuser)
 
 @login_required
 @stand_admin()

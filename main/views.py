@@ -31,26 +31,41 @@ class stand_admin(object):
                 return HttpResponse("no such site")
             if not stand.can_admin(request.user):
                 return HttpResponse("you do not have admin permission")
+            request.stand = stand
+            items = func(request, *args, **kwargs)
+            if type(items) == type({}):
+                items['stand'] = stand
+                items['can_admin'] = True
+            return items
+        return admin_func
+
+class stand(object):
+    def __init__(*args,**kwargs):
+        pass
+    def __call__(self,func):
+        def stand_func(request,*args,**kwargs):
+            stand = get_stand(request.get_host())
+            if not stand:
+                return HttpResponse("no such site")
+            request.stand = stand
             items = func(request, *args, **kwargs)
             if type(items) == type({}):
                 items['stand'] = stand
             return items
-        return admin_func
+        return stand_func
 
 @rendered_with('main/page.html')
+@stand()
 def page(request,path):
-    stand = get_stand(request.get_host())
-    if not stand:
-        return HttpResponse("no such site")
     hierarchy = request.get_host()
     section = get_section_from_path(path,hierarchy=hierarchy)
 
     root = section.hierarchy.get_root()
     module = get_module(section)
-    if not stand.can_view(request.user):
+    if not request.stand.can_view(request.user):
         return HttpResponse("you do not have permission")
-    can_edit = stand.can_edit(request.user)
-    can_admin = stand.can_admin(request.user)
+    can_edit = request.stand.can_edit(request.user)
+    can_admin = request.stand.can_admin(request.user)
     if section.id == root.id:
         # trying to visit the root page
         if section.get_next():
@@ -99,7 +114,7 @@ def page(request,path):
                     module=module,
                     needs_submit=needs_submit(section),
                     is_submitted=submitted(section,request.user),
-                    stand=stand,
+                    stand=request.stand,
                     modules=root.get_children(),
                     root=section.hierarchy.get_root(),
                     can_edit=can_edit,
@@ -111,42 +126,36 @@ def instructor_page(request,path):
 
 @login_required
 @rendered_with('main/edit_page.html')
+@stand()
 def edit_page(request,path):
-    stand = get_stand(request.get_host())
-    if not stand:
-        return HttpResponse("no such site")
     hierarchy = request.get_host()
     section = get_section_from_path(path,hierarchy=hierarchy)
-    if not stand.can_edit(request.user):
+    if not request.stand.can_edit(request.user):
         return HttpResponse("you do not have admin permission")
-    can_admin = stand.can_admin(request.user)
+    can_admin = request.stand.can_admin(request.user)
 
     return dict(section=section,
                 module=get_module(section),
-                stand=stand,
+                stand=request.stand,
                 can_admin=can_admin,
                 root=section.hierarchy.get_root())
 
+@stand()
 def css(request):
-    stand = get_stand(request.get_host())
-    if not stand:
-        return HttpResponse("no such site")
-
-    return HttpResponse(stand.css,content_type="text/css")
+    return HttpResponse(request.stand.css,content_type="text/css")
 
 @login_required
 @rendered_with('main/edit_stand.html')
 @stand_admin()
 def edit_stand(request):
-    stand = get_stand(request.get_host())
     if request.method == "POST":
-        form = StandForm(request.POST,instance=stand)
+        form = StandForm(request.POST,instance=request.stand)
         if form.is_valid():
             form.save()
         return HttpResponseRedirect("/_stand/")
     else:
-        return dict(stand=stand,
-                    form=StandForm(instance=stand))
+        return dict(stand=request.stand,
+                    form=StandForm(instance=request.stand))
 
 @login_required
 @rendered_with("main/add_stand.html")
@@ -168,12 +177,11 @@ def stand_add_group(request):
 @login_required
 @stand_admin()
 def stand_add_user(request):
-    stand = get_stand(request.get_host())
     if request.method == "POST":
         username = request.POST.get('user','')
         u = User.objects.get(username=username)
         access = request.POST.get('access')
-        su = StandUser.objects.create(stand=stand,user=u,access=access)
+        su = StandUser.objects.create(stand=request.stand,user=u,access=access)
     return HttpResponseRedirect("/_stand/users/")
 
 @login_required
@@ -186,6 +194,12 @@ def stand_groups(request):
 @stand_admin()
 def edit_stand_user(request,id):
     return dict(standuser = StandUser.objects.get(id=id))
+
+@login_required
+@stand_admin()
+def delete_stand_user(request,id):
+    return dict(standuser = StandUser.objects.get(id=id))
+
 
 @login_required
 @rendered_with("main/stand_users.html")

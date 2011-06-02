@@ -171,23 +171,19 @@ def add_stand(request):
 
 @login_required
 @stand_admin()
-def stand_add_group(request):
-    pass
-
-@login_required
-@stand_admin()
 def stand_add_user(request):
     if request.method == "POST":
         username = request.POST.get('user','')
         u = User.objects.get(username=username)
+        r = StandUser.objects.filter(stand=request.stand,user=u)
+        if r.count() > 0:
+            # if that user already exists, redirect them to the standuser page
+            # so they can just edit the access level, which is what they 
+            # probably want
+            return HttpResponseRedirect("/_stand/users/%d/" % r[0].id)
         access = request.POST.get('access')
         su = StandUser.objects.create(stand=request.stand,user=u,access=access)
     return HttpResponseRedirect("/_stand/users/")
-
-@login_required
-@stand_admin()
-def stand_groups(request):
-    pass
 
 @login_required
 @rendered_with("main/edit_stand_user.html")
@@ -207,9 +203,18 @@ def delete_stand_user(request,id):
     standuser.delete()
     return HttpResponseRedirect("/_stand/users/")
 
-
 @login_required
 @rendered_with("main/stand_users.html")
 @stand_admin()
 def stand_users(request):
     return dict(all_users=User.objects.all())
+
+@login_required
+@stand_admin()
+def stand_add_group(request):
+    pass
+
+@login_required
+@stand_admin()
+def stand_groups(request):
+    pass

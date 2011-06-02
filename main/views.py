@@ -166,6 +166,10 @@ def add_stand(request):
     form = StandForm()
     if request.method == "POST":
         form = StandForm(request.POST)
+        hostname = request.POST.get('hostname','')
+        r = Stand.objects.filter(hostname=hostname)
+        if r.count() > 0:
+            return HttpResponse("a stand with that hostname already exists")
         if form.is_valid():
             stand = form.save()
             su = StandUser.objects.create(stand=stand,user=request.user,access="admin")

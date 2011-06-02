@@ -8,6 +8,7 @@ from forms import StandForm
 from restclient import GET
 import httplib2
 import simplejson
+from django.conf import settings
 
 class rendered_with(object):
     def __init__(self, template_name):
@@ -157,8 +158,14 @@ def edit_stand(request):
             form.save()
         return HttpResponseRedirect("/_stand/")
     else:
+        is_seed_stand = True
+        if settings.DEBUG == False:
+            # in production
+            is_seed_stand = request.stand.hostname == "forest.ccnmtl.columbia.edu"
         return dict(stand=request.stand,
-                    form=StandForm(instance=request.stand))
+                    form=StandForm(instance=request.stand),
+                    is_seed_stand=is_seed_stand
+                    )
 
 @login_required
 @rendered_with("main/add_stand.html")

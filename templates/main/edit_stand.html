@@ -9,5 +9,5 @@
 </form>
 <p><a href="users/">Manage users</a></p>
 <p>Or go to the <a href="/edit/">Page edit interface</a></p>
-<p>you can also <a href="add/">create a new Stand</a></p>
+{% if is_seed_stand %}<p>you can also <a href="add/">create a new Stand</a></p>{% endif %}
 {% endblock %}

@@ -163,6 +163,8 @@ def edit_stand(request):
 @login_required
 @rendered_with("main/add_stand.html")
 def add_stand(request):
+    if not request.user.is_staff:
+        return HttpResponse("only staff may access this")
     form = StandForm()
     if request.method == "POST":
         form = StandForm(request.POST)

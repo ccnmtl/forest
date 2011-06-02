@@ -68,6 +68,9 @@ class StandUser(models.Model):
     user = models.ForeignKey(User)
     access = models.CharField(max_length=16,default="student")
 
+    class Meta:
+        ordering = ('user__last_name','user__first_name')
+
 class StandGroup(models.Model):
     stand = models.ForeignKey(Stand)
     group = models.ForeignKey(Group)

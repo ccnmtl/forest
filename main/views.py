@@ -5,6 +5,9 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from models import *
 from forms import StandForm
+from restclient import GET
+import httplib2
+import simplejson
 
 class rendered_with(object):
     def __init__(self, template_name):
@@ -174,7 +177,27 @@ def add_stand(request):
 def stand_add_user(request):
     if request.method == "POST":
         username = request.POST.get('user','')
-        u = User.objects.get(username=username)
+        if username == "":
+            username = request.POST.get('uni','')
+        try:
+            u = User.objects.get(username=username)
+        except User.DoesNotExist:
+            if username == "":
+                return HttpResponse("no username or uni specified")
+            u = User(username=username, password='forest user')
+            u.set_unusable_password()
+            u.email = u.username + "@columbia.edu"
+            cdap_base = "http://cdap.ccnmtl.columbia.edu/"
+            try:
+                r = simplejson.loads(GET(cdap_base + "?uni=%s" % u.username))
+                if r.get('found',False):
+                    u.last_name = r.get('lastname',r.get('sn',''))
+                    u.first_name = r.get('firstname',r.get('givenName',''))
+            except httplib2.ServerNotFoundError:
+                # cdap.ccnmtl.columbia.edu (or whatever the CDAP server is set to)
+                # is probably not in /etc/hosts on this server
+                pass
+            u.save()
         r = StandUser.objects.filter(stand=request.stand,user=u)
         if r.count() > 0:
             # if that user already exists, redirect them to the standuser page

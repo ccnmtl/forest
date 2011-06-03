@@ -58,6 +58,10 @@ class stand(object):
             return items
         return stand_func
 
+def has_responses(section):
+    quizzes = [p.block() for p in section.pageblock_set.all() if hasattr(p.block(),'needs_submit') and p.block().needs_submit()]
+    return quizzes != []
+
 @rendered_with('main/page.html')
 @stand()
 def page(request,path):
@@ -114,6 +118,7 @@ def page(request,path):
             # giving them feedback before they proceed
             return HttpResponseRedirect(section.get_absolute_url())
     else:
+        instructor_link = has_responses(section)
         return dict(section=section,
                     module=module,
                     needs_submit=needs_submit(section),
@@ -123,6 +128,7 @@ def page(request,path):
                     root=section.hierarchy.get_root(),
                     can_edit=can_edit,
                     can_admin=can_admin,
+                    instructor_link=instructor_link,
                     )
 @login_required
 @rendered_with("main/instructor_page.html")

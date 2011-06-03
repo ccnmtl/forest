@@ -124,9 +124,17 @@ def page(request,path):
                     can_edit=can_edit,
                     can_admin=can_admin,
                     )
-
+@login_required
+@rendered_with("main/instructor_page.html")
+@stand()
 def instructor_page(request,path):
-    return HttpResponse("instructor page")
+    h = get_hierarchy(request.get_host())
+    section = get_section_from_path(path,hierarchy=h)
+    quizzes = [p.block() for p in section.pageblock_set.all() if hasattr(p.block(),'needs_submit') and p.block().needs_submit()]
+    return dict(section=section,
+                quizzes=quizzes,
+                module=get_module(section),
+                root=h.get_root())
 
 @login_required
 @rendered_with('main/edit_page.html')

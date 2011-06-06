@@ -136,10 +136,14 @@ def page(request,path):
 def instructor_page(request,path):
     h = get_hierarchy(request.get_host())
     section = get_section_from_path(path,hierarchy=h)
+    root = section.hierarchy.get_root()
+    module = get_module(section)
+
     quizzes = [p.block() for p in section.pageblock_set.all() if hasattr(p.block(),'needs_submit') and p.block().needs_submit()]
     return dict(section=section,
                 quizzes=quizzes,
                 module=get_module(section),
+                modules=root.get_children(),
                 root=h.get_root())
 
 @login_required
@@ -151,9 +155,12 @@ def edit_page(request,path):
     if not request.stand.can_edit(request.user):
         return HttpResponse("you do not have admin permission")
     can_admin = request.stand.can_admin(request.user)
+    root = section.hierarchy.get_root()
+    module = get_module(section)
 
     return dict(section=section,
                 module=get_module(section),
+                modules=root.get_children(),
                 stand=request.stand,
                 can_admin=can_admin,
                 root=section.hierarchy.get_root())

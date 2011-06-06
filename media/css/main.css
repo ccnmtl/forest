@@ -1,48 +1,68 @@
+/* ***** Principal Elements ***** */
+
+.printonly
+{
+	display: none;
+}
+
+
+legend 
+{
+	font-weight: bold; 
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));
+	background: -moz-linear-gradient(top, #fff, #eee);
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	padding: 5px 10px 5px 10px;
+}
+
+ 
 body
 {
-	min-width: 920px;
-	margin: 0;
+	min-width: 912px;
+	margin: auto;
 	padding: 0;
 	border: 0;
 	background-color: #fff;
-	font: normal 0.88em/140% arial, helvetica, verdana, sans-serif;
+	font: normal 0.88em "lucida grande", arial, helvetica, sans-serif;
 	color: #000;
 }
 
-/* ########## Standard elements ########## */
-
 h1, h2, h3, h4, h5, h6
 {
-	margin: 0 0 0.7em 0;
+	margin: 0 0 0 0;
 	padding: 0;
 	border: 0;
-	font-family: 'trebuchet ms', verdana, sans-serif;
+	font-family: "lucida grande", arial, helvetica, sans-serif;
 	font-weight: bold;
 }
 
 h1
 {
-	margin: 0 0 0.7em 0;
+	margin: 0 0 0 0;
 	font-size: 180%;
 	font-weight: normal;
 }
 
 h2
 {
-	margin: 1.6em 0 0.7em 0;
-	font-size: 160%;
+	margin: 0 0 0 0;
+	font-size: 140%;
+	font-weight: normal;
 }
 
 h3
 {
-	margin: 1.4em 0 0.7em 0;
-	font-size: 140%;
+	padding: 1.4em 0 0.7em 0;
+	font-size: 110%;
+	font-weight: bold;
 }
 
 h4
 {
-	margin: 1.2em 0 0.7em 0;
-	font-size: 140%;
+	padding: 1em 0 1em 0;
+	margin: 0;
+	font-size: 110%;
 	font-style: italic;
 }
 
@@ -61,7 +81,7 @@ h6
 p
 {
 	display: block;
-	margin: 0 0 0.7em 0;
+	margin: 0 0 1em 0;
 	padding: 0;
 	border: 0;
 	font-size: 100%;
@@ -70,7 +90,7 @@ p
 blockquote
 {
 	display: block;
-	margin: 0 4em 0.7em 4em;
+	margin: 0 2em 1em 2em;
 	padding: 0;
 	border: 0;
 	font-size: 100%;
@@ -78,592 +98,334 @@ blockquote
 
 table
 {
-	margin: 0 0 0.7em 0;
+	margin: 0 0 1em 0;
 	padding: 0;
 	border: 1px solid #ccc;
 	border-collapse: collapse;
 	font-size: 100%;
 }
 
+table tbody
+{
+	border: 0;
+}
+
 th
 {
-	border: 1px solid #ccc;
+	border: 1px solid #999;
 	border-collapse: collapse;
+	padding: 5px;
 }
 
 td
 {
-	border: 1px solid #ccc;
+	border: 1px solid #999;
 	border-collapse: collapse;
+	padding: 5px;
 }
 
 ol, ul
 {
 	display: block;
-	margin: 0 4em 0.7em 4em;
-	padding: 0;
+	margin: 0 0 1em 3em;
+	padding: 0 0 1em 0;
 	border: 0;
 	font-size: 100%;
 }
 
-/*
+.cascadeloweralpha ol li,
+.loweralpha
+{
+	list-style-type:lower-alpha;
+}
+
+.cascadeupperalpha ol li,
+.upperalpha
+{
+	list-style-type:upper-alpha;
+}
+
+.cascadecircle ul li,
+.circle
+{
+	list-style-type:circle;
+}
+
+cascadesquare li,
+.square
+{
+	list-style-type:square;
+}
+
 li
 {
+	margin: 0 0 0.5em 0;
 }
-*/
 
 a
 {
-	color: #06c;
+	color: #6c0;
+	text-decoration: none;
 }
 
 a:hover
 {
-	color: #69c;
+	color: #000;
+	text-decoration: none;
+}
+
+a:active
+{
+	color: #000;
+	text-decoration: none;
 }
 
 a:visited
 {
-	color: #900;
+	color: #6c0;
+	text-decoration: none;
 }
 
-img, img a
-{
-	border: 0;
-}
-
-/* ########## Globally useful definitions ########## */
-
-/* ---- Block block elements ---------- */
-.block
-{
-	display: block;
-	margin: 0 10px 1em 10px;
-	padding: 0;
-	border: 0;
-}
-
-/* ---- Clearing block ---------- */
-.visualclear
-{
-	display: block;
-	clear: both;
-	margin: 0;
-	padding: 0;
-	border: 0;	
-}
-
-.visualhide
-{
-	display: none !important;
-}
-
-
-/* ########## Blocks style definitions ########## */
+/* ***** Principal Blocks ***** */
 
 #container
 {
-	width: 900px;
-	min-width: 900px;
-	margin: 0 auto;
-	padding: 0;
-	border: 1px solid #999;
-	border-collapse: collapse;
-	background-color: #fff;
-}
-
-/* ---- Header (Banner) block elements ---------- */
-#header
-{
-	display: block;
-	width: 900px;
-	height: 100px;
-	min-width: 900px;
-	overflow: hidden;
-	margin: 0;
-	padding: 0;
-	border: 0;
-	background: #fffbc7 url('../img/bg_header.jpg?site=forest') left top no-repeat;
-}
-
-#header #logo_project
-{
-	display: block;
-	float: left;
-	width: 430px;
-	height: 90px;
-	overflow: hidden;
-	margin: 5px 0 0 0;
-	padding: 0;
-	border: 0;
-}
-
-#header #logo_project a
-{
-	display: block;
-	width: 430px;
-	height: 90px;
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
-
-#header #logo_ccnmtl
-{
-	display: block;
-	clear: right;
-	float: right;
-	width: 146px;
-	height: 33px;
-	overflow: hidden;
-	/* margin: 34px 10px 0 0;*/
-	margin: 0 10px 0 0;
-	padding: 0;
-	border: 0;
-	background: transparent url('../img/logo_ccnmtl.gif') left top no-repeat;
-}
-
-#header #logo_ccnmtl a
-{
-	display: block;
-	width: 146px;
-	height: 33px;
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
-
-#header #logo_project span,
-#header #logo_ccnmtl span
-{
-	display: none;
-}
-
-/* ---- Standard navigation block elements ---------- */
-#standardnav
-{
-	display: block;
-	float: right;
-	margin: 0 10px 10px 0;
-	padding: 0;
-	border: 0;
-	list-style: none;
-}
-
-#standardnav li
-{
-	display: block;
-	float: left;
-	margin: 0 0 0 0.5em;
-	padding:  0 0 0 0.5em;
-	border: 0;
-	font-size: 0.9em;
-}
-
-#standardnav a
-{
-	text-decoration: none;
-}
-
-#standardnav a:hover
-{
-	color: #c00;
-	text-decoration: none;
-}
-
-/* ---- Primary navigation block elements ---------- */
-#primarynav
-{
-	width: 900px;
-	height: 30px;
-	min-width: 900px;
-	clear: both;
-	margin: 0;
-	padding: 0;
-	border: 0;
-	border-top: 1px solid #666;
-	background-color:#228B22 ;
-}
-
-#primarynav div.encase
-{
-	width: 900px;
-	height: 30px;
-}
-
-#primarynav ul
-{
-	float: left;
-	height: 30px;
-	margin: 0 10px;
-	padding: 0;
-	border: 0;
-	list-style: none;
-}
-
-#primarynav #leftside ul
-{
-	float: left;
-}
-
-#primarynav #rightside ul
-{
-	float: right;
-}
-
-#primarynav li
-{
-	display: block;
-	float: left;
-	margin: 3px;
-	padding: 0 0.5em;
-	border: 0;
-	background-color: #eee;
-	line-height: 24px;
-}
-
-#primarynav li.active {
-   background-color: #fff;
-}
-
-#primarynav li:hover
-{
-	background-color: #fc9;
-}
-
-#primarynav a
-{
-	color: #900;
-	text-decoration: none;
-}
-
-#primarynav a:hover
-{
-	color: #c00;
-	text-decoration: none;
-}
-
-#primarynav #usernav li
-{
-	background: transparent;
-	font-weight: bold;
-	color: #ccc;
-	
-}
-
-#primarynav #usernav li a
-{
-	color: #ccc;
-	
-}
-
-#primarynav #usernav li a:hover
-{
-	color: #fff;
-	
-}
-
-#usernav
-{
-	background: transparent;
-	font-weight: bold;
-	color: #fff;
-	
-}
-
-#primarynav #leftside #usernav
-{
-	float: right;
-}
-
-#primarynav #rightside #usernav
-{
-	float: left;
-}
-
- /* ---- Pagebody block elements ---------- */
-#pagebody
-{
-	display: block;
-	width: 900px;
-	min-width: 900px;
-	clear: both;
-	margin: 0;
-	padding: 1em 0 0 0;
-	border: 0;
-	background-color: #fff;
-}
-
-
-/* ---- Sidebar Left block elements ---------- */
-#sidebar_left
-{
-	display: block;
-	float: left;
-	width: 200px;
-	margin: 0;
-	padding: 1em 0;
-	border: 0;
-	z-index: 100;
-}
-
-.one_column #sidebar_left
-{
-	display: none;
-}
-
-/* ---- Sidebar Right block elements ---------- */
-#sidebar_right
-{
-	display: block;
-	float: left;
-	width: 200px;
-	margin: 0;
-	padding: 1em 0;
-	border: 0;
-	z-index: 10;
-}
-
-
-.one_column #sidebar_right
-{
-	display: none;
-}
-
-/* ---- Sidebar block elements ---------- */
-
-.sidebar
-{
-	padding: 0;
-	border: 1px solid #ccc;
-	font-size: 92%;
-	line-height: 130%;
-}
-
-.sidebar h2
-{
-	margin: 0 0 0.7em 0;
-	padding: 2px;
-	border: 0;
-	border-bottom: 1px solid #999;
-	background-color: #e0e0e0;
-	font-size: 108%;	
-}
-
-.sidebar .content
-{
-	margin: 0 0.5em 0.7em 0.5em;
-	padding: 0;
-	border: 0;
-}
-
-.sidebar ol
-{
-	margin: 0 0 0 1.5em;
-	padding: 0;
-	border: 0;
-}
-
-.sidebar li
-{
-	margin: 0 0 0.4em 0;
-	padding: 0;
-	border: 0;
-}
-
-.sidebar ul
-{
-	margin: 0;
-	padding: 0;
-	border: 0;
-	list-style: none;
-}
-
-.sidebar ul li
-{
-	padding: 0 0 0 1.2em;
-	background: url('../img/bullet_blue.gif') left 0.2em no-repeat;
-}
-
-.sidebar a
-{
-	color: #06c;
-	text-decoration: none;
-}
-
-.sidebar a:hover
-{
-	color: #69c;
-	text-decoration: none;
-}
-
-#sidebarlogo
-{
-	margin-bottom: 2em;
-	padding: 0;
-	border: 0;
-	font-size: 92%;
-	line-height: 130%;
-}
-
-#sidebarlogo #logo_ccnmtl
-{
-	display: block;
-	width: 146px;
-	height: 33px;
-	overflow: hidden;
+	min-width: 912px;
+	width: 912px;
 	margin: auto;
 	padding: 0;
 	border: 0;
-	background: transparent url('../img/logo_ccnmtl_sidebar.gif') left top no-repeat;
+	background-color: #fff;
 }
 
-#sidebarlogo #logo_ccnmtl a
+/* --- Header elements --- */
+
+#header
+{
+	min-width: 912px;
+	width: 912px;
+	height: 112px;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: url('../img/bg_header.jpg') left top no-repeat;
+	position: relative;
+}
+
+#header h1, #header h1 a
 {
 	display: block;
-	width: 145px;
-	height: 33px;
+	float: left;
+	width: 560px;
+	height: 57px;
+	overflow: hidden;
+	margin: 40px 0 0 20px;
+	padding: 0;
+	border: 0;
+}
+
+#header h4 a
+{
+	display: block;
+	position: absolute;
+	top: 45px;
+	right: 30px;
+	width: 120px;
+	height: 43px;
 	margin: 0;
 	padding: 0;
 	border: 0;
 }
 
-#sidebarlogo #logo_ccnmtl span
+
+#header h1 a, #header h4 a
+{
+	float: none;
+	margin: 0;
+}
+
+#header h1 span, #header h4 span
 {
 	display: none;
 }
 
-/* ---- Content block elements ---------- */
-#content
+/* --- Standard navigation --- */
+
+#standard_navigation
+{
+	display: block;
+	margin: 0px
+	padding: 0px;
+	font-size: 12px;
+	position: absolute;
+	top: 2px;
+	right: 20px;
+}
+
+#standard_navigation li
+{
+	float: left;
+	margin: 0;
+	padding: 0 0 0 15px;
+	border: 0;
+	list-style: none;
+	color: #fff;
+}
+
+#standard_navigation a
+{
+	color: #fff;
+}
+
+#standard_navigation a:hover
+{
+	color: #fc6;
+}
+
+/* --- Primary navigation --- */
+
+#primarynav
+{
+	min-width: 912px;
+	width: 912px;
+	height: 31px;
+	overflow: hidden;
+	margin: 0;
+	margin-top: -12px;
+	padding: 0;
+	border: 0;
+	border-top: 1px solid #666;
+        background-color:#228B22 ;
+}
+
+#primarynav ul.globalnav
 {
 	display: block;
 	float: left;
-	margin: 0;
-	padding: 1em 0;
+	overflow: hidden;
+	margin: 0 0 0 6px;
+	padding: 0;
 	border: 0;
-	width: 498px;
-	z-index: 5;
+	list-style: none;
 }
 
-
-.one_column #content
+#primarynav ul.globalnav li
 {
-	display: block;
-	float: none;
-	width: 900px;
-}
-
-.pageheader
-{
-	margin-top: 0;
-}
-
-/* ---- Footer block elements ---------- */
-#footer
-{
-	display: block;
-	width: 900px;
-		height: 30px;
-	min-width: 900px;
-	clear: both;
+	float: left;
 	margin: 0;
 	padding: 0;
 	border: 0;
-		border-top: 1px solid #ccc;
-	background-color: #fff;
+	font: normal 14px/31px "lucida grande", arial, helvetica, sans-serif;
+	list-style: 0;
 }
 
-
-
-/* styles for hs.js */
-.hs-show { display: block; }
-.hs-hide { display: none; }
-
-
-
-
-/* ########## FOR FLUID WIDTH CSS ############### */
-/* ########## Blocks style definitions ########## */
-
-body.fluid #container
-{
-	margin: 0 10px;
-	width: auto;
-}
-
-/* ---- Header block elements ---------- */
-body.fluid #header
-{
-	width: 100%;
-}
-
-
-/* ---- Delta block elements ---------- */
-body.fluid #primarynav,
-body.fluid #primarynav div.encase
-{
-	width: 100%;
-}
-
-/* ---- Pagebody block elements ---------- */
-body.fluid #pagebody
-{
-	width: 100%;
-}
-
-/* ---- Footer block elements ---------- */
-body.fluid #footer
-{
-	width: 100%;
-}
-
-/* ---- Content block elements ---------- */
-body.fluid #content
-{
-	margin: 0 -205px;
-	width: 100%;
-}
-
-
-
-.one_column.fluid #content
+#primarynav ul.globalnav li a
 {
 	display: block;
-	float: none;
-	width: 100%;
-	margin: 0;
+	padding: 0 10px 0 8px;
+	font-weight: bold;
+	color: #fff;
+	background-color: #696;
 }
 
+#primarynav ul.globalnav li a:hover
+{
+	color: #fbf523;
+}
+
+#primarynav ul.globalnav li.active a
+{
+	color: #000; 
+	background-color: #8c8;
+}
+
+#primarynav #usernav
+{
+	display: block;
+	float: right;
+	overflow: hidden;
+	margin: 0 6px 0 0;
+	padding: 0;
+	border: 0;
+	list-style: none;
+	color: #fff;
+}
+
+
+#primarynav ul.usernav li
+{
+	float: left;
+	margin: 0;
+	padding: 0 16px 0 10px;
+	border: 0;
+	font: normal 14px/31px "lucida grande", arial, helvetica, sans-serif;
+	list-style: 0;
+}
+
+#primarynav ul.usernav li a
+{
+	display: block;
+}
+
+
+#primarynav ul.usernav li#logout
+{
+	padding: 0;
+	background: url('../img/icon_padlock.gif') left bottom no-repeat;
+}
+
+#primarynav ul.usernav li#logout a
+{
+	display: block;
+	padding: 0 15px 0 20px;
+	color: #000;
+	text-decoration: none;
+}
+
+/* --- Pagebody, contains secodary nav and content --- */
+
+#pagebody
+{
+	min-width: 912px;
+	min-height: 600px;
+	position: relative;
+	width: 912px;
+	padding: 0;
+
+}
+
+.visualclear {clear: both;}
+/* --- Secondary navigation --- */
 
 #secondary_navigation
 {
-        display: block;
-        float: left;
-        width: 201px;
-        margin: 0;
-        padding: 0;
-        border: 0;
+	display: block;
+	float: left;
+	width: 201px;
+	margin: 0;
+	padding: 0;
+	border: 0;
 }
 
 #secondary_navigation #fadetop
 {
-        display: block;
-        width: 201px;
-        height: 30px;
-        margin: 0;
-        padding: 0;
-        border: 0;
-
+	display: block;
+	width: 201px;
+	height: 30px;
+	margin: 0;
+	padding: 0;
+	border: 0;
 }
 
 #secondary_navigation #fadebottom
 {
-        display: block;
-        width: 201px;
-        height: 30px;
-        margin: 0;
-        padding: 0;
-        border: 0;
+	display: block;
+	width: 201px;
+	height: 30px;
+	margin: 0;
+	padding: 0;
+	border: 0;
 }
 
 #secondary_navigation .block
@@ -683,7 +445,7 @@ body.fluid #content
 	margin: 0 0 10px 0;
 	padding: 0;
 	border: 0;
-	border-bottom: 1px dotted #666;
+	border-bottom: 1px dotted #6c0;
 	color: #000;
 	font-weight: bold;
 }
@@ -745,6 +507,8 @@ body.fluid #content
 	background: url('../img/bullet_diamond_hollow.gif') left 4px no-repeat;
 }
 
+/* ***** Content ***** */
+
 #content
 {
 	display: block;
@@ -756,18 +520,14 @@ body.fluid #content
 
 }
 
-#content p {
-margin: 2em;
-}
-
 .content_one_column
 {
 	display: block;
 	float: none;
-	width: 860px !important;
-	margin: 20px 25px !important;
+	width: 860px;
+	margin: 20px 25px;
 	padding: 0;
-	border: 0 !important;
+	border: 0;
 }
 
 #content h1
@@ -805,11 +565,11 @@ margin: 2em;
 #content .content-nav
 {
 	height: 1.5em;
-	margin: 2em 2em 0 2em;
+	margin: 2em 0 0 0;
 	padding: 0.5em 0;
 	border: 0;
-	border-top: 1px dotted #666;
-	border-bottom: 1px dotted #666;
+	border-top: 1px dotted #6c0;
+	border-bottom: 1px dotted #6c0;
 }
 
 #content .content-nav a#previous
@@ -828,8 +588,365 @@ margin: 2em;
 	line-height: 1.5em;
 	text-align: right;
 }
+
+/* Login page */
+
+.loginbox
+{
+	float: right;
+	width: 280px;
+	margin: 0 10px;
+	padding: 0;
+	border: 0;
+	background: #fff url('../img/bg_login_middle.gif') repeat-y top;
+}
+
+.loginbox .boxtop
+{
+	width: 280px;
+	height: 16px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: #fff url('../img/bg_login_top.gif') no-repeat top;
+}
+
+.loginbox .boxbottom
+{
+	width: 280px;
+	height: 16px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: #fff url('../img/bg_login_bottom.gif') no-repeat bottom;
+}
+
+.loginbox h2
+{
+	margin: 0 0 10px 10px;
+	padding: 0;
+	border: 0;
+	font: bold 16px "lucida grande", arial, helvetica, sans-serif;
+}
+
+.loginbox h3
+{
+	margin: 0 0 10px 10px;
+	padding: 0;
+	border: 0;
+	font: bold 1em "lucida grande", arial, helvetica, sans-serif;
+}
+
+.loginbox .alert
+{
+	margin: 0 0 10px 10px;
+	padding: 0;
+	border: 0;
+	font: bold italic 1em "lucida grande", arial, helvetica, sans-serif;
+	color: #000;
+}
+
+.loginbox .alert a
+{
+	text-decoration: underline;
+}
+
+.loginbox hr
+{
+	height: 1px;
+	margin: 15px 0;
+	padding: 0;
+	border: 0;
+	background-color: #999;
+	color: #999;
+}
+
+.loginbox form
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.loginbox input.regButton
+{
+	margin: 0 0 0 10px;
+	padding: 1px;
+	background-color: #e0e0e0;
+	border-top: 2px solid #fff;
+	border-left: 2px solid #fff;
+	border-right: 2px solid #666;
+	border-bottom: 2px solid #666;
+	font: normal 1em "lucida grande", arial, helvetica, sans-serif;
+	cursor: pointer;
+}
+
+.loginbox input.regButton:active
+{
+	background-color: #ccc;
+	border-top: 2px solid #666;
+	border-left: 2px solid #666;
+	border-right: 2px solid #fff;
+	border-bottom: 2px solid #fff;
+}
+
+.loginbox input#id_password,
+.loginbox input#id_username
+{
+	width: 170px;
+	margin: 0;
+	padding: 2px;
+	border: 1px solid #999;
+	background-color: white;
+	font: normal 12px "lucida grande", arial, helvetica, sans-serif;
+	color: #000;
+	vertical-align: middle;
+}
+
+.loginbox table
+{
+	margin: 0 10px;
+	padding: 0;
+	border: 0;
+}
+
+.loginbox table td
+{
+	margin: 0;
+	padding: 3px 2px 3px 0;
+	border: 0;
+}
+
+.loginbox table td a
+{
+	font-size: 11px;
+	color: #069;
+	text-decoration: underline;
+}
+
+/* Case quizzes */
+
+.cases
+{
+	margin: 1em 0;
+	padding: 0;
+	border: 1px solid #999;
+}
+
+.casetitle
+{
+	background-color: #f2e6d8;
+	margin: 0;
+	padding: 5px 10px;
+	border: 0;
+	font-weight: bold;
+}
+
+.casecontent
+{
+	margin: 10px;
+	padding: 0;
+	border: 0;
+}
+
+.casequestion
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.cases li
+{
+	margin: 2px 0;
+}
+
+.casesanswerdisplay
+{
+	margin: 0;
+	padding: 5px;
+	border: 1px solid #999;
+	line-height: 18px;
+}
+
+.moretoggle
+{
+	font-weight: bold;
+}
+
+.pullquote
+{
+	display: block;
+	width: 240px;
+	float: right;
+	margin: 3px 0 3px 3px;
+	padding: 5px;
+	border: 1px solid #999;
+	background-color: #f2e6d8;
+}
+
+table td.noborder
+{
+	border-bottom: 0;
+}
+
+table th.tabletitle
+{
+	margin: 0;
+	padding: 5px 3px;
+	font-size: 1.1em;
+	color: #000;
+	border-bottom: 1px solid #999;
+	border-right: 1px solid #999;
+	background-color: #caddf0;
+}
+
+.dropdownmenu
+{
+	margin: 0 0 0 5px;
+	padding: 2px;
+	border: 0;
+	border-bottom: 1px solid #999;
+	background-color: #e0e0e0;
+	color: #000;
+	font: normal 1em "lucida grande", arial, helvetica, sans-serif;
+}
+
+.surveyform
+{
+	margin: 20px 20px 0 20px;
+	padding: 20px;
+	border: 1px solid #ccc;
+	line-height: 140%;
+}
+
+#programfield
+{
+	float: left;
+	margin: 0 50px 0 0;
+	padding: 0;
+	border: 0;
+}
+
+#yearfield
+{
+	float: left;
+	margin: 0 0 0 0;
+	padding: 0;
+	border: 0;
+}
+
+#experiencefield
+{
+	clear: both;
+	margin: 0;
+	padding: 14px 0 0 0;
+	border: 0;
+}
+
+.figurenotes
+{
+	font-size: 11px;
+	line-height: 150%;
+}
+
+body#introduction a#introduction,
+body#sensespec a#sensespec,
+body#signiftest a#signiftest,
+body#subsensespec1 a#subsensespec1,
+body#subsensespec2 a#subsensespec2,
+body#subsensespec3 a#subsensespec3,
+body#subsensespec4 a#subsensespec4,
+body#subsensespec5 a#subsensespec5,
+body#subsigniftest1 a#subsigniftest1,
+body#subsigniftest2 a#subsigniftest2,
+body#subsigniftest3 a#subsigniftest3,
+body#subsigniftest4 a#subsigniftest4,
+body#subsigniftest5 a#subsigniftest5,
+body#moresubsigniftest1 a#moresubsigniftest1,
+body#moresubsigniftest2 a#moresubsigniftest2,
+body#moresubsigniftest3 a#moresubsigniftest3,
+body#evaluation a#evaluation,
+body#current a#current,
+body#glossary a#glossary,
+body#bibliography a#bibliography,
+body#poctools a#poctools
+{
+	color: #000;
+	font-weight: bold;
+}
+
+.flashanimation
+{
+	margin: auto;
+	border: 1px solid #999;
+}
+
+#getFlash
+{
+	margin: 20px auto;
+	padding: 0;
+	border: 0;
+	display: block;
+	height: 120px;
+	width: 400px;
+	background: url('../img/flashicon.jpg') top left no-repeat;
+}
+
+#getFlash h3
+{
+	margin: 0 0 0 0;
+	padding: 0 0 0 115px;
+	border: 0;
+	font-weight: normal;
+	font-size: 1.45em;
+	color: #666;
+}
+
+#getFlash p
+{
+	margin: 0;
+	padding: 10px 0 0 115px;
+	border: 0;
+}
+
+#visualclear
+{
+	display: block;
+	clear: both;
+	height: 2px;
+}
+
+
+
+/* ***** Footer ***** */
+
+#footer
+{
+	min-width: 912px;
+	width: 912px;
+	height: 40px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.block-edit {
+    border: #999 solid 1px;
+    margin: 1em;
+}
+
+textarea {width: 100%;}
+
+
+
+.dragging { background-color: #fed;}
+
+
+
 .yours {
-border: #999 dotted 2px;
+//border-top: #999 dotted 2px;
+background-color: #f00; color: #fff; 
 }
 
 .expert {color: orange;}
@@ -841,3 +958,26 @@ border: #999 dotted 2px;
 .incorrectanswer { background-color: #f00; color: #fff; }
 
 .answer-inner {color: #000;}
+
+.submissionheader th, .submissionheader td {background-color: #fff; }
+
+/* jquery tabs */
+.ui-tabs .ui-tabs-hide {
+     display: none;
+}
+
+.hs-hide {display: none;}
+.hs-show {display: block;}
+
+li.hs-control-hide, li.hs-control-show {
+	margin-top: 10px !important;
+
+}
+
+li.hs-control-hide {
+	background: url(/site_media/img/bullet_open.gif) no-repeat scroll left 4px transparent !important;
+}
+
+li.hs-control-show {
+	background: url(/site_media/img/bullet_close.gif) no-repeat scroll left 4px transparent !important;
+}

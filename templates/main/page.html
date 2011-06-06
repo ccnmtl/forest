@@ -35,6 +35,9 @@
 
 
 {% if needs_submit %}
+{% if request.user.is_anonymous %}
+{% else %}
+
 {% if is_submitted %}
 <form action="." method="post">
 <input type="hidden" name="action" value="reset" />
@@ -44,6 +47,7 @@
 <input type="submit" value="Submit" />
 
 </form>
+{% endif %}
 {% endif %}
 {% endif %}
 

@@ -981,3 +981,10 @@ li.hs-control-hide {
 li.hs-control-show {
 	background: url(/site_media/img/bullet_close.gif) no-repeat scroll left 4px transparent !important;
 }
+
+p.warning {
+  border: #f00 solid 1px;
+  padding: 1em;
+  background-color: #fee;
+  color: #900;
+}

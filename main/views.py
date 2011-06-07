@@ -188,6 +188,10 @@ def edit_stand(request):
                     is_seed_stand=is_seed_stand
                     )
 
+default_css = """
+#header { background: #262; }
+"""
+
 @login_required
 @rendered_with("main/add_stand.html")
 def add_stand(request):
@@ -202,7 +206,8 @@ def add_stand(request):
             return HttpResponse("a stand with that hostname already exists")
         if form.is_valid():
             stand = form.save()
-            su = StandUser.objects.create(stand=stand,user=request.user,access="admin")
+            su = StandUser.objects.create(stand=stand,user=request.user,access="admin",
+                                          css=default_css)
             if hostname.endswith(".forest.ccnmtl.columbia.edu"):
                 # if it's a *.forest site, just send them on their way
                 return HttpResponseRedirect("http://%s/_stand/" % hostname)

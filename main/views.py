@@ -203,7 +203,11 @@ def add_stand(request):
         if form.is_valid():
             stand = form.save()
             su = StandUser.objects.create(stand=stand,user=request.user,access="admin")
-            return dict(created=True,stand=stand)
+            if hostname.endswith(".forest.ccnmtl.columbia.edu"):
+                # if it's a *.forest site, just send them on their way
+                return HttpResponseRedirect("http://%s/_stand/" % hostname)
+            else:
+                return dict(created=True,stand=stand)
     return dict(form=form)
 
 @login_required

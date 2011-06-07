@@ -61,7 +61,6 @@
 
 {% block primarynavtabs %}
 
-
 <ul class="globalnav">
   {% for section in modules %}
   <li{% ifequal section.id module.id %} class="active"{% endifequal %}><a href="{{section.get_absolute_url}}">{{section.label}}</a></li>

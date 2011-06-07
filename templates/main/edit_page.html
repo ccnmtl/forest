@@ -54,6 +54,17 @@ var saveOrderOfPageBlocks = function() {
 	</style>
 {% endblock %}
 
+{% block primarynavtabs %}
+
+<ul class="globalnav">
+  {% for section in modules %}
+  <li{% ifequal section.id module.id %} class="active"{% endifequal %}><a href="/edit{{section.get_absolute_url}}">{{section.label}}</a></li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
+
+
 {% block sidenav %}
 	<!-- ###### Secondary Navigation ###### -->
 	<div id="secondary_navigation">

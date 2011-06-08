@@ -33,7 +33,14 @@ class Stand(models.Model):
             su = r[0]
             if su.access in ["admin","faculty","ta"]:
                 return True
-        # TODO check groups
+        allowed_groups = []
+        for g in StandGroup.objects.filter(stand=self):
+            if g.access in ["admin","faculty","ta"]:
+                allowed_groups.append(g.group.name)
+        for g in User.groups.all():
+            if g.name in allowed_groups:
+                # bail as soon as we find a group affil that's allowed
+                return True
         return False
 
     def can_view(self,user):
@@ -46,7 +53,14 @@ class Stand(models.Model):
         r = StandUser.objects.filter(stand=self,user=user)
         if r.count() > 0:
             return True
-        # TODO check groups
+        allowed_groups = []
+        for g in StandGroup.objects.filter(stand=self):
+            allowed_groups.append(g.group.name)
+        for g in User.groups.all():
+            if g.name in allowed_groups:
+                # bail as soon as we find a group affil that's allowed
+                return True
+
         return False
 
     def can_admin(self,user):
@@ -59,7 +73,15 @@ class Stand(models.Model):
             su = r[0]
             if su.access == "admin":
                 return True
-        # TODO check groups
+        allowed_groups = []
+        for g in StandGroup.objects.filter(stand=self):
+            if g.access == "admin":
+                allowed_groups.append(g.group.name)
+        for g in User.groups.all():
+            if g.name in allowed_groups:
+                # bail as soon as we find a group affil that's allowed
+                return True
+
         return False
 
 

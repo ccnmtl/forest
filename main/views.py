@@ -209,6 +209,8 @@ def add_stand(request):
             stand = form.save()
             su = StandUser.objects.create(stand=stand,user=request.user,access="admin",
                                           css=default_css)
+            for pb in settings.PAGEBLOCKS:
+                sapb = StandAvailablePageBlock.objects.create(stand=stand,block=pb)
             if hostname.endswith(".forest.ccnmtl.columbia.edu"):
                 # if it's a *.forest site, just send them on their way
                 return HttpResponseRedirect("http://%s/_stand/" % hostname)

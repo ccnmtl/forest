@@ -163,6 +163,7 @@ def edit_page(request,path):
                 modules=root.get_children(),
                 stand=request.stand,
                 can_admin=can_admin,
+                available_pageblocks=request.stand.available_pageblocks(),
                 root=section.hierarchy.get_root())
 
 @stand()
@@ -317,3 +318,26 @@ def delete_stand_group(request,id):
     standgroup = StandGroup.objects.get(id=id)
     standgroup.delete()
     return HttpResponseRedirect("/_stand/groups/")
+
+@login_required
+@rendered_with("main/manage_blocks.html")
+@stand_admin()
+def manage_blocks(request):
+    if request.method == "POST":
+        for block in settings.PAGEBLOCKS:
+            enabled = request.POST.get(block,False)
+            r = StandAvailablePageBlock.objects.filter(stand=request.stand,block=block)
+            if enabled:
+                if r.count() == 0:
+                    sapb = StandAvailablePageBlock.objects.create(stand=request.stand,block=block)
+                # otherwise, it already exists
+            else:
+                if r.count() > 0:
+                    r.delete()
+        return HttpResponseRedirect("/_stand/blocks/")
+    
+    all_blocks = []
+    for block in settings.PAGEBLOCKS:
+        r = StandAvailablePageBlock.objects.filter(stand=request.stand,block=block)
+        all_blocks.append(dict(name=block,enabled=r.count()))
+    return dict(all_blocks=all_blocks)

@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 import hashlib
+from django.db.models import get_model
+from django.conf import settings
 
 class Stand(models.Model):
     title = models.CharField(max_length=256,default=u"",blank=True,null=True)
@@ -84,6 +86,10 @@ class Stand(models.Model):
 
         return False
 
+    def available_pageblocks(self):
+        enabled = [pb.block for pb in self.standavailablepageblock_set.all()]
+        return [get_model(*pb.split('.')) for pb in settings.PAGEBLOCKS if pb in enabled]
+
 
 class StandUser(models.Model):
     stand = models.ForeignKey(Stand)
@@ -102,6 +108,10 @@ class StandSetting(models.Model):
     stand = models.ForeignKey(Stand)
     name = models.CharField(max_length=256,db_index=True)
     value = models.CharField(max_length=256)
+
+class StandAvailablePageBlock(models.Model):
+    stand = models.ForeignKey(Stand)
+    block = models.CharField(max_length=256,db_index=True)
 
 def get_stand(hostname,user=None):
     r = Stand.objects.filter(hostname=hostname)

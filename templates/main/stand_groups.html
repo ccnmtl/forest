@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Groups{% endblock %}
+{% block content %}
+<form action="add/" method="post">
+<fieldset><legend>add group</legend>
+<table>
+<tr>
+<td>
+<b>Select existing group</b><br />
+<select name="group">
+<option value="" selected="selected">Select existing group</option>
+{% for g in all_groups %}
+<option value="{{g.id}}">{{g.name}}</option>
+{% endfor %}
+</select></td>
+<td>
+<b>access level</b><br />
+<select name="access">
+<option value="student">student</option>
+<option value="instructor">instructor</option>
+<option value="admin">admin</option>
+</select></td>
+<td>
+<input type="submit" value="add" />
+</td></tr>
+</table>
+</fieldset>
+</form>
+
+
+<table>
+{% for standgroup in stand.standgroup_set.all %}
+<tr class="{% cycle 'even' 'odd' %}">
+<th>
+<a href="{{standgroup.id}}/">{{standgroup.group.name}}</a>
+</th>
+<td>{{standgroup.access}}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

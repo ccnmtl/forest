@@ -278,9 +278,42 @@ def stand_users(request):
 @login_required
 @stand_admin()
 def stand_add_group(request):
-    pass
+    if request.method == "POST":
+        group_id = request.POST.get('group','')
+        if group_id == "":
+            return HttpResponse("no group selected")
+        group = Group.objects.get(id=group_id)
+        access = request.POST.get('access','student')
+        r = StandGroup.objects.filter(stand=request.stand,group=group)
+        if r.count() > 0:
+            # if that group already exists, redirect them to the standgroup page
+            # so they can just edit the access level, which is what they 
+            # probably want
+            return HttpResponseRedirect("/_stand/groups/%d/" % r[0].id)
+        sg = StandGroup.objects.create(stand=request.stand,group=group,access=access)
+    return HttpResponseRedirect("/_stand/groups/")
+
+@login_required
+@rendered_with("main/stand_groups.html")
+@stand_admin()
+def stand_groups(request):
+    return dict(all_groups=Group.objects.all())    
+
+
+@login_required
+@rendered_with("main/edit_stand_group.html")
+@stand_admin()
+def edit_stand_group(request,id):
+    standgroup = StandGroup.objects.get(id=id)
+    if request.method == "POST":
+        standgroup.access = request.POST.get("access","student")
+        standgroup.save()
+        return HttpResponseRedirect("/_stand/groups/")
+    return dict(standgroup=standgroup)
 
 @login_required
 @stand_admin()
-def stand_groups(request):
-    pass
+def delete_stand_group(request,id):
+    standgroup = StandGroup.objects.get(id=id)
+    standgroup.delete()
+    return HttpResponseRedirect("/_stand/groups/")

@@ -9,6 +9,7 @@ from restclient import GET
 import httplib2
 import simplejson
 from django.conf import settings
+from munin.helpers import muninview
 
 class rendered_with(object):
     def __init__(self, template_name):
@@ -343,3 +344,8 @@ def manage_blocks(request):
         r = StandAvailablePageBlock.objects.filter(stand=request.stand,block=block)
         all_blocks.append(dict(name=block,enabled=r.count()))
     return dict(all_blocks=all_blocks)
+
+@muninview(config="""graph_title Total Stands
+graph_vlabel stands""")
+def total_stands(request):
+    return [("stands",Stand.objects.all().count())]

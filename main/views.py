@@ -10,6 +10,7 @@ import httplib2
 import simplejson
 from django.conf import settings
 from munin.helpers import muninview
+from pagetree.models import Section
 
 class rendered_with(object):
     def __init__(self, template_name):
@@ -349,3 +350,13 @@ def manage_blocks(request):
 graph_vlabel stands""")
 def total_stands(request):
     return [("stands",Stand.objects.all().count())]
+
+@muninview(config="""graph_title Total Sections
+graph_vlabel sections""")
+def total_sections(request):
+    return [("sections",Section.objects.all().count())]
+
+@muninview(config="""graph_title Total StandUsers
+graph_vlabel standusers""")
+def total_standusers(request):
+    return [("standusers",StandUser.objects.all().count())]

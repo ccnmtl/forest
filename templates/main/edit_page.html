@@ -25,7 +25,7 @@ var saveOrderOfChildren = function() {
 var saveOrderOfPageBlocks = function() {
     var url = "/pagetree/reorder_pageblocks/{{section.id}}/?";
     var worktodo = 0;
-    jQuery("#blocks div").each(function(index,element) {
+    jQuery("#edit-blocks-tab div").each(function(index,element) {
       worktodo = 1;
       var id = jQuery(element).attr('id').split("-")[1];
       url += "pageblock_id_" + index + "=" + id + ";";
@@ -42,7 +42,7 @@ var saveOrderOfPageBlocks = function() {
 </script>
 
 <style type="text/css">
-	#blocks .draggable { background-color: #ddd; }
+	#edit-blocks-tab .draggable { background-color: #ddd; }
 	.draghandle {float: left;}
 	#children-order-list {list-style-type: none; margin: 0; padding: 0;}
 	#children li { margin: 0 3px 3px 3px; padding: 0.4em;
@@ -204,7 +204,7 @@ jQuery(function() {
     ,stop: function (event,ui) { saveOrderOfChildren();}
   });
   jQuery("#children-order-list").disableSelection();
-  jQuery("#blocks").sortable({
+  jQuery("#edit-blocks-tab").sortable({
     items : 'div'
     ,axis: 'y'
     ,containment: 'parent'

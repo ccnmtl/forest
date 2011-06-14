@@ -52,15 +52,17 @@ class Stand(models.Model):
             return False
         if self.access == "open":
             return True
-        if user and user.is_anonymous():
+        if user.is_anonymous():
             return False
+        if user.is_superuser:
+            return True
         r = StandUser.objects.filter(stand=self,user=user)
         if r.count() > 0:
             return True
         allowed_groups = []
         for g in StandGroup.objects.filter(stand=self):
             allowed_groups.append(g.group.name)
-        for g in User.groups.all():
+        for g in user.groups.all():
             if g.name in allowed_groups:
                 # bail as soon as we find a group affil that's allowed
                 return True

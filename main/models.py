@@ -28,8 +28,10 @@ class Stand(models.Model):
     def can_edit(self,user):
         if not user:
             return False
-        if user and user.is_anonymous():
+        if user.is_anonymous():
             return False
+        if user.is_superuser:
+            return True
         r = StandUser.objects.filter(stand=self,user=user)
         if r.count() > 0:
             su = r[0]
@@ -39,7 +41,7 @@ class Stand(models.Model):
         for g in StandGroup.objects.filter(stand=self):
             if g.access in ["admin","faculty","ta"]:
                 allowed_groups.append(g.group.name)
-        for g in User.groups.all():
+        for g in user.groups.all():
             if g.name in allowed_groups:
                 # bail as soon as we find a group affil that's allowed
                 return True

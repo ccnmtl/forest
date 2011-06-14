@@ -68,8 +68,9 @@ class Stand(models.Model):
     def can_admin(self,user):
         if not user:
             return False
-        if user and user.is_anonymous():
+        if user.is_anonymous():
             return False
+        
         r = StandUser.objects.filter(stand=self,user=user)
         if r.count() > 0:
             su = r[0]

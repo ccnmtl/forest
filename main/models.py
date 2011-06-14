@@ -70,7 +70,8 @@ class Stand(models.Model):
             return False
         if user.is_anonymous():
             return False
-        
+        if user.is_superuser:
+            return True
         r = StandUser.objects.filter(stand=self,user=user)
         if r.count() > 0:
             su = r[0]

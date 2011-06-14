@@ -9,6 +9,7 @@ site_media_root = os.path.join(os.path.dirname(__file__),"media")
 urlpatterns = patterns('',
                        (r'^export/','main.views.exporter'),
                        (r'^import/','main.views.importer'),
+                       (r'^clone/','main.views.cloner'),
 
                        ('^accounts/',include('djangowind.urls')),
                        (r'^admin/(.*)', admin.site.root),

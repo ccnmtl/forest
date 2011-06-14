@@ -395,3 +395,21 @@ def importer(request):
     url = hierarchy.get_absolute_url()
     url = '/' + url.lstrip('/') # sigh
     return HttpResponseRedirect(url)
+
+@rendered_with("main/clone.html")
+def cloner(request):
+    if request.method == "GET":
+        return {}
+
+    hierarchy = request.get_host()
+    section = get_section_from_path('/', hierarchy=hierarchy)
+    zip_filename = export_zip(section.hierarchy)
+
+    zipfile = ZipFile(zip_filename)
+    
+    hierarchy_name = request.POST['new_hierarchy']
+    hierarchy = import_zip(zipfile, hierarchy_name)
+
+    os.unlink(zip_filename)
+
+    return HttpResponseRedirect(".")

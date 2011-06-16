@@ -39,7 +39,7 @@ class Stand(models.Model):
         for g in StandGroup.objects.filter(stand=self):
             if g.access in ["admin","faculty","ta"]:
                 allowed_groups.append(g.group.name)
-        for g in User.groups.all():
+        for g in user.groups.all():
             if g.name in allowed_groups:
                 # bail as soon as we find a group affil that's allowed
                 return True
@@ -58,7 +58,7 @@ class Stand(models.Model):
         allowed_groups = []
         for g in StandGroup.objects.filter(stand=self):
             allowed_groups.append(g.group.name)
-        for g in User.groups.all():
+        for g in user.groups.all():
             if g.name in allowed_groups:
                 # bail as soon as we find a group affil that's allowed
                 return True
@@ -79,7 +79,7 @@ class Stand(models.Model):
         for g in StandGroup.objects.filter(stand=self):
             if g.access == "admin":
                 allowed_groups.append(g.group.name)
-        for g in User.groups.all():
+        for g in user.groups.all():
             if g.name in allowed_groups:
                 # bail as soon as we find a group affil that's allowed
                 return True

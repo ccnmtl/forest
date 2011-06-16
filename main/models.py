@@ -28,8 +28,10 @@ class Stand(models.Model):
     def can_edit(self,user):
         if not user:
             return False
-        if user and user.is_anonymous():
+        if user.is_anonymous():
             return False
+        if user.is_superuser:
+            return True
         r = StandUser.objects.filter(stand=self,user=user)
         if r.count() > 0:
             su = r[0]
@@ -50,8 +52,10 @@ class Stand(models.Model):
             return False
         if self.access == "open":
             return True
-        if user and user.is_anonymous():
+        if user.is_anonymous():
             return False
+        if user.is_superuser:
+            return True
         r = StandUser.objects.filter(stand=self,user=user)
         if r.count() > 0:
             return True
@@ -68,8 +72,10 @@ class Stand(models.Model):
     def can_admin(self,user):
         if not user:
             return False
-        if user and user.is_anonymous():
+        if user.is_anonymous():
             return False
+        if user.is_superuser:
+            return True
         r = StandUser.objects.filter(stand=self,user=user)
         if r.count() > 0:
             su = r[0]

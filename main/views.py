@@ -209,8 +209,7 @@ def add_stand(request):
             return HttpResponse("a stand with that hostname already exists")
         if form.is_valid():
             stand = form.save()
-            su = StandUser.objects.create(stand=stand,user=request.user,access="admin",
-                                          css=default_css)
+            su = StandUser.objects.create(stand=stand,user=request.user,access="admin")
             for pb in settings.PAGEBLOCKS:
                 sapb = StandAvailablePageBlock.objects.create(stand=stand,block=pb)
             if hostname.endswith(".forest.ccnmtl.columbia.edu"):

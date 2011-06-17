@@ -359,38 +359,3 @@ def total_sections(request):
 graph_vlabel standusers""")
 def total_standusers(request):
     return [("standusers",StandUser.objects.all().count())]
-
-from pagetree_export.exportimport import export_zip, import_zip
-import os
-
-def exporter(request):
-    hierarchy = request.get_host()
-    section = get_section_from_path('/', hierarchy=hierarchy)
-    zip_filename = export_zip(section.hierarchy)
-
-    with open(zip_filename) as zipfile:
-        resp = HttpResponse(zipfile.read())
-    resp['Content-Disposition'] = "attachment; filename=%s.zip" % section.hierarchy.name
-
-    os.unlink(zip_filename)
-    return resp
-
-from zipfile import ZipFile
-
-@rendered_with("main/import.html")
-def importer(request):
-    if request.method == "GET":
-        return {}
-    file = request.FILES['file']
-    zipfile = ZipFile(file)
-
-    # If we exported the morx.com site, and we are now
-    # visiting http://fleem.com/import/, we don't want
-    # to touch the morx.com hierarchy -- instead we want
-    # to import the bundle to the fleem.com hierarchy.
-    hierarchy_name = request.get_host()
-    hierarchy = import_zip(zipfile, hierarchy_name)
-
-    url = hierarchy.get_absolute_url()
-    url = '/' + url.lstrip('/') # sigh
-    return HttpResponseRedirect(url)

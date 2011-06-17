@@ -221,6 +221,19 @@ def add_stand(request):
 
 @login_required
 @stand_admin()
+def delete_stand(request):
+    if request.method == "POST":
+        request.stand.delete()
+        return HttpResponseRedirect("/")
+    else:
+        return HttpResponse("""
+<form action="." method="post">
+Are you sure? <input type="submit" value="YES!" />
+</form>
+""")
+
+@login_required
+@stand_admin()
 def stand_add_user(request):
     if request.method == "POST":
         username = request.POST.get('user','')

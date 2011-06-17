@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound, HttpRequest
 from django.shortcuts import render_to_response
 from pagetree.helpers import get_hierarchy, get_section_from_path, get_module, needs_submit, submitted
 from django.template import RequestContext
@@ -209,8 +209,7 @@ def add_stand(request):
             return HttpResponse("a stand with that hostname already exists")
         if form.is_valid():
             stand = form.save()
-            su = StandUser.objects.create(stand=stand,user=request.user,access="admin",
-                                          css=default_css)
+            su = StandUser.objects.create(stand=stand,user=request.user,access="admin")
             for pb in settings.PAGEBLOCKS:
                 sapb = StandAvailablePageBlock.objects.create(stand=stand,block=pb)
             if hostname.endswith(".forest.ccnmtl.columbia.edu"):
@@ -396,20 +395,47 @@ def importer(request):
     url = '/' + url.lstrip('/') # sigh
     return HttpResponseRedirect(url)
 
+@rendered_with("main/add_stand.html")
+def cloner_created(request, ctx):
+    return ctx
+
 @rendered_with("main/clone.html")
 def cloner(request):
     if request.method == "GET":
         return {}
 
+    new_hierarchy = request.POST['new_hierarchy']
+
+    old_stand = get_stand(request.get_host())
+
+    fake_request = HttpRequest()
+    fake_request.method = "POST"
+    fake_request.POST['hostname'] = new_hierarchy    
+    fake_request.POST['title'] = old_stand.title
+    fake_request.POST['css'] = old_stand.css
+    fake_request.POST['description'] = old_stand.description
+    fake_request.POST['access'] = old_stand.access
+    form = StandForm(fake_request.POST)
+    stand = form.save()
+
+    su = StandUser.objects.create(stand=stand,user=request.user,access="admin")
+    for pb in settings.PAGEBLOCKS:
+        sapb = StandAvailablePageBlock.objects.create(stand=stand,block=pb)
+    
     hierarchy = request.get_host()
     section = get_section_from_path('/', hierarchy=hierarchy)
     zip_filename = export_zip(section.hierarchy)
 
     zipfile = ZipFile(zip_filename)
     
-    hierarchy_name = request.POST['new_hierarchy']
+    hierarchy_name = new_hierarchy
     hierarchy = import_zip(zipfile, hierarchy_name)
 
     os.unlink(zip_filename)
 
-    return HttpResponseRedirect(".")
+    if new_hierarchy.endswith(".forest.ccnmtl.columbia.edu"):
+        # if it's a *.forest site, just send them on their way
+        return HttpResponseRedirect("http://%s/_stand/" % new_hierarchy)
+    else:
+        return cloner_created(request, dict(created=True,stand=stand))
+

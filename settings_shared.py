@@ -81,7 +81,7 @@ PAGEBLOCKS = ['pageblocks.TextBlock',
               'pageblocks.ImageBlock',
               'pageblocks.ImagePullQuoteBlock',
               'quizblock.Quiz',
-]
+              ]
 
 import logging
 from sentry.client.handlers import SentryHandler

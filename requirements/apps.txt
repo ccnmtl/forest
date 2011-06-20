@@ -13,4 +13,4 @@ requirements/src/django-sentry-1.5.4.tar.gz
 requirements/src/django-munin-0.1.1.tar.gz
 requirements/src/django-pagetree-0.5.9.tar.gz
 requirements/src/django-pageblocks-0.4.tar.gz
-requirements/src/quizblock-0.2.tar.gz
+requirements/src/django-quizblock-0.2.tar.gz

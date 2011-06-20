@@ -430,10 +430,12 @@ def cloner(request):
     form = StandForm(fake_request.POST)
     stand = form.save()
 
-    su = StandUser.objects.create(stand=stand,user=request.user,access="admin")
-    for pb in settings.PAGEBLOCKS:
-        sapb = StandAvailablePageBlock.objects.create(stand=stand,block=pb)
-    
+    su = StandUser.objects.create(stand=stand, user=request.user, access="admin")
+    for old_sapb in old_stand.standavailablepageblock_set.all():
+        sapb = StandAvailablePageBlock.objects.create(
+            stand=stand, block=old_sapb.block)
+        sapb.save()
+
     hierarchy = request.get_host()
     section = get_section_from_path('/', hierarchy=hierarchy)
     zip_filename = export_zip(section.hierarchy)

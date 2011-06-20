@@ -11,6 +11,8 @@ import simplejson
 from django.conf import settings
 from munin.helpers import muninview
 from pagetree.models import Section
+from pagetree_export.exportimport import export_zip, import_zip
+import os
 
 class rendered_with(object):
     def __init__(self, template_name):
@@ -221,6 +223,19 @@ def add_stand(request):
 
 @login_required
 @stand_admin()
+def delete_stand(request):
+    if request.method == "POST":
+        request.stand.delete()
+        return HttpResponseRedirect("/")
+    else:
+        return HttpResponse("""
+<form action="." method="post">
+Are you sure? <input type="submit" value="YES!" />
+</form>
+""")
+
+@login_required
+@stand_admin()
 def stand_add_user(request):
     if request.method == "POST":
         username = request.POST.get('user','')
@@ -360,9 +375,6 @@ graph_vlabel standusers""")
 def total_standusers(request):
     return [("standusers",StandUser.objects.all().count())]
 
-from pagetree_export.exportimport import export_zip, import_zip
-import os
-
 def exporter(request):
     hierarchy = request.get_host()
     section = get_section_from_path('/', hierarchy=hierarchy)
@@ -438,4 +450,3 @@ def cloner(request):
         return HttpResponseRedirect("http://%s/_stand/" % new_hierarchy)
     else:
         return cloner_created(request, dict(created=True,stand=stand))
-

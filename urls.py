@@ -7,9 +7,9 @@ admin.autodiscover()
 site_media_root = os.path.join(os.path.dirname(__file__),"media")
 
 urlpatterns = patterns('',
-                       (r'^export/','main.views.exporter'),
-                       (r'^import/','main.views.importer'),
-                       (r'^clone/','main.views.cloner'),
+                       (r'^export/$','main.views.exporter'),
+                       (r'^import/$','main.views.importer'),
+                       (r'^clone/$','main.views.cloner'),
 
                        ('^accounts/',include('djangowind.urls')),
                        (r'^admin/(.*)', admin.site.root),
@@ -33,6 +33,7 @@ urlpatterns = patterns('',
                        (r'^_stand/groups/(?P<id>\d+)/delete/$','main.views.delete_stand_group'),
                        (r'^_stand/blocks/$','main.views.manage_blocks'),
                        (r'^_stand/css/$','main.views.css'),
+                       (r'^_stand/delete/$','main.views.delete_stand'),
                        (r'^quiz/',include('quizblock.urls')),
                        (r'^edit/(?P<path>.*)$','forest.main.views.edit_page'),
                        (r'^instructor/(?P<path>.*)$','forest.main.views.instructor_page'),

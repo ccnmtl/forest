@@ -431,10 +431,14 @@ def cloner(request):
     stand = form.save()
 
     su = StandUser.objects.create(stand=stand, user=request.user, access="admin")
+    if request.POST.get('copy_userperms'):
+        for standuser in StandUser.objects.filter(stand=old_stand).exclude(user=request.user):
+            StandUser.objects.create(stand=stand, user=standuser.user, access=standuser.access
+                                     ).save()
+
     for old_sapb in old_stand.standavailablepageblock_set.all():
-        sapb = StandAvailablePageBlock.objects.create(
-            stand=stand, block=old_sapb.block)
-        sapb.save()
+        StandAvailablePageBlock.objects.create(
+            stand=stand, block=old_sapb.block).save()
 
     hierarchy = request.get_host()
     section = get_section_from_path('/', hierarchy=hierarchy)

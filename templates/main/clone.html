@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="POST">
+  <p>
+    Clone to what hostname?
+    <input type="text" name="new_hierarchy" />
+  </p>
+  <p>
+    Copy user permissions?
+    <input type="checkbox" name="copy_userperms" />
+  </p>
+  <input type="submit" value="Clone it!" />
+</form>
+{% endblock %}

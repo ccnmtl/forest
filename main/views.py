@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound, HttpRequest
 from django.shortcuts import render_to_response
 from pagetree.helpers import get_hierarchy, get_section_from_path, get_module, needs_submit, submitted
 from django.template import RequestContext
@@ -11,6 +11,8 @@ import simplejson
 from django.conf import settings
 from munin.helpers import muninview
 from pagetree.models import Section
+from pagetree_export.exportimport import export_zip, import_zip
+import os
 
 class rendered_with(object):
     def __init__(self, template_name):
@@ -372,3 +374,91 @@ def total_sections(request):
 graph_vlabel standusers""")
 def total_standusers(request):
     return [("standusers",StandUser.objects.all().count())]
+
+@login_required
+@stand_admin()
+def exporter(request):
+    hierarchy = request.get_host()
+    section = get_section_from_path('/', hierarchy=hierarchy)
+    zip_filename = export_zip(section.hierarchy)
+
+    with open(zip_filename) as zipfile:
+        resp = HttpResponse(zipfile.read())
+    resp['Content-Disposition'] = "attachment; filename=%s.zip" % section.hierarchy.name
+
+    os.unlink(zip_filename)
+    return resp
+
+from zipfile import ZipFile
+
+@rendered_with("main/import.html")
+@login_required
+@stand_admin()
+def importer(request):
+    if request.method == "GET":
+        return {}
+    file = request.FILES['file']
+    zipfile = ZipFile(file)
+
+    # If we exported the morx.com site, and we are now
+    # visiting http://fleem.com/import/, we don't want
+    # to touch the morx.com hierarchy -- instead we want
+    # to import the bundle to the fleem.com hierarchy.
+    hierarchy_name = request.get_host()
+    hierarchy = import_zip(zipfile, hierarchy_name)
+
+    url = hierarchy.get_absolute_url()
+    url = '/' + url.lstrip('/') # sigh
+    return HttpResponseRedirect(url)
+
+@rendered_with("main/add_stand.html")
+def cloner_created(request, ctx):
+    return ctx
+
+@rendered_with("main/clone.html")
+@login_required
+@stand_admin()
+def cloner(request):
+    if request.method == "GET":
+        return {}
+
+    new_hierarchy = request.POST['new_hierarchy']
+
+    old_stand = get_stand(request.get_host())
+
+    fake_request = HttpRequest()
+    fake_request.method = "POST"
+    fake_request.POST['hostname'] = new_hierarchy    
+    fake_request.POST['title'] = old_stand.title
+    fake_request.POST['css'] = old_stand.css
+    fake_request.POST['description'] = old_stand.description
+    fake_request.POST['access'] = old_stand.access
+    form = StandForm(fake_request.POST)
+    stand = form.save()
+
+    su = StandUser.objects.create(stand=stand, user=request.user, access="admin")
+    if request.POST.get('copy_userperms'):
+        for standuser in StandUser.objects.filter(stand=old_stand).exclude(user=request.user):
+            StandUser.objects.create(stand=stand, user=standuser.user, access=standuser.access
+                                     ).save()
+
+    for old_sapb in old_stand.standavailablepageblock_set.all():
+        StandAvailablePageBlock.objects.create(
+            stand=stand, block=old_sapb.block).save()
+
+    hierarchy = request.get_host()
+    section = get_section_from_path('/', hierarchy=hierarchy)
+    zip_filename = export_zip(section.hierarchy)
+
+    zipfile = ZipFile(zip_filename)
+    
+    hierarchy_name = new_hierarchy
+    hierarchy = import_zip(zipfile, hierarchy_name)
+
+    os.unlink(zip_filename)
+
+    if new_hierarchy.endswith(".forest.ccnmtl.columbia.edu"):
+        # if it's a *.forest site, just send them on their way
+        return HttpResponseRedirect("http://%s/_stand/" % new_hierarchy)
+    else:
+        return cloner_created(request, dict(created=True,stand=stand))

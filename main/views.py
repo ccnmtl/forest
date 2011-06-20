@@ -375,6 +375,8 @@ graph_vlabel standusers""")
 def total_standusers(request):
     return [("standusers",StandUser.objects.all().count())]
 
+@login_required
+@stand_admin()
 def exporter(request):
     hierarchy = request.get_host()
     section = get_section_from_path('/', hierarchy=hierarchy)
@@ -390,6 +392,8 @@ def exporter(request):
 from zipfile import ZipFile
 
 @rendered_with("main/import.html")
+@login_required
+@stand_admin()
 def importer(request):
     if request.method == "GET":
         return {}
@@ -412,6 +416,8 @@ def cloner_created(request, ctx):
     return ctx
 
 @rendered_with("main/clone.html")
+@login_required
+@stand_admin()
 def cloner(request):
     if request.method == "GET":
         return {}

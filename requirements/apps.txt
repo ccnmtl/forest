@@ -11,6 +11,6 @@ requirements/src/django-templatetag-sugar-0.1.tar.gz
 requirements/src/django-paging-0.2.2.tar.gz
 requirements/src/django-sentry-1.5.4.tar.gz
 requirements/src/django-munin-0.1.1.tar.gz
-requirements/src/pagetree-0.5.9.tar.gz
-requirements/src/pageblocks-0.4.tar.gz
+requirements/src/django-pagetree-0.5.9.tar.gz
+requirements/src/django-pageblocks-0.4.tar.gz
 requirements/src/quizblock-0.2.tar.gz

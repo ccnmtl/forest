@@ -73,6 +73,7 @@ INSTALLED_APPS = (
     'pageblocks',
     'main',
     'quizblock',
+    'careermapblock',
 )
 
 PAGEBLOCKS = ['pageblocks.TextBlock',
@@ -81,6 +82,7 @@ PAGEBLOCKS = ['pageblocks.TextBlock',
               'pageblocks.ImageBlock',
               'pageblocks.ImagePullQuoteBlock',
               'quizblock.Quiz',
+              'careermapblock.CareerMap',
               ]
 
 import logging

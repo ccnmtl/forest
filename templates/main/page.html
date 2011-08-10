@@ -1,6 +1,18 @@
 {% extends 'base.html' %}
-
 {% load render %}
+
+{% block js %}
+{% for block in section.pageblock_set.all %}
+{% renderjs block %}
+{% endfor %}
+{% endblock %}
+
+{% block css %}
+{% for block in section.pageblock_set.all %}
+{% rendercss block %}
+{% endfor %}
+{% endblock %}
+
 
 {% block title %}{{section.label}}{% endblock %}
 

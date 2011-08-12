@@ -8,7 +8,7 @@
 
 <script type="text/javascript">
 var saveOrderOfChildren = function() {
-    var url = "/pagetree/reorder_section_children/{{section.id}}/?";
+    var url = "{% url reorder-section-children section.id %}?";
     var worktodo = 0;
     jQuery("#children-order-list li").each(function(index,element) {
        worktodo = 1;
@@ -23,7 +23,7 @@ var saveOrderOfChildren = function() {
 };
 
 var saveOrderOfPageBlocks = function() {
-    var url = "/pagetree/reorder_pageblocks/{{section.id}}/?";
+    var url = "{% url reorder-pageblocks section.id %}?";
     var worktodo = 0;
     jQuery("#edit-blocks-tab div").each(function(index,element) {
       worktodo = 1;

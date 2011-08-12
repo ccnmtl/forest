@@ -92,32 +92,9 @@ def page(request,path):
     if request.method == "POST":
         # user has submitted a form. deal with it
         if request.POST.get('action','') == 'reset':
-            # it's a reset request
-            for p in section.pageblock_set.all():
-                if hasattr(p.block(),'needs_submit'):
-                    if p.block().needs_submit():
-                        p.block().clear_user_submissions(request.user)
+            section.reset(request.user)
             return HttpResponseRedirect(section.get_absolute_url())
-        proceed = True
-        for p in section.pageblock_set.all():
-            if hasattr(p.block(),'needs_submit'):
-                if p.block().needs_submit():
-                    prefix = "pageblock-%d-" % p.id
-                    data = dict()
-                    for k in request.POST.keys():
-                        if k.startswith(prefix):
-                            # handle lists for multi-selects
-                            v = request.POST.getlist(k)
-                            if len(v) == 1:
-                                data[k[len(prefix):]] = request.POST[k]
-                            else:
-                                data[k[len(prefix):]] = v
-                    p.block().submit(request.user,data)
-                    if hasattr(p.block(),'redirect_to_self_on_submit'):
-                        # semi bug here?
-                        # proceed will only be set by the last submittable
-                        # block on the page. previous ones get ignored.
-                        proceed = not p.block().redirect_to_self_on_submit()
+        proceed = section.submit(request.POST,request.user)
         if proceed:
             return HttpResponseRedirect(section.get_next().get_absolute_url())
         else:

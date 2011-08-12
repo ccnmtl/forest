@@ -12,6 +12,8 @@ from django.conf import settings
 from munin.helpers import muninview
 from pagetree.models import Section
 from pagetree_export.exportimport import export_zip, import_zip
+from pageblocks.exportimport import *
+from quizblock.exportimport import *
 import os
 
 class rendered_with(object):

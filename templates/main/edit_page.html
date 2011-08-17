@@ -100,9 +100,23 @@ var saveOrderOfPageBlocks = function() {
 {% for block in section.pageblock_set.all %}
 <div class="block-edit draggable" id="pageblock-{{block.id}}">
 <table width="100%" border="0"><tr><td><span title="drag to reorder pageblocks" class="draghandle ui-icon ui-icon-arrowthick-2-n-s"></span></td>
-<td align="right"><form action="{% url delete-pageblock block.id %}" method="post">
+<td align="right">
+<form action="{% url delete-pageblock block.id %}" method="post">
 <input type="submit" value="delete block {{block.ordinality}}" />
-</form></td></tr></table>
+</form></td></tr>
+<tr>
+<td>
+{% if block.block.exportable %}
+<a href="{% url export-pageblock-json block.id %}">export json</a>
+{% endif %}
+</td>
+<td>
+{% if block.block.importable %}
+<a href="{% url import-pageblock-json block.id %}">import json</a>
+{% endif %}
+</td>
+</tr>
+</table>
 <form action="{% url edit-pageblock block.id %}" method="post"
 {% if block.edit_form.is_multipart %}enctype="multipart/form-data"{% endif %}>
 <table width="100%">
@@ -186,11 +200,11 @@ method="post">
 {% block content-nav %}
 
 {% if section.get_previous %}
-<a href="/edit{{section.get_previous.get_absolute_url}}" id="previous">« {{section.get_previous.label}}</a>
+<a href="{% url edit-page section.get_previous.get_path %}" id="previous">« {{section.get_previous.label}}</a>
 {% endif %}
 
 {% if section.get_next %}
-<a href="/edit{{section.get_next.get_absolute_url}}" id="next">{{section.get_next.label}} »</a>
+<a href="{% url edit-page section.get_next.get_path %}" id="next">{{section.get_next.label}} »</a>
 {% endif %}
 
 <script type="text/javascript">

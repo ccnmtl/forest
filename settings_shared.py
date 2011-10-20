@@ -18,6 +18,7 @@ DATABASE_PORT = ''             # Set to empty string for default. Not used with 
 
 if 'test' in sys.argv:
     DATABASE_ENGINE = 'sqlite3'
+SOUTH_TESTS_MIGRATE = False
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 
@@ -77,6 +78,7 @@ INSTALLED_APPS = (
     'quizblock',
     'careermapblock',
     'fridgeblock',
+    'south',
     'django_nose',
 )
 

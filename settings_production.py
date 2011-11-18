@@ -10,6 +10,15 @@ STATICMEDIA_MOUNTS = (
     ('/sitemedia', '/var/www/forest/forest/sitemedia'),	
 )
 
+import logging
+from sentry.client.handlers import SentryHandler
+logger = logging.getLogger()
+if SentryHandler not in map(lambda x: x.__class__, logger.handlers):
+    logger.addHandler(SentryHandler())
+    logger = logging.getLogger('sentry.errors')
+    logger.propagate = False
+    logger.addHandler(logging.StreamHandler())
+
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG

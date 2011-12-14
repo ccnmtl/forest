@@ -24,6 +24,10 @@ ret = subprocess.call([os.path.join(vedir, 'bin', 'pip'), "install",
                        "--requirement",os.path.join(pwd,"requirements/apps.txt")])
 if ret: exit(ret)
 
+ret = subprocess.call(["python","virtualenv.py","--relocatable",vedir])
+# --relocatable always complains about activate.csh, which we don't really
+# care about. but it means we need to ignore its error messages
+
 def has_eggs():
     return ".egg" in [os.path.splitext(f)[1] 
                       for f 

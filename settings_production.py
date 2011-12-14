@@ -10,6 +10,8 @@ STATICMEDIA_MOUNTS = (
     ('/sitemedia', '/var/www/forest/forest/sitemedia'),	
 )
 
+COMPRESS_ROOT = "/var/www/forest/forest/media/"
+
 import logging
 from sentry.client.handlers import SentryHandler
 logger = logging.getLogger()

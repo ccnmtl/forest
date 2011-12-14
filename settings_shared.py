@@ -111,6 +111,7 @@ STATICMEDIA_MOUNTS = (
 
 COMPRESS_URL = "/site_media/"
 COMPRESS_ROOT = "media/"
+COMPRESS_PARSER = "compressor.parser.HtmlParser"
 
 # WIND settings
 

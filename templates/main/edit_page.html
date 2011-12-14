@@ -1,11 +1,31 @@
 {% extends "base.html" %}
+{% load compress %}
 {% block title %}{{section.label}} (edit){% endblock %}
 {% block js %}
+
+
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.3/themes/base/jquery-ui.css" type="text/css" media="all" /> 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
-        type="text/javascript" ></script>
+
+{% compress css %}
+<style type="text/css">
+	#edit-blocks-tab .draggable { background-color: #ddd; }
+	.draghandle {float: left;}
+	#children-order-list {list-style-type: none; margin: 0; padding: 0;}
+	#children li { margin: 0 3px 3px 3px; padding: 0.4em;
+	padding-left: 1.5em; 
+          background-color: #ddd;
+	}
+	#children li span { position: absolute; margin-left: -1.3em; }
+	.dragging {border: #f60 solid 1px;}
+	</style>
+{% endcompress %}
+
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript" ></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.3/jquery-ui.min.js" type="text/javascript"></script>
 
+{% compress js %}
 <script type="text/javascript">
 var saveOrderOfChildren = function() {
     var url = "{% url reorder-section-children section.id %}?";
@@ -40,18 +60,7 @@ var saveOrderOfPageBlocks = function() {
 }
 
 </script>
-
-<style type="text/css">
-	#edit-blocks-tab .draggable { background-color: #ddd; }
-	.draghandle {float: left;}
-	#children-order-list {list-style-type: none; margin: 0; padding: 0;}
-	#children li { margin: 0 3px 3px 3px; padding: 0.4em;
-	padding-left: 1.5em; 
-          background-color: #ddd;
-	}
-	#children li span { position: absolute; margin-left: -1.3em; }
-	.dragging {border: #f60 solid 1px;}
-	</style>
+{% endcompress %}
 {% endblock %}
 
 {% block primarynavtabs %}

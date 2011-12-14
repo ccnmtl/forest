@@ -80,6 +80,7 @@ INSTALLED_APPS = (
     'fridgeblock',
     'south',
     'django_nose',
+    'compressor',
 )
 
 PAGEBLOCKS = ['pageblocks.TextBlock',
@@ -107,6 +108,9 @@ SERVER_EMAIL = "forest@ccnmtl.columbia.edu"
 STATICMEDIA_MOUNTS = (
     ('/sitemedia', 'sitemedia'),
 )
+
+COMPRESS_URL = "/site_media/"
+COMPRESS_ROOT = "media/"
 
 # WIND settings
 

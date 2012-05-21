@@ -12,7 +12,7 @@ urlpatterns = patterns('',
                        (r'^clone/$','main.views.cloner'),
 
                        ('^accounts/',include('djangowind.urls')),
-                       (r'^admin/(.*)', admin.site.root),
+                       (r'^admin/', include(admin.site.urls)),
                        (r'^munin/total_stands/','main.views.total_stands'),
                        (r'^munin/total_sections/','main.views.total_sections'),
                        (r'^munin/total_standusers/','main.views.total_standusers'),

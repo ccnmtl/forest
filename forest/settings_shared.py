@@ -75,7 +75,7 @@ INSTALLED_APPS = (
     'smartif',
     'template_utils',
     'typogrify',
-    'sentry.client',
+#    'sentry.client',
     'munin',
     'pagetree',
     'pageblocks',

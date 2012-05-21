@@ -1,7 +1,7 @@
 from settings_shared import *
 
 TEMPLATE_DIRS = (
-    "/var/www/forest/forest/templates",
+    "/var/www/forest/forest/forest/templates",
 )
 
 MEDIA_ROOT = '/var/www/forest/uploads/'
@@ -12,14 +12,14 @@ STATICMEDIA_MOUNTS = (
 
 COMPRESS_ROOT = "/var/www/forest/forest/media/"
 
-import logging
-from sentry.client.handlers import SentryHandler
-logger = logging.getLogger()
-if SentryHandler not in map(lambda x: x.__class__, logger.handlers):
-    logger.addHandler(SentryHandler())
-    logger = logging.getLogger('sentry.errors')
-    logger.propagate = False
-    logger.addHandler(logging.StreamHandler())
+#import logging
+#from sentry.client.handlers import SentryHandler
+#logger = logging.getLogger()
+#if SentryHandler not in map(lambda x: x.__class__, logger.handlers):
+#    logger.addHandler(SentryHandler())
+#    logger = logging.getLogger('sentry.errors')
+#    logger.propagate = False
+#    logger.addHandler(logging.StreamHandler())
 
 
 DEBUG = False

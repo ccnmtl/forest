@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Manage Blocks{% endblock %}
+{% block content %}
+<form action="." method="post">
+
+<table>
+{% for block in all_blocks %}
+<tr><td><input type="checkbox" name="{{block.name}}"
+{% if block.enabled %}
+checked="checked"
+{% endif %} /></td><td>{{block.name}}</td></tr>
+{% endfor %}
+</table>
+
+<input type="submit" value="save" />
+</form>
+
+<a href="/">Visit site</a>
+
+{% endblock %}

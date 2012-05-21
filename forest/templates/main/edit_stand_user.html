@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Edit User{% endblock %}
+{% block content %}
+{% if standuser.user.first_name %}
+{{standuser.user.last_name}}, {{standuser.user.first_name}} 
+({{standuser.user.username}})
+{% else %}
+{{standuser.user.username}}
+{% endif %}
+
+<form action="." method="post">
+<b>Access Level:</b><br />
+<select name="access">
+<option value="student"{% ifequal standuser.access 'student' %}
+	selected="selected"{% endifequal %}>student</option>
+<option value="instructor"{% ifequal standuser.access 'instructor' %}
+	selected="selected"{% endifequal %}>instructor</option>
+<option value="admin"{% ifequal standuser.access 'admin' %}
+	selected="selected"{% endifequal %}>admin</option>
+</select>
+<input type="submit" value="save"/>
+</form>
+
+<form action="delete/" method="post">
+<input type="submit" value="delete" />
+</form>
+{% endblock %}

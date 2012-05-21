@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Users{% endblock %}
+{% block content %}
+<form action="add/" method="post">
+<fieldset><legend>add user</legend>
+<table>
+<tr>
+<td>
+<b>Select existing user</b><br />
+<select name="user">
+<option value="" selected="selected">Select existing user</option>
+<option value="">or Add by UNI</option>
+{% for u in all_users %}
+<option value="{{u.username}}">{{u.last_name}}, {{u.first_name}} ({{u.username}})</option>
+{% endfor %}
+</select></td>
+<td>
+<b>or enter UNI</b><br />
+<input type="text" size="5" name="uni" />
+<td>
+<b>access level</b><br />
+<select name="access">
+<option value="student">student</option>
+<option value="instructor">instructor</option>
+<option value="admin">admin</option>
+</select></td>
+<td>
+<input type="submit" value="add" />
+</td></tr>
+</table>
+</fieldset>
+</form>
+
+
+<table>
+{% for standuser in stand.standuser_set.all %}
+<tr class="{% cycle 'even' 'odd' %}">
+<th>
+<a href="{{standuser.id}}/">{% if standuser.user.first_name %}
+{{standuser.user.last_name}}, {{standuser.user.first_name}} 
+({{standuser.user.username}})
+{% else %}
+{{standuser.user.username}}
+{% endif %}</a>
+</th>
+<td>{{standuser.access}}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

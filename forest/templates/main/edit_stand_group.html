@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Edit Group{% endblock %}
+{% block content %}
+
+{{standgroup.group.name}}
+
+<form action="." method="post">
+<b>Access Level:</b><br />
+<select name="access">
+<option value="student"{% ifequal standgroup.access 'student' %}
+	selected="selected"{% endifequal %}>student</option>
+<option value="instructor"{% ifequal standgroup.access 'instructor' %}
+	selected="selected"{% endifequal %}>instructor</option>
+<option value="admin"{% ifequal standgroup.access 'admin' %}
+	selected="selected"{% endifequal %}>admin</option>
+</select>
+<input type="submit" value="save"/>
+</form>
+
+<form action="delete/" method="post">
+<input type="submit" value="delete" />
+</form>
+{% endblock %}

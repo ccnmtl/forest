@@ -135,7 +135,7 @@ SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_HTTPONLY = True
 
 STATSD_CLIENT = 'statsd.client'
-STATSD_PREFIX = 'ccdb'
+STATSD_PREFIX = 'forest'
 STATSD_HOST = 'localhost'
 STATSD_PORT = 8125
 STATSD_PATCHES = ['django_statsd.patches.db', ]

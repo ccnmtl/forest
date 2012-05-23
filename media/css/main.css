@@ -1,8 +1,6 @@
 header#masthead
 {
 	 height: 150px;
-	 width: 100%;
-	 background-color: green;
 	 background: url('../img/bg_header.jpg') left top no-repeat;
 }
 

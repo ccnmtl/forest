@@ -48,7 +48,7 @@
 
 <p class="navbar-text pull-right">  
 {% if request.user.is_anonymous %}
-<a href="/accounts/login/?next=/">login</a>
+<a href="/accounts/login/?next=/" class="btn btn-success">login</a>
 {% else %}
 logged in as {{request.user.first_name}} {{request.user.last_name}}
 <a href="/logout/" class="btn btn-inverse">logout</a>

@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
+{% load bootstrap %}
 {% block title %}Users{% endblock %}
 {% block content %}
-<form action="add/" method="post">
-<fieldset><legend>add user</legend>
+<h1>Users</h1>
+<h2>Add User</h2>
+<form action="add/" method="post" class="well form-inline">
 <table>
 <tr>
 <td>
@@ -25,14 +27,22 @@
 <option value="admin">admin</option>
 </select></td>
 <td>
-<input type="submit" value="add" />
+<input type="submit" value="add" class="btn btn-primary" />
 </td></tr>
 </table>
-</fieldset>
 </form>
 
 
-<table>
+{% if stand.standuser_set.count %}
+<h2>Existing Users</h2>
+<table class="table-striped table-bordered">
+	<thead>
+		<tr>
+			<th>User</th>
+			<th>Access Level</th>
+		</tr>
+	</thead>
+	<tbody>
 {% for standuser in stand.standuser_set.all %}
 <tr class="{% cycle 'even' 'odd' %}">
 <th>
@@ -46,5 +56,7 @@
 <td>{{standuser.access}}</td>
 </tr>
 {% endfor %}
+</tbody>
 </table>
+{% endif %}
 {% endblock %}

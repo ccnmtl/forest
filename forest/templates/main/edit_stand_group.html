@@ -2,10 +2,11 @@
 {% block title %}Edit Group{% endblock %}
 {% block content %}
 
-{{standgroup.group.name}}
+<h1>Group: {{standgroup.group.name}}</h1>
 
-<form action="." method="post">
-<b>Access Level:</b><br />
+<form action="." method="post" class="well form-inline">
+
+<label>Access Level:
 <select name="access">
 <option value="student"{% ifequal standgroup.access 'student' %}
 	selected="selected"{% endifequal %}>student</option>
@@ -14,10 +15,12 @@
 <option value="admin"{% ifequal standgroup.access 'admin' %}
 	selected="selected"{% endifequal %}>admin</option>
 </select>
-<input type="submit" value="save"/>
+</label>
+
+<input type="submit" value="save" class="btn btn-primary"/>
 </form>
 
-<form action="delete/" method="post">
-<input type="submit" value="delete" />
+<form action="delete/" method="post" class="well">
+<input type="submit" value="delete" class="btn btn-danger"/>
 </form>
 {% endblock %}

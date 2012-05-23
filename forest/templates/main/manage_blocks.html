@@ -1,20 +1,25 @@
 {% extends 'base.html' %}
+
 {% block title %}Manage Blocks{% endblock %}
 {% block content %}
-<form action="." method="post">
+<form action="." method="post" class="well">
+<fieldset>
+    <legend>Manage PageBlock Availability</legend>
 
-<table>
 {% for block in all_blocks %}
-<tr><td><input type="checkbox" name="{{block.name}}"
-{% if block.enabled %}
-checked="checked"
-{% endif %} /></td><td>{{block.name}}</td></tr>
+<div class="control-group">
+      
+        <label class="checkbox"><input type="checkbox" class="input-xlarge" 
+							 name="{{block.name}}"
+							 {% if block.enabled %}checked{% endif %}
+							 >
+				{{block.name}}</label>
+    </div>
+
 {% endfor %}
-</table>
 
-<input type="submit" value="save" />
+
+<input type="submit" value="save" class="btn btn-primary" />
+</fieldset>
 </form>
-
-<a href="/">Visit site</a>
-
 {% endblock %}

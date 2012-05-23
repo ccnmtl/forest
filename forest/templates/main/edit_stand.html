@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
+{% load bootstrap %}
 {% block title %}Edit Stand{% endblock %}
 {% block content %}
-<form action="." method="post">
-<table>
-{{form.as_table}}
-</table>
-<input type="submit" value="save" />
+<form action="." method="post" class="well form-horizontal">
+
+<h1>Edit Stand</h1>
+
+
+{{form|bootstrap}}
+
+<input type="submit" value="save" class="btn btn-primary" />
+
 </form>
 <p><a href="users/">Manage users</a></p>
 <p><a href="groups/">Manage groups</a></p>
@@ -18,6 +23,13 @@
 <li>track user progress (and admin/instructor view)</li>
 </ul>
 
-<p><a href="delete/">Delete this Stand</a></p>
+<p><a href="delete/" class="btn btn-danger" >Delete this Stand</a></p>
+
+<br />
+<br />
 
 {% endblock %}
+
+			{% block navrightextra %}
+<li><a href="/" class="btn-success">View Site</a></li>
+			{% endblock %}

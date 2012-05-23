@@ -89,6 +89,7 @@ INSTALLED_APPS = (
     'django_nose',
     'compressor',
     'django_statsd',
+    'bootstrapform',
 )
 
 PAGEBLOCKS = ['pageblocks.TextBlock',

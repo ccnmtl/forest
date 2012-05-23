@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% block title %}Groups{% endblock %}
 {% block content %}
-<form action="add/" method="post">
-<fieldset><legend>add group</legend>
+<h1>Groups</h1>
+<h2>Add Group</h2>
+<form action="add/" method="post" class="well" >
 <table>
 <tr>
 <td>
@@ -21,21 +22,31 @@
 <option value="admin">admin</option>
 </select></td>
 <td>
-<input type="submit" value="add" />
+<input type="submit" value="add" class="btn btn-primary" />
 </td></tr>
 </table>
-</fieldset>
 </form>
 
-
-<table>
+{% if stand.standgroup_set.count %}
+<h2>Existing Groups</h2>
+<table class="table-striped table-bordered">
+	<thead>
+		<tr>
+			<th>group</th>
+			<th>access level</th>
+		</tr>
+	</thead>
+	<tbody>
 {% for standgroup in stand.standgroup_set.all %}
-<tr class="{% cycle 'even' 'odd' %}">
+<tr>
 <th>
 <a href="{{standgroup.id}}/">{{standgroup.group.name}}</a>
 </th>
 <td>{{standgroup.access}}</td>
 </tr>
 {% endfor %}
+</tbody>
 </table>
+{% endif %}
+
 {% endblock %}

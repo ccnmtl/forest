@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
 {% block title %}Edit User{% endblock %}
 {% block content %}
+<h1>User: 
 {% if standuser.user.first_name %}
 {{standuser.user.last_name}}, {{standuser.user.first_name}} 
 ({{standuser.user.username}})
 {% else %}
 {{standuser.user.username}}
-{% endif %}
+{% endif %}</h1>
 
-<form action="." method="post">
-<b>Access Level:</b><br />
+<form action="." method="post" class="well form-inline">
+<label>Access Level:
 <select name="access">
 <option value="student"{% ifequal standuser.access 'student' %}
 	selected="selected"{% endifequal %}>student</option>
@@ -17,11 +18,12 @@
 	selected="selected"{% endifequal %}>instructor</option>
 <option value="admin"{% ifequal standuser.access 'admin' %}
 	selected="selected"{% endifequal %}>admin</option>
-</select>
-<input type="submit" value="save"/>
+</select></label>
+<input type="submit" value="save" class="btn btn-primary" />
 </form>
 
-<form action="delete/" method="post">
-<input type="submit" value="delete" />
+
+<form action="delete/" method="post" class="well">
+<input type="submit" value="delete" class="btn btn-danger" />
 </form>
 {% endblock %}

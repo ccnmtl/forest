@@ -18,20 +18,14 @@
 
 {% block sidenav %}
         <!-- ###### Secondary Navigation ###### -->
-        <div id="secondary_navigation">
-                <div id="fadetop"></div>
-                <div class="block">
-                  {% if module.get_children %}
-                        <h3>Sections</h3>
-                        {% include "main/menu.html" %}
-                  {% endif %}
-                </div><!-- div id="block" -->
-                <div id="fadebottom"></div>
-        </div><!-- div id="secondary_navigation" -->
+        {% if module.get_children %}
+        <h3>Sections</h3>
+        {% include "main/menu.html" %}
+        {% endif %}
 {% endblock %}
 
 {% block content %}
-
+<div id="content">
 {% if needs_submit %}
 {% if is_submitted %}
 {% else %}
@@ -53,30 +47,30 @@
 {% if is_submitted %}
 <form action="." method="post">
 <input type="hidden" name="action" value="reset" />
-<input type="submit" value="clear your answers and try again" />
+<input type="submit" value="clear your answers and try again" class="btn" />
 </form>
 {% else %}
-<input type="submit" value="Submit" />
+<input type="submit" value="Submit" class="btn btn-primary" />
 
 </form>
 {% endif %}
 {% endif %}
 {% endif %}
-
+</div>
 {% endblock %}
 
 {% block content-nav %}
-
-<div class="content-nav">
-
+<ul class="pager">
 {% if section.get_previous %}
-<a href="{{section.get_previous.get_absolute_url}}" id="previous">« {{section.get_previous.label}}</a>
+  <li class="previous">
+		<a href="{{section.get_previous.get_absolute_url}}">&larr; {{section.get_previous.label}}</a>
+  </li>
 {% endif %}
 
 {% if section.get_next %}
 {% with section.get_next as next_section %}
-<a href="{{section.get_next.get_absolute_url}}" id="next">{{section.get_next.label}} »</a>
+<li class="next"><a href="{{section.get_next.get_absolute_url}}">{{section.get_next.label}} &rarr;</a></li>
 {% endwith %}
 {% endif %}
-</div><!-- div id="content-nav" -->
+</ul>
 {% endblock %}

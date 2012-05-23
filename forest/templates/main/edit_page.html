@@ -42,7 +42,7 @@ var saveOrderOfChildren = function() {
 var saveOrderOfPageBlocks = function() {
     var url = "{% url reorder-pageblocks section.id %}?";
     var worktodo = 0;
-    $("#edit-blocks-tab div").each(function(index,element) {
+    $("#edit-blocks-tab>div").each(function(index,element) {
       worktodo = 1;
       var id = $(element).attr('id').split("-")[1];
       url += "pageblock_id_" + index + "=" + id + ";";
@@ -79,7 +79,7 @@ $(function() {
     ,stop: function (event,ui) { saveOrderOfPageBlocks();}
   });
 
-//  $("#edit-blocks-tab").disableSelect();
+  $("#edit-blocks-tab").disableSelect();
 });
 </script>
 

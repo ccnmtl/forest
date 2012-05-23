@@ -64,7 +64,7 @@ logged in as {{request.user.first_name}} {{request.user.last_name}}
 
 <div class="container">
 {% block masthead %}
-<header class="jumbotron subhead" id="masthead">
+<header class="subhead hidden-phone" id="masthead">
   <h1><a href="./" title="{{stand.title}}">{{stand.title}}</a></h1>
 	<h4 id="logo_ccnmtl"><a href="http://ccnmtl.columbia.edu" target="_blank" title="Columbia Center for New Media Teaching and Learning"><span>Produced by the Columbia Center for New Media Teaching and Learning</span></a></h4>
 </header>
@@ -110,7 +110,7 @@ logged in as {{request.user.first_name}} {{request.user.last_name}}
 
 <div class="container-fluid">
 	<div class="row-fluid">
-    <div class="span2">
+    <div class="span2 hidden-phone">
 			{% block sidenav %}{% endblock %}      
     </div>
     <div class="span10">
@@ -130,7 +130,7 @@ logged in as {{request.user.first_name}} {{request.user.last_name}}
 
 {% block footer %}
 	<!-- ###### Footer ###### -->
-	<footer class="footer navbar-fixed-bottom">
+	<footer class="footer navbar-fixed-bottom hidden-phone">
 	<img src="/site_media/img/logo_ccnmtl_sidebar.gif" class="printonly pull-right" />
 	</footer>
 {% endblock %}

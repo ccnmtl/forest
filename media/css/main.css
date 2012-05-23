@@ -12,12 +12,21 @@ header h4 {
 		display: none;
 }
 
+html {
+		height: 100%;
+}
 body {
 background-color: #eee;
+height: 100%;
 }
 
 body > .container {
 background-color: #fff;
+min-height: 100%;
+}
+
+#content {
+min-height: 100%;
 }
 
 a { color: green; }

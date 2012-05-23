@@ -16,6 +16,8 @@
 
 {% block title %}{{section.label}}{% endblock %}
 
+{% block pagetitle %}<h1>{{section.label}}</h1>{% endblock %}
+
 {% block sidenav %}
         <!-- ###### Secondary Navigation ###### -->
         {% if module.get_children %}

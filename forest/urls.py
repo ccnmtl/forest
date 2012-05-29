@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
 from django.contrib import admin
 from django.conf import settings
+from django.views.generic.simple import direct_to_template
 import os.path
 admin.autodiscover()
 
@@ -37,6 +38,7 @@ urlpatterns = patterns('',
                        (r'^_quiz/',include('quizblock.urls')),
                        (r'^_careermap/',include('careermapblock.urls')),
                        (r'^_fridge/',include('fridgeblock.urls')),
+                       (r'^_stats/',direct_to_template, {'template': 'main/stats.html'}),
                        (r'^edit/(?P<path>.*)$','forest.main.views.edit_page',{},'edit-page'),
                        (r'^instructor/(?P<path>.*)$','forest.main.views.instructor_page'),
                        (r'^(?P<path>.*)$','forest.main.views.page'),

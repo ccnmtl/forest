@@ -48,6 +48,11 @@ class Stand(models.Model):
             su = r[0]
             if su.access in ["admin", "faculty", "ta"]:
                 return True
+        if self.in_edit_group(user):
+            return True
+        return False
+
+    def in_edit_group(self, user):
         allowed_groups = []
         for g in StandGroup.objects.filter(stand=self):
             if g.access in ["admin", "faculty", "ta"]:
@@ -70,14 +75,22 @@ class Stand(models.Model):
         r = StandUser.objects.filter(stand=self, user=user)
         if r.count() > 0:
             return True
+        if self.user_group_can_x(user, "view"):
+            return True
+
+        return False
+
+    def user_group_can_x(self, user, permission):
+        """check if the user is in a group that has access"""
+
         allowed_groups = []
         for g in StandGroup.objects.filter(stand=self):
-            allowed_groups.append(g.group.name)
+            if permission == "view" or g.access == permission:
+                allowed_groups.append(g.group.name)
         for g in user.groups.all():
             if g.name in allowed_groups:
                 # bail as soon as we find a group affil that's allowed
                 return True
-
         return False
 
     def can_admin(self, user):
@@ -92,15 +105,8 @@ class Stand(models.Model):
             su = r[0]
             if su.access == "admin":
                 return True
-        allowed_groups = []
-        for g in StandGroup.objects.filter(stand=self):
-            if g.access == "admin":
-                allowed_groups.append(g.group.name)
-        for g in user.groups.all():
-            if g.name in allowed_groups:
-                # bail as soon as we find a group affil that's allowed
-                return True
-
+        if self.user_group_can_x(user, "admin"):
+            return True
         return False
 
     def available_pageblocks(self):

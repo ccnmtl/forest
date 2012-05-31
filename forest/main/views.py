@@ -1,10 +1,9 @@
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound, HttpRequest
-from django.shortcuts import render_to_response
+from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
 from pagetree.helpers import get_hierarchy, get_section_from_path
 from pagetree.helpers import get_module, needs_submit, submitted
-from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from models import *
+from models import get_stand, Stand, StandUser, User, Group, StandGroup
+from models import StandAvailablePageBlock
 from forms import StandForm
 from restclient import GET
 import httplib2
@@ -12,8 +11,6 @@ import simplejson
 from munin.helpers import muninview
 from pagetree.models import Section
 from pagetree_export.exportimport import export_zip, import_zip
-from pageblocks.exportimport import *
-from quizblock.exportimport import *
 import os
 from annoying.decorators import render_to
 
@@ -116,7 +113,6 @@ def instructor_page(request, path):
     h = get_hierarchy(request.get_host())
     section = get_section_from_path(path, hierarchy=h)
     root = section.hierarchy.get_root()
-    module = get_module(section)
 
     quizzes = [p.block() for p in section.pageblock_set.all()
                if hasattr(p.block(), 'needs_submit')
@@ -138,7 +134,6 @@ def edit_page(request, path):
         return HttpResponse("you do not have admin permission")
     can_admin = request.stand.can_admin(request.user)
     root = section.hierarchy.get_root()
-    module = get_module(section)
 
     return dict(section=section,
                 module=get_module(section),
@@ -198,13 +193,13 @@ def add_stand(request):
             su = StandUser.objects.create(stand=stand, user=request.user,
                                           access="admin")
             for pb in settings.PAGEBLOCKS:
-                sapb = StandAvailablePageBlock.objects.create(stand=stand,
-                                                              block=pb)
+                StandAvailablePageBlock.objects.create(stand=stand,
+                                                       block=pb)
             if hostname.endswith(".forest.ccnmtl.columbia.edu"):
                 # if it's a *.forest site, just send them on their way
                 return HttpResponseRedirect("http://%s/_stand/" % hostname)
             else:
-                return dict(created=True, stand=stand)
+                return dict(created=True, stand=stand, su=su)
     return dict(form=form)
 
 
@@ -256,8 +251,8 @@ def stand_add_user(request):
             # probably want
             return HttpResponseRedirect("/_stand/users/%d/" % r[0].id)
         access = request.POST.get('access')
-        su = StandUser.objects.create(stand=request.stand, user=u,
-                                      access=access)
+        StandUser.objects.create(stand=request.stand, user=u,
+                                 access=access)
     return HttpResponseRedirect("/_stand/users/")
 
 
@@ -304,8 +299,8 @@ def stand_add_group(request):
             # so they can just edit the access level, which is what they
             # probably want
             return HttpResponseRedirect("/_stand/groups/%d/" % r[0].id)
-        sg = StandGroup.objects.create(stand=request.stand,
-                                       group=group, access=access)
+        StandGroup.objects.create(stand=request.stand,
+                                  group=group, access=access)
     return HttpResponseRedirect("/_stand/groups/")
 
 
@@ -348,7 +343,8 @@ def manage_blocks(request):
                                                        block=block)
             if enabled:
                 if r.count() == 0:
-                    sapb = StandAvailablePageBlock.objects.create(stand=request.stand, block=block)
+                    StandAvailablePageBlock.objects.create(stand=request.stand,
+                                                           block=block)
                 # otherwise, it already exists
             else:
                 if r.count() > 0:
@@ -446,10 +442,11 @@ def cloner(request):
     form = StandForm(fake_request.POST)
     stand = form.save()
 
-    su = StandUser.objects.create(stand=stand, user=request.user,
-                                  access="admin")
+    StandUser.objects.create(stand=stand, user=request.user,
+                             access="admin")
     if request.POST.get('copy_userperms'):
-        for standuser in StandUser.objects.filter(stand=old_stand).exclude(user=request.user):
+        q = StandUser.objects.filter(stand=old_stand)
+        for standuser in q.exclude(user=request.user):
             StandUser.objects.create(stand=stand, user=standuser.user,
                                      access=standuser.access).save()
 

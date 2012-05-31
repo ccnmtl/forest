@@ -5,18 +5,18 @@ import sys
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = ( )
+ADMINS = ()
 
 MANAGERS = ADMINS
 
 DATABASES = {
-    'default' : {
-        'ENGINE' : 'django.db.backends.postgresql_psycopg2',
-        'NAME' : 'forest',
-        'HOST' : '',
-        'PORT' : 5432,
-        'USER' : '',
-        'PASSWORD' : '',
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'forest',
+        'HOST': '',
+        'PORT': 5432,
+        'USER': '',
+        'PASSWORD': '',
         }
 }
 
@@ -60,7 +60,7 @@ ROOT_URLCONF = 'forest.urls'
 
 TEMPLATE_DIRS = (
     "/var/www/forest/templates/",
-    os.path.join(os.path.dirname(__file__),"/templates"),
+    os.path.join(os.path.dirname(__file__), "/templates"),
 )
 
 INSTALLED_APPS = (
@@ -124,13 +124,18 @@ COMPRESS_PARSER = "compressor.parser.HtmlParser"
 
 # WIND settings
 
-AUTHENTICATION_BACKENDS = ('djangowind.auth.WindAuthBackend','django.contrib.auth.backends.ModelBackend',)
+AUTHENTICATION_BACKENDS = ('djangowind.auth.WindAuthBackend',
+                           'django.contrib.auth.backends.ModelBackend',)
 WIND_BASE = "https://wind.columbia.edu/"
 WIND_SERVICE = "cnmtl_full_np"
 WIND_PROFILE_HANDLERS = ['djangowind.auth.CDAPProfileHandler']
-WIND_AFFIL_HANDLERS = ['djangowind.auth.AffilGroupMapper','djangowind.auth.StaffMapper','djangowind.auth.SuperuserMapper']
+WIND_AFFIL_HANDLERS = ['djangowind.auth.AffilGroupMapper',
+                       'djangowind.auth.StaffMapper',
+                       'djangowind.auth.SuperuserMapper']
 WIND_STAFF_MAPPER_GROUPS = ['tlc.cunix.local:columbia.edu']
-WIND_SUPERUSER_MAPPER_GROUPS = ['anp8','jb2410','zm4','sbd12','egr2107','kmh2124','sld2131','amm8','mar227','ed2198', 'ej2223']
+WIND_SUPERUSER_MAPPER_GROUPS = ['anp8', 'jb2410', 'zm4', 'sbd12', 'egr2107',
+                                'kmh2124', 'sld2131', 'amm8', 'mar227',
+                                'ed2198', 'ej2223']
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_HTTPONLY = True

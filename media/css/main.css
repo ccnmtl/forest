@@ -63,3 +63,10 @@ color: #fbf523;
 .form-inline .controls input[type="text"] {
 		width: 60%;
 }
+
+.big-modal {
+   width: 940px;
+   margin-left:-470px;  
+	 max-height: 600px;
+	 margin-top: -300px;
+}

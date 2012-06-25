@@ -8,15 +8,13 @@
 
 {% compress css %}
 <style type="text/css">
-	#edit-blocks-tab .draggable { background-color: #ddd; }
-	.draghandle {float: left;}
 	#children-order-list {list-style-type: none; margin: 0; padding: 0;}
 	#children li { margin: 0 3px 3px 3px; padding: 0.4em;
 	padding-left: 1.5em; 
           background-color: #ddd;
 	}
 	#children li span { position: absolute; margin-left: -1.3em; }
-	.dragging {border: #f60 solid 1px;}
+	.dragging {background-color: #fee;}
 	</style>
 {% endcompress %}
 
@@ -42,7 +40,7 @@ var saveOrderOfChildren = function() {
 var saveOrderOfPageBlocks = function() {
     var url = "{% url reorder-pageblocks section.id %}?";
     var worktodo = 0;
-    $("#edit-blocks-tab>div").each(function(index,element) {
+    $("#edit-blocks-tab>div.block-dragger").each(function(index,element) {
       worktodo = 1;
       var id = $(element).attr('id').split("-")[1];
       url += "pageblock_id_" + index + "=" + id + ";";
@@ -70,7 +68,7 @@ $(function() {
   });
   $("#children-order-list").disableSelection();
   $("#edit-blocks-tab").sortable({
-    items : 'div'
+    items : 'div.block-dragger'
     ,axis: 'y'
     ,containment: 'parent'
     ,handle: '.draghandle'
@@ -79,7 +77,7 @@ $(function() {
     ,stop: function (event,ui) { saveOrderOfPageBlocks();}
   });
 
-  $("#edit-blocks-tab").disableSelect();
+  $("#edit-blocks-tab").disableSelection();
 });
 </script>
 
@@ -122,31 +120,66 @@ $(function() {
 
 <div class="tab-content">
 
+
 <div id="edit-blocks-tab" class="tab-pane active"/>
 {% if section.pageblock_set.count %}
+
+<p>Drag the <i class="icon-resize-vertical"></i> arrows to reorder pageblocks:</p>
+
 {% for block in section.pageblock_set.all %}
-<div class="block-edit draggable" id="pageblock-{{block.id}}">
-<table width="100%" border="0"><tr><td><span title="drag to reorder pageblocks" class="draghandle ui-icon ui-icon-arrowthick-2-n-s"></span></td>
-<td align="right">
-<form action="{% url delete-pageblock block.id %}" method="post"
-			class="form-horizontal" >
-<input type="submit" value="delete block {{block.ordinality}}" class="btn btn-danger"/>
-</form></td></tr>
-<tr>
-<td>
-{% if block.block.exportable %}
-<a href="{% url export-pageblock-json block.id %}">export json</a>
-{% endif %}
-</td>
-<td>
+<div class="row-fluid block-dragger" id="pageblock-{{block.id}}">
+
+	<div class="span1 draghandle">
+		<i class="icon-resize-vertical"></i>
+	</div>
+
+	<div class="span2">
+		<b><a data-toggle="modal" href="#edit-pageblock-{{block.id}}">{{block.block.display_name}}</a></b>
+	</div>
+
+	<div class="span6">
+		<a data-toggle="modal" href="#edit-pageblock-{{block.id}}">{{block.label}}</a>
+	</div>
+
+	<div class="span3">
+		<div class="btn-group">
+			<a data-toggle="modal" class="btn btn-mini"
+			 href="#edit-pageblock-{{block.id}}">
+			<i class="icon-edit"></i>
+			edit</a>
+
+		<a href="{% url delete-pageblock block.id %}" class="btn
+		btn-danger btn-mini"><i class="icon-trash icon-white"></i> delete</a>
+
+		{% if block.block.exportable %}
+		<a class="btn btn-mini"
+			 rel="tooltip" title="Download JSON dump of this block"
+			 id="export-{{block.id}}"
+			 href="{% url export-pageblock-json block.id %}"><i class="icon-download"></i> export</a>
+
+		{% endif %}
+		</div>
+	</div>
+
+
+</div>
+{% endfor %}
+
+
+{% for block in section.pageblock_set.all %}
+<div class="modal big-modal hide block-edit" id="edit-pageblock-{{block.id}}">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h3>Edit {{block.block.display_name}}</h3>
+  </div>
+  <div class="modal-body">
+
 {% if block.block.importable %}
 <a href="{% url import-pageblock-json block.id %}">import json</a>
 {% endif %}
-</td>
-</tr>
-</table>
+
 <form action="{% url edit-pageblock block.id %}" method="post"
-class="well form-horizontal"
+class=""
 {% if block.edit_form.is_multipart %}enctype="multipart/form-data"{% endif %}>
 
 {{ block.default_edit_form|bootstrap }}
@@ -156,16 +189,25 @@ class="well form-horizontal"
 <div>{{ ef.alt_text|safe }}</div>
 {% endif %}
 {% endwith %}
+</div>
 
-<input type="submit" value="save" class="btn btn-primary"/>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+		<input type="submit" value="Save" 
+			 class="btn btn-primary" />
+  </div>
+
 </form>
+
 </div>
 {% endfor %}
+
 {% else %}
 <div class="alert">
   <strong>Warning!</strong> There are no pageblocks on this page. You should add some.
 </div>
 {% endif %}
+
 </div>
 
 <div id="children-tab" class="tab-pane">
@@ -196,25 +238,48 @@ class="well form-horizontal"
 
 <div id="add-pageblock-tab" class="tab-pane">
 
+<ul>
+{% for blocktype in available_pageblocks %}
+<li><a data-toggle="modal"
+			 href="#add-block-{{forloop.counter}}">Add {{blocktype.display_name}}</a></li>
+{% endfor %}
+</ul>
+
 {% for blocktype in available_pageblocks %}
 {% if blocktype %}
+
+<div class="modal big-modal hide" id="add-block-{{forloop.counter}}">
 <form action="{% url add-pageblock section.id %}"
-class="well form-horizontal"
+
 {% if blocktype.add_form.is_multipart %}
 enctype="multipart/form-data"
 {% endif %}
 method="post">
+
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h3>Add {{blocktype.display_name}}</h3>
+  </div>
+  <div class="modal-body">
 <fieldset>
-  <legend>Add {{ blocktype.display_name }}</legend>
 <input type="hidden" name="blocktype" value="{{blocktype.display_name}}"/>
 
 {{section.add_pageblock_form|bootstrap}}
 {{blocktype.add_form|bootstrap}}
 
-<input type="submit" value="add {{blocktype.display_name}}" 
-			 class="btn btn-primary" />
 </fieldset>
+
+
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+		<input type="submit" value="add {{blocktype.display_name}}" 
+			 class="btn btn-primary" />
+  </div>
 </form>
+</div>
+
 {% endif %}
 {% endfor %}
 </div>

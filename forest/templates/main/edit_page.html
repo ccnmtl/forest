@@ -79,7 +79,7 @@ $(function() {
     ,stop: function (event,ui) { saveOrderOfPageBlocks();}
   });
 
-  $("#edit-blocks-tab").disableSelect();
+  $("#edit-blocks-tab").disableSelection();
 });
 </script>
 
@@ -196,25 +196,49 @@ class="well form-horizontal"
 
 <div id="add-pageblock-tab" class="tab-pane">
 
+<ul>
+{% for blocktype in available_pageblocks %}
+<li><a data-toggle="modal"
+			 href="#add-block-{{forloop.counter}}">Add {{blocktype.display_name}}</a></li>
+{% endfor %}
+</ul>
+
 {% for blocktype in available_pageblocks %}
 {% if blocktype %}
+
+<div class="modal hide" id="add-block-{{forloop.counter}}">
 <form action="{% url add-pageblock section.id %}"
-class="well form-horizontal"
+
 {% if blocktype.add_form.is_multipart %}
 enctype="multipart/form-data"
 {% endif %}
 method="post">
+
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h3>Add {{blocktype.display_name}}</h3>
+  </div>
+  <div class="modal-body">
 <fieldset>
-  <legend>Add {{ blocktype.display_name }}</legend>
 <input type="hidden" name="blocktype" value="{{blocktype.display_name}}"/>
 
 {{section.add_pageblock_form|bootstrap}}
 {{blocktype.add_form|bootstrap}}
 
-<input type="submit" value="add {{blocktype.display_name}}" 
-			 class="btn btn-primary" />
 </fieldset>
+
+
+  </div>
+  <div class="modal-footer">
+		<input type="submit" value="add {{blocktype.display_name}}" 
+			 class="btn btn-primary" />
+
+    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+  </div>
 </form>
+</div>
+
 {% endif %}
 {% endfor %}
 </div>

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load compress %}
 {% load bootstrap %}
+{% load render %}
 {% block title %}{{section.label}} (edit){% endblock %}
 {% block js %}
 
@@ -8,6 +9,7 @@
 
 {% compress css %}
 <style type="text/css">
+	.draghandle {float: left;}
 	#children-order-list {list-style-type: none; margin: 0; padding: 0;}
 	#children li { margin: 0 3px 3px 3px; padding: 0.4em;
 	padding-left: 1.5em; 
@@ -139,6 +141,7 @@ $(function() {
 
 	<div class="span6">
 		<a data-toggle="modal" href="#edit-pageblock-{{block.id}}">{{block.label}}</a>
+{% rendersummary block %}
 	</div>
 
 	<div class="span3">

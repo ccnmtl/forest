@@ -37,8 +37,10 @@
 
 
 {% for block in section.pageblock_set.all %}
+<div class="pageblock{% if block.css_extra %} {{block.css_extra}}{% endif %}">
 {% if block.label %}<h3>{{block.label}}</h3>{% endif %}
 {% render block %}
+</div>
 {% endfor %}
 
 

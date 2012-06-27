@@ -118,6 +118,7 @@ $(function() {
   <li><a href="#children-tab" data-toggle="tab">Children</a></li>
   <li><a href="#add-pageblock-tab" data-toggle="tab">Add Pageblock</a></li>
   <li><a href="#edit-page-tab" data-toggle="tab">Edit Section</a></li>
+  <li><a href="#history-tab" data-toggle="tab">History</a></li>
 </ul>
 
 <div class="tab-content">
@@ -305,6 +306,33 @@ method="post">
 <input type="submit" value="delete this page" class="btn btn-danger"/>
 </form>
 
+</div>
+
+<div id="history-tab" class="tab-pane">
+
+{% if section.version_set.count %}
+<table class="table table-bordered table-striped table-condensed">
+	<thead>
+		<tr>
+			<th>Saved At</th>
+			<th>User</th>
+			<th>Activity</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+{% for version in section.version_set.all %}
+    <tr>
+			<td>{{version.saved_at}}</td>
+			<td>{{version.user}}</td>
+			<td>{{version.activity}}</td>
+			<td><a href="{% url revert-to-version version.id %}" class="btn
+			btn-mini btn-warning"><i class="icon-repeat"></i> revert</a></td>
+		</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endif %}
 </div>
 </div>
 {% endblock %}

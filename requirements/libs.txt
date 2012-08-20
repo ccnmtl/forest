@@ -1,4 +1,4 @@
-requirements/src/Django-1.4.tar.gz
+requirements/src/Django-1.4.1.tar.gz
 requirements/src/lxml-2.2.8.tar.gz
 requirements/src/resolver-0.2.1.tar.gz
 requirements/src/selector-0.8.11.tar.gz

@@ -21,9 +21,25 @@ DATABASES = {
 }
 
 if 'test' in sys.argv:
-    DATABASE_ENGINE = 'sqlite3'
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+            'HOST': '',
+            'PORT': '',
+            'USER': '',
+            'PASSWORD': '',
+            }
+        }
+
 SOUTH_TESTS_MIGRATE = False
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=forest.main',
+]
+
 
 USE_TZ = True
 TIME_ZONE = 'America/New_York'

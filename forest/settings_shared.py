@@ -108,6 +108,7 @@ INSTALLED_APPS = (
     'django_statsd',
     'bootstrapform',
     'debug_toolbar',
+    'smoketest',
 )
 
 PAGEBLOCKS = ['pageblocks.TextBlock',

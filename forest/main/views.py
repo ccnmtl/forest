@@ -28,7 +28,7 @@ class stand_admin(object):
                 return HttpResponse("you do not have admin permission")
             request.stand = stand
             items = func(request, *args, **kwargs)
-            if type(items) == type({}):
+            if isinstance(items, dict):
                 items['stand'] = stand
                 items['can_admin'] = True
             return items
@@ -46,7 +46,7 @@ class stand(object):
                 return HttpResponse("no such site")
             request.stand = stand
             items = func(request, *args, **kwargs)
-            if type(items) == type({}):
+            if isinstance(items, dict):
                 items['stand'] = stand
             return items
         return stand_func
@@ -161,7 +161,7 @@ def edit_stand(request):
     else:
         is_seed_stand = True
         from django.conf import settings
-        if settings.DEBUG == False:
+        if not settings.DEBUG:
             # in production
             is_seed_stand = (request.stand.hostname ==
                              "forest.ccnmtl.columbia.edu")

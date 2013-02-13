@@ -65,10 +65,10 @@ class Stand(models.Model):
         return False
 
     def can_view(self, user):
-        if not user:
-            return False
         if self.access == "open":
             return True
+        if not user:
+            return False
         if user.is_anonymous():
             return False
         if user.is_superuser:

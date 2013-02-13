@@ -68,7 +68,9 @@ def page(request, path):
     root = section.hierarchy.get_root()
     module = get_module(section)
     if not request.stand.can_view(request.user):
-        return HttpResponse("you do not have permission")
+        if not request.user.is_anonymous():
+            return HttpResponse("you do not have permission")
+        return HttpResponseRedirect("/accounts/login/?next=/")
     can_edit = request.stand.can_edit(request.user)
     can_admin = request.stand.can_admin(request.user)
     if section.id == root.id:

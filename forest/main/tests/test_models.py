@@ -12,7 +12,7 @@ class StandModelTest(TestCase):
             title="test stand",
             hostname="test.example.com",
             access="open",
-            )
+        )
 
     def tearDown(self):
         self.g.delete()

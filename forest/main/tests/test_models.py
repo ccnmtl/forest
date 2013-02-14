@@ -32,5 +32,117 @@ class StandModelTest(TestCase):
     def test_can_edit(self):
         assert not self.stand.can_edit(self.u)
 
+    def test_can_admin(self):
+        assert not self.stand.can_admin(self.u)
+
     def test_get_stand(self):
         assert get_stand("test.example.com") == self.stand
+
+    def test_available_pageblocks(self):
+        assert self.stand.available_pageblocks() == []
+
+
+class AuthTests(TestCase):
+    def setUp(self):
+        self.admin_user = User.objects.create(username="adminuser")
+        self.editor_user = User.objects.create(username="editoruser")
+        self.student_user = User.objects.create(username="studentuser")
+        self.nogroups_user = User.objects.create(username="nogroupsuser")
+
+        self.super_user = User.objects.create(username="superuser",
+                                              is_superuser=True)
+
+        self.admin_group = Group.objects.create(name="admingroup")
+        self.editor_group = Group.objects.create(name="editorgroup")
+        self.student_group = Group.objects.create(name="studentgroup")
+
+        self.admin_user.groups.add(self.admin_group)
+        self.editor_user.groups.add(self.editor_group)
+        self.student_user.groups.add(self.student_group)
+
+        self.open_stand = Stand.objects.create(
+            title="open stand",
+            hostname="openstand.example.com",
+            access="open",
+        )
+        self.loginonly_stand = Stand.objects.create(
+            title="login stand",
+            hostname="loginstand.example.com",
+            access="login",
+        )
+        self.group_stand = Stand.objects.create(
+            title="group stand",
+            hostname="loginstand.example.com",
+            access="group",
+        )
+        self.whitelist_stand = Stand.objects.create(
+            title="whitelist stand",
+            hostname="whiteliststand.example.com",
+            access="whitelist",
+        )
+
+    def tearDown(self):
+        self.admin_user.delete()
+        self.editor_user.delete()
+        self.student_user.delete()
+        self.nogroups_user.delete()
+        self.super_user.delete()
+
+        self.open_stand.delete()
+        self.loginonly_stand.delete()
+        self.group_stand.delete()
+        self.whitelist_stand.delete()
+
+    def test_no_user(self):
+        assert self.open_stand.can_edit(None) == False
+        assert self.group_stand.can_edit(None) == False
+        assert self.loginonly_stand.can_edit(None) == False
+        assert self.whitelist_stand.can_edit(None) == False
+
+        assert self.open_stand.can_view(None) == True
+        assert self.group_stand.can_view(None) == False
+        assert self.loginonly_stand.can_view(None) == False
+        assert self.whitelist_stand.can_view(None) == False
+
+        assert self.open_stand.can_admin(None) == False
+        assert self.group_stand.can_admin(None) == False
+        assert self.loginonly_stand.can_admin(None) == False
+        assert self.whitelist_stand.can_admin(None) == False
+
+    def test_anon_user(self):
+        class StubUser(object):
+            def is_anonymous(self):
+                return True
+        u = StubUser()
+        assert self.open_stand.can_edit(u) == False
+        assert self.group_stand.can_edit(u) == False
+        assert self.loginonly_stand.can_edit(u) == False
+        assert self.whitelist_stand.can_edit(u) == False
+
+        assert self.open_stand.can_view(u) == True
+        assert self.group_stand.can_view(u) == False
+        assert self.loginonly_stand.can_view(u) == False
+        assert self.whitelist_stand.can_view(u) == False
+
+        assert self.open_stand.can_admin(u) == False
+        assert self.group_stand.can_admin(u) == False
+        assert self.loginonly_stand.can_admin(u) == False
+        assert self.whitelist_stand.can_admin(u) == False
+
+
+    def test_super_user(self):
+        u = self.super_user
+        assert self.open_stand.can_edit(u) == True
+        assert self.group_stand.can_edit(u) == True
+        assert self.loginonly_stand.can_edit(u) == True
+        assert self.whitelist_stand.can_edit(u) == True
+
+        assert self.open_stand.can_view(u) == True
+        assert self.group_stand.can_view(u) == True
+        assert self.loginonly_stand.can_view(u) == True
+        assert self.whitelist_stand.can_view(u) == True
+
+        assert self.open_stand.can_admin(u) == True
+        assert self.group_stand.can_admin(u) == True
+        assert self.loginonly_stand.can_admin(u) == True
+        assert self.whitelist_stand.can_admin(u) == True

@@ -94,55 +94,54 @@ class AuthTests(TestCase):
         self.whitelist_stand.delete()
 
     def test_no_user(self):
-        assert self.open_stand.can_edit(None) == False
-        assert self.group_stand.can_edit(None) == False
-        assert self.loginonly_stand.can_edit(None) == False
-        assert self.whitelist_stand.can_edit(None) == False
+        assert not self.open_stand.can_edit(None)
+        assert not self.group_stand.can_edit(None)
+        assert not self.loginonly_stand.can_edit(None)
+        assert not self.whitelist_stand.can_edit(None)
 
-        assert self.open_stand.can_view(None) == True
-        assert self.group_stand.can_view(None) == False
-        assert self.loginonly_stand.can_view(None) == False
-        assert self.whitelist_stand.can_view(None) == False
+        assert self.open_stand.can_view(None)
+        assert not self.group_stand.can_view(None)
+        assert not self.loginonly_stand.can_view(None)
+        assert not self.whitelist_stand.can_view(None)
 
-        assert self.open_stand.can_admin(None) == False
-        assert self.group_stand.can_admin(None) == False
-        assert self.loginonly_stand.can_admin(None) == False
-        assert self.whitelist_stand.can_admin(None) == False
+        assert not self.open_stand.can_admin(None)
+        assert not self.group_stand.can_admin(None)
+        assert not self.loginonly_stand.can_admin(None)
+        assert not self.whitelist_stand.can_admin(None)
 
     def test_anon_user(self):
         class StubUser(object):
             def is_anonymous(self):
                 return True
         u = StubUser()
-        assert self.open_stand.can_edit(u) == False
-        assert self.group_stand.can_edit(u) == False
-        assert self.loginonly_stand.can_edit(u) == False
-        assert self.whitelist_stand.can_edit(u) == False
+        assert not self.open_stand.can_edit(u)
+        assert not self.group_stand.can_edit(u)
+        assert not self.loginonly_stand.can_edit(u)
+        assert not self.whitelist_stand.can_edit(u)
 
-        assert self.open_stand.can_view(u) == True
-        assert self.group_stand.can_view(u) == False
-        assert self.loginonly_stand.can_view(u) == False
-        assert self.whitelist_stand.can_view(u) == False
+        assert self.open_stand.can_view(u)
+        assert not self.group_stand.can_view(u)
+        assert not self.loginonly_stand.can_view(u)
+        assert not self.whitelist_stand.can_view(u)
 
-        assert self.open_stand.can_admin(u) == False
-        assert self.group_stand.can_admin(u) == False
-        assert self.loginonly_stand.can_admin(u) == False
-        assert self.whitelist_stand.can_admin(u) == False
-
+        assert not self.open_stand.can_admin(u)
+        assert not self.group_stand.can_admin(u)
+        assert not self.loginonly_stand.can_admin(u)
+        assert not self.whitelist_stand.can_admin(u)
 
     def test_super_user(self):
         u = self.super_user
-        assert self.open_stand.can_edit(u) == True
-        assert self.group_stand.can_edit(u) == True
-        assert self.loginonly_stand.can_edit(u) == True
-        assert self.whitelist_stand.can_edit(u) == True
+        assert self.open_stand.can_edit(u)
+        assert self.group_stand.can_edit(u)
+        assert self.loginonly_stand.can_edit(u)
+        assert self.whitelist_stand.can_edit(u)
 
-        assert self.open_stand.can_view(u) == True
-        assert self.group_stand.can_view(u) == True
-        assert self.loginonly_stand.can_view(u) == True
-        assert self.whitelist_stand.can_view(u) == True
+        assert self.open_stand.can_view(u)
+        assert self.group_stand.can_view(u)
+        assert self.loginonly_stand.can_view(u)
+        assert self.whitelist_stand.can_view(u)
 
-        assert self.open_stand.can_admin(u) == True
-        assert self.group_stand.can_admin(u) == True
-        assert self.loginonly_stand.can_admin(u) == True
-        assert self.whitelist_stand.can_admin(u) == True
+        assert self.open_stand.can_admin(u)
+        assert self.group_stand.can_admin(u)
+        assert self.loginonly_stand.can_admin(u)
+        assert self.whitelist_stand.can_admin(u)

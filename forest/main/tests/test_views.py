@@ -21,8 +21,8 @@ class SimpleTest(TestCase):
         self.u.delete()
 
     def test_index(self):
-        response = self.c.get('/')
-        self.assertEquals(response.status_code, 200)
+        response = self.c.get('/', HTTP_HOST="test.example.com")
+        self.assertEquals(response.status_code, 302)
 
     def test_smoketests(self):
         # just request them to make sure they are covered

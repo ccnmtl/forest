@@ -32,3 +32,8 @@ class SimpleTest(TestCase):
         # themselves
         response = self.c.get('/smoketest/')
         self.assertEquals(response.status_code, 200)
+
+    def test_css(self):
+        response = self.c.get('/_stand/css/', HTTP_HOST="test.example.com")
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response['Content-Type'], "text/css")

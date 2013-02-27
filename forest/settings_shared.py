@@ -34,8 +34,6 @@ if 'test' in sys.argv or 'jenkins' in sys.argv:
         }
     }
 
-PYLINT_RCFILE = "pylintrc.txt"
-
 SOUTH_TESTS_MIGRATE = False
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 

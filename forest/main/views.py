@@ -2,9 +2,10 @@ from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
 from pagetree.helpers import get_hierarchy, get_section_from_path
 from pagetree.helpers import get_module, needs_submit, submitted
 from django.contrib.auth.decorators import login_required
-from models import get_stand, Stand, StandUser, User, Group, StandGroup
-from models import StandAvailablePageBlock
-from forms import StandForm
+from forest.main.models import get_stand, Stand
+from forest.main.models import StandUser, User, Group, StandGroup
+from forest.main.models import StandAvailablePageBlock
+from forest.main.forms import StandForm
 from restclient import GET
 import httplib2
 import simplejson
@@ -403,8 +404,8 @@ from zipfile import ZipFile
 def importer(request):
     if request.method == "GET":
         return {}
-    file = request.FILES['file']
-    zipfile = ZipFile(file)
+    f = request.FILES['file']
+    zipfile = ZipFile(f)
 
     # If we exported the morx.com site, and we are now
     # visiting http://fleem.com/import/, we don't want

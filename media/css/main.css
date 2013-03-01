@@ -66,7 +66,15 @@ color: #fbf523;
 
 .big-modal {
    width: 940px;
-   margin-left:-470px;  
+   margin-left:-470px;
 	 max-height: 600px;
 	 margin-top: -300px;
+}
+
+.correctanswer {
+  background-color: #E6F2D8;
+}
+
+.incorrectanswer {
+  background-color: #fdd;
 }

@@ -24,7 +24,7 @@ class stand_admin(object):
         def admin_func(request, *args, **kwargs):
             stand = get_stand(request.get_host())
             if not stand:
-                return HttpResponse("no such site")
+                return HttpResponse("no such site '%s'" % request.get_host())
             if not stand.can_admin(request.user):
                 return HttpResponse("you do not have admin permission")
             request.stand = stand
@@ -44,7 +44,7 @@ class stand(object):
         def stand_func(request, *args, **kwargs):
             stand = get_stand(request.get_host())
             if not stand:
-                return HttpResponse("no such site")
+                return HttpResponse("no such site '%s'" % request.get_host())
             request.stand = stand
             items = func(request, *args, **kwargs)
             if isinstance(items, dict):

@@ -16,7 +16,6 @@ requirements/src/simplejson-2.0.9.tar.gz
 requirements/src/smartypants-1.6.0.2.tar.gz
 requirements/src/uuid-1.30.tar.gz
 requirements/src/psycopg2-2.4-no-mx.tar.gz
-requirements/src/Pillow-1.7.8.zip
 requirements/src/django-treebeard-1.61.tar.gz
 requirements/src/nose-1.1.2.tar.gz
 requirements/src/versiontools-1.8.2.tar.gz

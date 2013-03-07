@@ -22,6 +22,10 @@ if sys.version_info < (2, 7, 0):
     ret = subprocess.call([os.path.join(vedir, 'bin', 'pip'), "install",
                            "-E", vedir,
                            os.path.join(pwd,"requirements/src/requirements/src/Imaging-1.1.7.tar.gz")])
+else:
+    ret = subprocess.call([os.path.join(vedir, 'bin', 'pip'), "install",
+                           "-E", vedir,
+                           os.path.join(pwd,"requirements/src/Pillow-1.7.8.zip")])
 
 
 ret = subprocess.call([os.path.join(vedir, 'bin', 'pip'), "install",

@@ -84,6 +84,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
+    'waffle.middleware.WaffleMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
@@ -124,6 +125,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'smoketest',
     'django_jenkins',
+    'waffle',
 )
 
 PAGEBLOCKS = ['pageblocks.TextBlock',

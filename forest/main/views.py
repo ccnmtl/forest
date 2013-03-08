@@ -1,4 +1,5 @@
 from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
+from django.http import HttpResponseForbidden
 from pagetree.helpers import get_hierarchy, get_section_from_path
 from pagetree.helpers import get_module, needs_submit, submitted
 from django.contrib.auth.decorators import login_required
@@ -14,6 +15,7 @@ from pagetree.models import Section
 from pagetree_export.exportimport import export_zip, import_zip
 import os
 from annoying.decorators import render_to
+from django.shortcuts import render
 
 
 class stand_admin(object):
@@ -26,7 +28,7 @@ class stand_admin(object):
             if not stand:
                 return HttpResponse("no such site '%s'" % request.get_host())
             if not stand.can_admin(request.user):
-                return HttpResponse("you do not have admin permission")
+                return permission_denied("you do not have admin permission")
             request.stand = stand
             items = func(request, *args, **kwargs)
             if isinstance(items, dict):
@@ -34,6 +36,10 @@ class stand_admin(object):
                 items['can_admin'] = True
             return items
         return admin_func
+
+
+def permission_denied(request, message=""):
+    return HttpResponseForbidden()
 
 
 class stand(object):
@@ -70,7 +76,7 @@ def page(request, path):
     module = get_module(section)
     if not request.stand.can_view(request.user):
         if not request.user.is_anonymous():
-            return HttpResponse("you do not have permission")
+            return permission_denied("you do not have permission")
         return HttpResponseRedirect("/accounts/login/?next=/")
     can_edit = request.stand.can_edit(request.user)
     can_admin = request.stand.can_admin(request.user)
@@ -134,7 +140,7 @@ def edit_page(request, path):
     hierarchy = request.get_host()
     section = get_section_from_path(path, hierarchy=hierarchy)
     if not request.stand.can_edit(request.user):
-        return HttpResponse("you do not have admin permission")
+        return permission_denied("you do not have admin permission")
     can_admin = request.stand.can_admin(request.user)
     root = section.hierarchy.get_root()
 

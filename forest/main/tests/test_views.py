@@ -37,3 +37,29 @@ class SimpleTest(TestCase):
         response = self.c.get('/_stand/css/', HTTP_HOST="test.example.com")
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response['Content-Type'], "text/css")
+
+
+class AuthTests(TestCase):
+    def setUp(self):
+        self.u = User.objects.create(username="testuser")
+        self.u.set_password("test")
+        self.u.save()
+        self.g = Group.objects.create(name="testgroup")
+        self.u.groups.add(self.g)
+        # make one that our user can't access
+        self.stand = Stand.objects.create(
+            title="test stand",
+            hostname="test.example.com",
+            access="whitelist",
+        )
+        self.c = Client()
+        self.c.login(username="testuser", password="test")
+
+    def tearDown(self):
+        self.g.delete()
+        self.u.delete()
+
+    def test_logged_in_not_authorized(self):
+        response = self.c.get('/', HTTP_HOST="test.example.com")
+        self.assertEquals(response.status_code, 403)
+        assert "grumpycat.jpg" in response.content

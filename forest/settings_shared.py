@@ -69,10 +69,14 @@ TEMPLATE_LOADERS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
     'django.core.context_processors.request',
     'stagingcontext.staging_processor',
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.contrib.messages.context_processors.messages",
 )
 
 MIDDLEWARE_CLASSES = (
@@ -92,7 +96,7 @@ ROOT_URLCONF = 'forest.urls'
 
 TEMPLATE_DIRS = (
     "/var/www/forest/templates/",
-    os.path.join(os.path.dirname(__file__), "/templates"),
+    os.path.join(os.path.dirname(__file__), "templates"),
 )
 
 INSTALLED_APPS = (

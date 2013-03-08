@@ -118,3 +118,19 @@ class AddStandTests(TestCase):
             "/_stand/add/",
             dict(hostname="test.example.com"))
         assert "a stand with that hostname already exists" in response.content
+
+    def test_create_new_forest_stand_nonstaff(self):
+        self.u.is_staff = False
+        self.u.save()
+        response = self.c.post(
+            "/_stand/add/",
+            dict(
+                hostname="test3.example.com",
+                title="test site",
+                css="",
+                access="open",
+                description="",
+            ))
+        assert "only staff may access this" in response.content
+        self.u.is_staff = True
+        self.u.save()

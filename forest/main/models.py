@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, Group
 import hashlib
 from django.db.models import get_model
 from django.conf import settings
+from pagetree.helpers import get_section_from_path
 
 from south.modelsinspector import add_introspection_rules
 
@@ -114,6 +115,29 @@ class Stand(models.Model):
         enabled = [pb.block for pb in self.standavailablepageblock_set.all()]
         return [get_model(*pb.split('.')) for pb in settings.PAGEBLOCKS
                 if pb in enabled]
+
+    def get_root(self):
+        """ return the Root pagetree.Section for this Stand """
+        section = get_section_from_path("/", hierarchy=self.hostname)
+        return section.hierarchy.get_root()
+
+    def make_default_tree(self):
+        """ when a new stand is created, we want to populate it
+        with at least one Section and a bit of content to get things
+        started so the user isn't just presented with a blank page"""
+        self.get_root().add_child_section_from_dict(
+            {
+                'label': 'Welcome',
+                'slug': 'welcome',
+                'pageblocks': [
+                    {'label': 'Welcome to your new Forest Site',
+                     'css_extra': '',
+                     'block_type': 'Text Block',
+                     'body': 'You should now use the edit link to add content',
+                     },
+                ],
+                'children': [],
+            })
 
 
 class StandUser(models.Model):

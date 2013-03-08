@@ -41,6 +41,13 @@ class StandModelTest(TestCase):
     def test_available_pageblocks(self):
         assert self.stand.available_pageblocks() == []
 
+    def test_get_root(self):
+        assert self.stand.get_root().label == "Root"
+
+    def test_make_default_tree(self):
+        self.stand.make_default_tree()
+        assert len(self.stand.get_root().get_children()) > 0
+
 
 class AuthTests(TestCase):
     def setUp(self):

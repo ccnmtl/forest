@@ -339,10 +339,12 @@ method="post">
 
 {% block content-nav %}
 <ul class="pager">
+{% if not section.is_root %}
 {% if section.get_previous %}
   <li class="previous">
 		<a href="{% url edit-page section.get_previous.get_path %}">&larr; {{section.get_previous.label}}</a>
   </li>
+{% endif %}
 {% endif %}
 
 {% if section.get_next %}

@@ -218,6 +218,8 @@ def add_stand(request):
 @stand_admin()
 def delete_stand(request):
     if request.method == "POST":
+        request.stand.get_root().hierarchy.delete()
+        request.stand.get_root().delete()
         request.stand.delete()
         return HttpResponse("""Stand has been deleted. Thank you""")
     else:

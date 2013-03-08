@@ -219,7 +219,7 @@ def add_stand(request):
 def delete_stand(request):
     if request.method == "POST":
         request.stand.delete()
-        return HttpResponseRedirect("/")
+        return HttpResponse("""Stand has been deleted. Thank you""")
     else:
         return HttpResponse("""
 <form action="." method="post">

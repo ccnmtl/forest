@@ -205,6 +205,7 @@ def add_stand(request):
             for pb in settings.PAGEBLOCKS:
                 StandAvailablePageBlock.objects.create(stand=stand,
                                                        block=pb)
+            stand.make_default_tree()
             if hostname.endswith(".forest.ccnmtl.columbia.edu"):
                 # if it's a *.forest site, just send them on their way
                 return HttpResponseRedirect("http://%s/_stand/" % hostname)

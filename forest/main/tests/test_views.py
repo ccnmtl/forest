@@ -90,7 +90,13 @@ class AddStandTests(TestCase):
     def test_create_new_stand(self):
         response = self.c.post(
             "/_stand/add/",
-            dict(hostname="test2.example.com"))
+            dict(
+                hostname="test2.example.com",
+                title="test site",
+                css="",
+                access="open",
+                description="",
+            ))
         assert response.status_code == 200
 
     def test_create_duplicate(self):

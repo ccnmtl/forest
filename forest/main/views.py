@@ -40,7 +40,8 @@ class stand_admin(object):
 
 
 def permission_denied(request, message=""):
-    return render(request, "403.html", dict(message=message), status=403)
+    return render(request, "403.html",
+                  dictionary=dict(message=message), status=403)
 
 
 class stand(object):
@@ -72,7 +73,6 @@ def has_responses(section):
 def page(request, path):
     hierarchy = request.get_host()
     section = get_section_from_path(path, hierarchy=hierarchy)
-    return permission_denied(request, "no!")
     root = section.hierarchy.get_root()
     module = get_module(section)
     if not request.stand.can_view(request.user):

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Permission Denied{% endblock %}
+
+{% block usernav %}
+<ul id="usernav">
+	<li><a href="#">Login</a></li>
+</ul><!-- id="usernav" -->
+{% endblock %}
+
+
+{% block pagetitle %}
+<h1 class="pageheader">Permission Denied</h1>
+{% endblock %}
+
+{% block content %}
+<img src="/site_media/img/grumpycat.jpg" />
+<p>
+You do not have permission to access this page.
+</p>
+{% if message %}<p>{{message}}</p>{% endif %}
+{% endblock %}

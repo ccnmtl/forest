@@ -65,6 +65,16 @@ class AuthTests(TestCase):
         self.assertEquals(response.status_code, 403)
         assert "grumpycat.jpg" in response.content
 
+    def test_logged_in_not_authorized_edit(self):
+        response = self.c.get('/edit/', HTTP_HOST="test.example.com")
+        self.assertEquals(response.status_code, 403)
+        assert "grumpycat.jpg" in response.content
+
+    def test_logged_in_not_authorized_admin(self):
+        response = self.c.get('/_stand/', HTTP_HOST="test.example.com")
+        self.assertEquals(response.status_code, 403)
+        assert "grumpycat.jpg" in response.content
+
 
 class AddStandTests(TestCase):
     def setUp(self):

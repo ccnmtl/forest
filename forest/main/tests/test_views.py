@@ -88,6 +88,8 @@ class AddStandTests(TestCase):
         self.stand.delete()
 
     def test_create_new_stand(self):
+        response = self.c.get("/_stand/add/")
+        assert response.status_code == 200
         response = self.c.post(
             "/_stand/add/",
             dict(

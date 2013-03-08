@@ -99,6 +99,18 @@ class AddStandTests(TestCase):
             ))
         assert response.status_code == 200
 
+    def test_create_new_forest_stand(self):
+        response = self.c.post(
+            "/_stand/add/",
+            dict(
+                hostname="test2.forest.ccnmtl.columbia.edu",
+                title="test site",
+                css="",
+                access="open",
+                description="",
+            ))
+        assert response.status_code == 302
+
     def test_create_duplicate(self):
         response = self.c.post(
             "/_stand/add/",

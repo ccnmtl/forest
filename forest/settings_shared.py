@@ -174,6 +174,11 @@ COMPRESS_URL = "/site_media/"
 COMPRESS_ROOT = "media/"
 COMPRESS_PARSER = "compressor.parser.HtmlParser"
 
+COMPRESS_PRECOMPILERS = (
+    ('text/less', 'lessc {infile} {outfile}'),
+)
+
+
 # WIND settings
 
 AUTHENTICATION_BACKENDS = ('djangowind.auth.WindAuthBackend',

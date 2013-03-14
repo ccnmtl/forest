@@ -55,9 +55,14 @@ class AuthTests(TestCase):
         self.c = Client()
         self.c.login(username="testuser", password="test")
 
+        self.u2 = User.objects.create(username="testuser2", is_superuser=True)
+        self.u2.set_password("test")
+        self.u2.save()
+
     def tearDown(self):
         self.g.delete()
         self.u.delete()
+        self.u2.delete()
         self.stand.delete()
 
     def test_logged_in_not_authorized(self):
@@ -74,6 +79,24 @@ class AuthTests(TestCase):
         response = self.c.get('/_stand/', HTTP_HOST="test.example.com")
         self.assertEquals(response.status_code, 403)
         assert "grumpycat.jpg" in response.content
+
+    def test_logged_in_superuser(self):
+        self.c.login(username="testuser2", password="test")
+        response = self.c.get('/', HTTP_HOST="test.example.com")
+        self.assertNotEquals(response.status_code, 403)
+        assert "grumpycat.jpg" not in response.content
+
+    def test_logged_in_superuser_edit(self):
+        self.c.login(username="testuser2", password="test")
+        response = self.c.get('/edit/', HTTP_HOST="test.example.com")
+        self.assertNotEquals(response.status_code, 403)
+        assert "grumpycat.jpg" not in response.content
+
+    def test_logged_in_superuser_admin(self):
+        self.c.login(username="testuser2", password="test")
+        response = self.c.get('/_stand/', HTTP_HOST="test.example.com")
+        self.assertNotEquals(response.status_code, 403)
+        assert "grumpycat.jpg" not in response.content
 
 
 class AddStandTests(TestCase):

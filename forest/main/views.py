@@ -68,6 +68,19 @@ def has_responses(section):
     return quizzes != []
 
 
+def visit_root(section):
+    """ if they try to visit the root, we need to send them
+    either to the first section on the site, or to
+    the admin page if there are no sections (so they
+    can add some)"""
+    if section.get_next():
+        # just send them to the first child
+        return HttpResponseRedirect(section.get_next().get_absolute_url())
+    # no sections available so
+    # send them to the stand admin interface
+    return HttpResponseRedirect("/_stand/")
+
+
 @render_to('main/page.html')
 @stand()
 def page(request, path):
@@ -82,13 +95,7 @@ def page(request, path):
     can_edit = request.stand.can_edit(request.user)
     can_admin = request.stand.can_admin(request.user)
     if section.is_root():
-        # trying to visit the root page
-        if section.get_next():
-            # just send them to the first child
-            return HttpResponseRedirect(section.get_next().get_absolute_url())
-        else:
-            # send them to the stand admin interface
-            return HttpResponseRedirect("/_stand/")
+        return visit_root(section)
 
     if request.method == "POST":
         # user has submitted a form. deal with it

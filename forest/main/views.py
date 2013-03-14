@@ -81,6 +81,20 @@ def visit_root(section):
     return HttpResponseRedirect("/_stand/")
 
 
+def page_submit(section, request):
+    proceed = section.submit(request.POST, request.user)
+    if proceed:
+        next_section = section.get_next()
+        if next_section:
+            return HttpResponseRedirect(next_section.get_absolute_url())
+        else:
+            # they are on the "last" section of the site
+            # all we can really do is send them back to this page
+            return HttpResponseRedirect(section.get_absolute_url())
+    # giving them feedback before they proceed
+    return HttpResponseRedirect(section.get_absolute_url())
+
+
 @render_to('main/page.html')
 @stand()
 def page(request, path):
@@ -102,18 +116,7 @@ def page(request, path):
         if request.POST.get('action', '') == 'reset':
             section.reset(request.user)
             return HttpResponseRedirect(section.get_absolute_url())
-        proceed = section.submit(request.POST, request.user)
-        if proceed:
-            next_section = section.get_next()
-            if next_section:
-                return HttpResponseRedirect(next_section.get_absolute_url())
-            else:
-                # they are on the "last" section of the site
-                # all we can really do is send them back to this page
-                return HttpResponseRedirect(section.get_absolute_url())
-        else:
-            # giving them feedback before they proceed
-            return HttpResponseRedirect(section.get_absolute_url())
+        return page_submit(section, request)
     else:
         instructor_link = has_responses(section)
         return dict(section=section,

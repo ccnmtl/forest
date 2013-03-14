@@ -81,7 +81,7 @@ def page(request, path):
         return HttpResponseRedirect("/accounts/login/?next=/")
     can_edit = request.stand.can_edit(request.user)
     can_admin = request.stand.can_admin(request.user)
-    if section.id == root.id:
+    if section.is_root():
         # trying to visit the root page
         if section.get_next():
             # just send them to the first child

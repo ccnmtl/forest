@@ -246,6 +246,20 @@ class ViewPageTests(TestCase):
         assert 'Welcome to your new Forest Site' in response.content
         assert 'You should now use the ' in response.content
 
+    def test_post_to_page(self):
+        response = self.c.post(
+            "/welcome/",
+            dict(),
+            HTTP_HOST="test.example.com")
+        assert response.status_code == 302
+
+    def test_reset_page(self):
+        response = self.c.post(
+            "/welcome/",
+            dict(action="reset"),
+            HTTP_HOST="test.example.com")
+        assert response.status_code == 302
+
     def test_404(self):
         response = self.c.get("/page/that/doesnt/exist",
                               HTTP_HOST="test.example.com")

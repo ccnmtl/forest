@@ -104,7 +104,13 @@ def page(request, path):
             return HttpResponseRedirect(section.get_absolute_url())
         proceed = section.submit(request.POST, request.user)
         if proceed:
-            return HttpResponseRedirect(section.get_next().get_absolute_url())
+            next_section = section.get_next()
+            if next_section:
+                return HttpResponseRedirect(next_section.get_absolute_url())
+            else:
+                # they are on the "last" section of the site
+                # all we can really do is send them back to this page
+                return HttpResponseRedirect(section.get_absolute_url())
         else:
             # giving them feedback before they proceed
             return HttpResponseRedirect(section.get_absolute_url())

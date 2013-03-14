@@ -144,3 +144,19 @@ class AddStandTests(TestCase):
         assert "only staff may access this" in response.content
         self.u.is_staff = True
         self.u.save()
+
+    def test_clone_stand(self):
+        self.u.is_superuser = True
+        self.u.save()
+        response = self.c.get("/clone/", HTTP_HOST="test.example.com")
+        assert response.status_code == 200
+        response = self.c.post(
+            "/clone/",
+            dict(
+                new_hierarchy="cloned.example.com",
+                ),
+            HTTP_HOST="test.example.com",
+        )
+        assert response.status_code == 200
+        response = self.c.get("/welcome/", HTTP_HOST="cloned.example.com")
+        assert "no such site" not in response.content

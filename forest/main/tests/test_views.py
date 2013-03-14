@@ -154,9 +154,21 @@ class AddStandTests(TestCase):
             "/clone/",
             dict(
                 new_hierarchy="cloned.example.com",
-                ),
+                copy_userperms="1",
+            ),
             HTTP_HOST="test.example.com",
         )
         assert response.status_code == 200
         response = self.c.get("/welcome/", HTTP_HOST="cloned.example.com")
         assert "no such site" not in response.content
+
+        response = self.c.get("/_stand/delete/",
+                              HTTP_HOST="cloned.example.com")
+        assert "Are you sure?" in response.content
+        response = self.c.post(
+            "/_stand/delete/",
+            dict(),
+            HTTP_HOST="cloned.example.com",
+        )
+        assert response.status_code == 200
+        assert "Stand has been deleted" in response.content

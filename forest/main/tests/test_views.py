@@ -172,3 +172,18 @@ class AddStandTests(TestCase):
         )
         assert response.status_code == 200
         assert "Stand has been deleted" in response.content
+
+    def test_stand_add_user(self):
+        self.u.is_superuser = True
+        self.u.save()
+        self.newu = User.objects.create(username="seconduser", is_staff=True)
+
+        response = self.c.post(
+            "/_stand/users/add/",
+            dict(
+                uni="seconduser",
+                access="student",
+            ),
+            HTTP_HOST="test.example.com"
+        )
+        assert response.status_code == 302

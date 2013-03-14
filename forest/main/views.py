@@ -95,6 +95,11 @@ def page_submit(section, request):
     return HttpResponseRedirect(section.get_absolute_url())
 
 
+def reset_page(section, request):
+    section.reset(request.user)
+    return HttpResponseRedirect(section.get_absolute_url())
+
+
 @render_to('main/page.html')
 @stand()
 def page(request, path):
@@ -114,8 +119,7 @@ def page(request, path):
     if request.method == "POST":
         # user has submitted a form. deal with it
         if request.POST.get('action', '') == 'reset':
-            section.reset(request.user)
-            return HttpResponseRedirect(section.get_absolute_url())
+            return reset_page(section, request)
         return page_submit(section, request)
     else:
         instructor_link = has_responses(section)

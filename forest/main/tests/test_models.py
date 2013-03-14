@@ -49,7 +49,7 @@ class StandModelTest(TestCase):
         assert len(self.stand.get_root().get_children()) > 0
 
 
-class AuthTests(TestCase):
+class ModelAuthTests(TestCase):
     def setUp(self):
         self.admin_user = User.objects.create(username="adminuser")
         self.editor_user = User.objects.create(username="editoruser")

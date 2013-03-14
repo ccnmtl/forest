@@ -210,3 +210,43 @@ class AddStandTests(TestCase):
             HTTP_HOST="test.example.com"
         )
         assert response.status_code == 302
+
+
+class ViewPageTests(TestCase):
+    def setUp(self):
+        self.u = User.objects.create(username="testuser", is_staff=True)
+        self.u.set_password("test")
+        self.u.save()
+        self.g = Group.objects.create(name="testgroup")
+        self.u.groups.add(self.g)
+        # make one that our user can't access
+        self.stand = Stand.objects.create(
+            title="test stand",
+            hostname="test.example.com",
+            access="open",
+        )
+        self.stand.make_default_tree()
+        self.c = Client()
+        self.c.login(username="testuser", password="test")
+
+    def tearDown(self):
+        self.g.delete()
+        self.u.delete()
+        self.stand.delete()
+
+    def test_view_index(self):
+        response = self.c.get("/", HTTP_HOST="test.example.com")
+
+        # expect to get redirected to the "/welcome/" page.
+        assert response.status_code == 302
+
+        response = self.c.get("/welcome/", HTTP_HOST="test.example.com")
+        assert response.status_code == 200
+
+        assert 'Welcome to your new Forest Site' in response.content
+        assert 'You should now use the ' in response.content
+
+    def test_404(self):
+        response = self.c.get("/page/that/doesnt/exist",
+                              HTTP_HOST="test.example.com")
+        assert response.status_code == 404

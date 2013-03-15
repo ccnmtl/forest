@@ -1,6 +1,8 @@
 from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
-from pagetree.helpers import get_hierarchy, get_section_from_path
-from pagetree.helpers import get_module, needs_submit, submitted
+from pagetree.helpers import get_section_from_path
+from pagetree.generic.views import generic_view_page
+from pagetree.generic.views import generic_instructor_page
+from pagetree.generic.views import generic_edit_page
 from django.contrib.auth.decorators import login_required
 from forest.main.models import get_stand, Stand
 from forest.main.models import StandUser, User, Group, StandGroup
@@ -61,117 +63,62 @@ class stand(object):
         return stand_func
 
 
-def has_responses(section):
-    quizzes = [p.block() for p in section.pageblock_set.all()
-               if hasattr(p.block(), 'needs_submit')
-               and p.block().needs_submit()]
-    return quizzes != []
-
-
-def visit_root(section):
-    """ if they try to visit the root, we need to send them
-    either to the first section on the site, or to
-    the admin page if there are no sections (so they
-    can add some)"""
-    if section.get_next():
-        # just send them to the first child
-        return HttpResponseRedirect(section.get_next().get_absolute_url())
-    # no sections available so
-    # send them to the stand admin interface
-    return HttpResponseRedirect("/_stand/")
-
-
-def page_submit(section, request):
-    proceed = section.submit(request.POST, request.user)
-    if proceed:
-        next_section = section.get_next()
-        if next_section:
-            return HttpResponseRedirect(next_section.get_absolute_url())
-        else:
-            # they are on the "last" section of the site
-            # all we can really do is send them back to this page
-            return HttpResponseRedirect(section.get_absolute_url())
-    # giving them feedback before they proceed
-    return HttpResponseRedirect(section.get_absolute_url())
-
-
-def reset_page(section, request):
-    section.reset(request.user)
-    return HttpResponseRedirect(section.get_absolute_url())
-
-
-@render_to('main/page.html')
 @stand()
 def page(request, path):
-    hierarchy = request.get_host()
-    section = get_section_from_path(path, hierarchy=hierarchy)
-    root = section.hierarchy.get_root()
-    module = get_module(section)
     if not request.stand.can_view(request.user):
         if not request.user.is_anonymous():
             return permission_denied(request)
         return HttpResponseRedirect("/accounts/login/?next=/")
     can_edit = request.stand.can_edit(request.user)
     can_admin = request.stand.can_admin(request.user)
-    if section.is_root():
-        return visit_root(section)
 
-    if request.method == "POST":
-        # user has submitted a form. deal with it
-        if request.POST.get('action', '') == 'reset':
-            return reset_page(section, request)
-        return page_submit(section, request)
-    else:
-        instructor_link = has_responses(section)
-        return dict(section=section,
-                    module=module,
-                    needs_submit=needs_submit(section),
-                    is_submitted=submitted(section, request.user),
-                    stand=request.stand,
-                    modules=root.get_children(),
-                    root=section.hierarchy.get_root(),
-                    can_edit=can_edit,
-                    can_admin=can_admin,
-                    instructor_link=instructor_link,
-                    )
+    hierarchy = request.get_host()
+    return generic_view_page(
+        request, path,
+        hierarchy=hierarchy,
+        extra_context=dict(
+            stand=request.stand,
+            can_edit=can_edit,
+            can_admin=can_admin,
+        ),
+        no_root_fallback_url="/_stand/",
+    )
 
 
 @login_required
-@render_to("main/instructor_page.html")
 @stand()
 def instructor_page(request, path):
-    h = get_hierarchy(request.get_host())
-    section = get_section_from_path(path, hierarchy=h)
-    root = section.hierarchy.get_root()
-
-    quizzes = [p.block() for p in section.pageblock_set.all()
-               if hasattr(p.block(), 'needs_submit')
-               and p.block().needs_submit()]
-    return dict(section=section,
-                quizzes=quizzes,
-                module=get_module(section),
-                modules=root.get_children(),
-                root=h.get_root())
+    if not request.stand.can_view(request.user):
+        if not request.user.is_anonymous():
+            return permission_denied(request)
+        return HttpResponseRedirect("/accounts/login/?next=/")
+    # TODO: enforce that they are an instructor
+    hierarchy = request.get_host()
+    return generic_instructor_page(
+        request, path,
+        hierarchy=hierarchy,
+        extra_context=dict(
+            stand=request.stand,
+        )
+    )
 
 
 @login_required
-@render_to('main/edit_page.html')
 @stand()
 def edit_page(request, path):
-    hierarchy = request.get_host()
-    section = get_section_from_path(path, hierarchy=hierarchy)
     if not request.stand.can_edit(request.user):
         return permission_denied(request, "You are not an admin for this site")
     can_admin = request.stand.can_admin(request.user)
-    root = section.hierarchy.get_root()
+    hierarchy = request.get_host()
 
-    return dict(section=section,
-                module=get_module(section),
-                modules=root.get_children(),
-                stand=request.stand,
-                can_admin=can_admin,
-                available_pageblocks=request.stand.available_pageblocks(),
-                root=section.hierarchy.get_root())
+    return generic_edit_page(
+        request, path, hierarchy=hierarchy,
+        extra_context=dict(
+            can_admin=can_admin,
+            stand=stand,
+            available_pageblocks=request.stand.available_pageblocks(),
+        ),
+    )
 
 
 @stand()

@@ -34,7 +34,7 @@
 	{% endif %}
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.1-beta/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </head>
-<body >
+<body class="{% block bodyclass %}{% endblock %}" id="{% block bodyid %}{% endblock %}">
 
 {% block primarynav %}
   <div class="navbar navbar-fixed-top">

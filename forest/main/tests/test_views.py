@@ -246,6 +246,10 @@ class ViewPageTests(TestCase):
         assert 'Welcome to your new Forest Site' in response.content
         assert 'You should now use the ' in response.content
 
+        # quick check for the expected body id/class
+        assert "module-welcome" in response.content
+        assert "section-" in response.content
+
     def test_post_to_page(self):
         response = self.c.post(
             "/welcome/",

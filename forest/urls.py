@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, include
+from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
 from django.views.generic.simple import direct_to_template
@@ -15,6 +15,7 @@ urlpatterns = patterns(
 
     ('^accounts/', include('djangowind.urls')),
     (r'^admin/', include(admin.site.urls)),
+    url(r'^_impersonate/', include('impersonate.urls')),
     (r'^munin/total_stands/',
      'forest.main.views.total_stands'),
     (r'^munin/total_sections/',

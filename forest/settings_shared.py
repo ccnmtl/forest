@@ -88,6 +88,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware',
     'waffle.middleware.WaffleMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
@@ -130,6 +131,7 @@ INSTALLED_APPS = (
     'smoketest',
     'django_jenkins',
     'waffle',
+    'impersonate',
 )
 
 PAGEBLOCKS = ['pageblocks.TextBlock',
@@ -202,3 +204,5 @@ STATSD_PREFIX = 'forest'
 STATSD_HOST = 'localhost'
 STATSD_PORT = 8125
 STATSD_PATCHES = ['django_statsd.patches.db', ]
+
+LOGIN_REDIRECT_URL = "/"

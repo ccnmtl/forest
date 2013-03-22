@@ -151,6 +151,11 @@ logged in as {{request.user.first_name}} {{request.user.last_name}}
 <p>This site was last updated on: <b>{{STAGING_DEPLOY_TIME}}</b></p>
 </div>
 {% endif %}
+{% if request.user.is_impersonate %}
+<div class="alert alert-error" style="position: fixed; left: 0px; top: 75px">
+You are impersonating. <a href="{% url impersonate-stop %}">stop</a>.
+</div>
+{% endif %}
 
 </body>
 </html>

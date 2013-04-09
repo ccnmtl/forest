@@ -7,3 +7,5 @@ CACHE
 .coverage
 cover
 reports
+lettuce.db
+ghostdriver.log

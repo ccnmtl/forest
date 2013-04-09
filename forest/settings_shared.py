@@ -132,6 +132,7 @@ INSTALLED_APPS = (
     'django_jenkins',
     'waffle',
     'impersonate',
+    'lettuce.django',
 )
 
 PAGEBLOCKS = ['pageblocks.TextBlock',
@@ -161,6 +162,10 @@ SENTRY_REMOTE_URL = 'http://sentry.ccnmtl.columbia.edu/sentry/store/'
 # remember to set the SENTRY_KEY in a local_settings.py
 # as documented in the wiki
 SENTRY_SITE = 'forest'
+
+LETTUCE_APPS = (
+    'forest.main',
+)
 
 THUMBNAIL_SUBDIR = "thumbs"
 EMAIL_SUBJECT_PREFIX = "[forest] "

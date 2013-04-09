@@ -28,3 +28,9 @@ requirements/src/unittest2-0.5.1.tar.gz
 requirements/src/logilab-common-0.59.0.tar.gz
 requirements/src/logilab-astng-0.24.1.tar.gz
 requirements/src/pylint-0.26.0.tar.gz
+requirements/src/fuzzywuzzy-0.1.tar.gz
+requirements/src/sure-1.1.7.tar.gz
+requirements/src/ipython-0.13.1.tar.gz
+requirements/src/ipdb-0.7.tar.gz
+requirements/src/lettuce-0.2.14.tar.gz
+requirements/src/selenium-2.29.0.tar.gz

@@ -7,6 +7,8 @@ import selenium.webdriver.support.ui as ui
 import sys
 import os
 
+from forest.main.models import Stand
+
 import time
 try:
     from lxml import html
@@ -75,6 +77,22 @@ def finished_selenium(step):
 @before.each_scenario
 def clear_selenium(step):
     world.using_selenium = False
+
+
+@step(r'an ungated stand')
+def an_ungated_stand(step):
+    world.stand = Stand.objects.create(
+        title="test stand",
+        hostname="0.0.0.0:8002")
+
+
+@step(r'a gated stand')
+def a_gated_stand(step):
+    # TODO: gate it
+    world.stand = Stand.objects.create(
+        title="test stand",
+        hostname="0.0.0.0:8002")
+
 
 @step(r'I access the url "(.*)"')
 def access_url(step, url):

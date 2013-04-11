@@ -2,10 +2,12 @@
 from lettuce.django import django_url
 from lettuce import before, after, world, step
 from django.conf import settings
+from django.contrib.auth.models import User, Group
 from django.test import client
 import os
 
 from forest.main.models import Stand
+from pagetree.models import UserPageVisit
 
 import time
 try:
@@ -52,6 +54,21 @@ def setup_database(_foo):
     os.system("cp test_data/test.db lettuce.db")
 
 
+@before.harvest
+def create_user(_foo):
+    world.user = User.objects.create(username="testuser")
+    world.user.set_password("test")
+    world.group = Group.objects.create(name="testgroup")
+    world.user.groups.add(world.group)
+    world.user.save()
+
+
+@after.harvest
+def clear_user(_foo):
+    world.group.delete()
+    world.user.delete()
+
+
 @after.harvest
 def teardown_database(_foo):
     os.system("rm -f lettuce.db")
@@ -77,11 +94,40 @@ def clear_selenium(step):
     world.using_selenium = False
 
 
+def populate_stand(stand):
+    page_dict = {
+        'label': 'First',
+        'slug': 'first',
+        'pageblocks': [
+            {'label': 'Welcome to your new Forest Site',
+             'css_extra': '',
+             'block_type': 'Text Block',
+             'body': 'You should now use the edit link to add content',
+             },
+        ],
+        'children': [],
+    }
+    stand.get_root().add_child_section_from_dict(page_dict)
+    page_dict['label'] = "Second"
+    page_dict['slug'] = "second"
+    stand.get_root().add_child_section_from_dict(page_dict)
+    page_dict['label'] = "Third"
+    page_dict['slug'] = "third"
+    stand.get_root().add_child_section_from_dict(page_dict)
+    page_dict['label'] = "Fourth"
+    page_dict['slug'] = "fourth"
+    stand.get_root().add_child_section_from_dict(page_dict)
+    page_dict['label'] = "Fifth"
+    page_dict['slug'] = "fifth"
+    stand.get_root().add_child_section_from_dict(page_dict)
+
+
 @step(r'an ungated stand')
 def an_ungated_stand(step):
     world.stand = Stand.objects.create(
         title="test stand",
-        hostname="0.0.0.0:8002")
+        hostname="test.example.com")
+    populate_stand(world.stand)
 
 
 @step(r'a gated stand')
@@ -89,7 +135,8 @@ def a_gated_stand(step):
     # TODO: gate it
     world.stand = Stand.objects.create(
         title="test stand",
-        hostname="0.0.0.0:8002")
+        hostname="test.example.com")
+    populate_stand(world.stand)
 
 
 class Step(object):
@@ -112,10 +159,17 @@ class Step(object):
 
 class UrlAccessStep(Step):
     def selenium(self, url):
+        # selenium can't/won't set additional http headers
+        # so to do the equivalent here, we would have to
+        # run a proxy server. yuck.
+        # for now, just keep in mind that
+        # selenium won't be accessing the site the same way
         world.browser.get(django_url(url))
 
     def non_selenium(self, url):
-        response = world.client.get(django_url(url))
+        response = world.client.get(
+            django_url(url),
+            HTTP_HOST="test.example.com")
         world.dom = html.fromstring(response.content)
         world.response = response
 
@@ -138,12 +192,26 @@ def i_am_not_logged_in(step):
     NotLoggedInStep().execute()
 
 
+def robust_string_compare(a, b):
+    """ we usually don't care about case or whitespace """
+    a = a.lower().strip()
+    b = b.lower().strip()
+    return a == b
+
+
+def robust_string_in(a, b):
+    """ find a in b, without being strict about whitespace or case """
+    a = a.lower().strip()
+    b = b.lower().strip()
+    return a in b
+
+
 class AtTheNamePageStep(Step):
     def selenium(self, name):
         assert world.browser.title.find(name) > -1
 
     def non_selenium(self, name):
-        assert name in world.response.content
+        assert robust_string_in(name, world.response.content)
 
 
 @step(u'I am at the ([^"]*) page')
@@ -326,3 +394,28 @@ class ITypeValueForFieldStep(Step):
 @step(u'I type "([^"]*)" for ([^"]*)')
 def i_type_value_for_field(step, value, field):
     ITypeValueForFieldStep().execute(value, field)
+
+
+class IAmLoggedInStep(Step):
+    def non_selenium(self):
+        world.client.login(username="testuser", password="test")
+
+
+@step(u'I am logged in')
+def i_am_logged_in(step):
+    IAmLoggedInStep().execute()
+
+
+@step(u'a clear history')
+def clear_history(step):
+    UserPageVisit.objects.filter(user=world.user).delete()
+
+
+@step(u'I access the (\w+) section')
+def i_access_the_nth_section(step, n):
+    UrlAccessStep().execute("/%s/" % n)
+
+
+@step(u'I am on the (\w+) section')
+def i_am_on_the_nth_section(step, n):
+    AtTheNamePageStep().execute("<h1>" + n + "</h1>")

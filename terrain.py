@@ -18,8 +18,8 @@ try:
 except:
     pass
 
-@before.harvest
-def setup_browser(variables):
+@before.all
+def setup_browser():
     world.using_selenium = False
     world.client = client.Client()
     world.browser = None
@@ -42,7 +42,7 @@ def setup_browser(variables):
     world.memory = {}
 
 
-@after.harvest
+@after.all
 def teardown_browser(total):
     world.browser.quit()
 

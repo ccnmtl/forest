@@ -91,29 +91,30 @@ def a_gated_stand(step):
         title="test stand",
         hostname="0.0.0.0:8002")
 
+
 class Step(object):
     """ a base class for abstracting out selenium vs django test client"""
     def execute(self, *args, **kwargs):
         """ concrete template method. do not override """
         if world.using_selenium:
-            self.selenium_execute(*args, **kwargs)
+            self.selenium(*args, **kwargs)
         else:
-            self.non_selenium_execute(*args, **kwargs)
+            self.non_selenium(*args, **kwargs)
 
-    def selenium_execute(self, *args, **kwargs):
+    def selenium(self, *args, **kwargs):
         """ "virtual" method. override for selenium"""
         assert False, "not implemented for selenium"
 
-    def non_selenium_execute(self, *args, **kwargs):
+    def non_selenium(self, *args, **kwargs):
         """ "virtual" method. override for test client"""
         assert False, "not implemented for django test client"
 
 
 class UrlAccessStep(Step):
-    def selenium_execute(self, url):
+    def selenium(self, url):
         world.browser.get(django_url(url))
 
-    def non_selenium_execute(self, url):
+    def non_selenium(self, url):
         response = world.client.get(django_url(url))
         world.dom = html.fromstring(response.content)
         world.response = response
@@ -124,71 +125,91 @@ def access_url(step, url):
     UrlAccessStep().execute(url)
 
 
+class NotLoggedInStep(Step):
+    def selenium(self):
+        world.browser.get(django_url("/accounts/logout/"))
+
+    def non_selenium(self):
+        world.client.logout()
+
+
 @step(u'I am not logged in')
 def i_am_not_logged_in(step):
-    if world.using_selenium:
-        world.browser.get(django_url("/accounts/logout/"))
-    else:
-        world.client.logout()
+    NotLoggedInStep().execute()
+
+
+class AtTheNamePageStep(Step):
+    def selenium(self, name):
+        assert world.browser.title.find(name) > -1
+
+    def non_selenium(self, name):
+        assert name in world.response.content
 
 
 @step(u'I am at the ([^"]*) page')
 def i_am_at_the_name_page(step, name):
-    if world.using_selenium:
-        assert world.browser.title.find(name) > -1
-    else:
-        assert name in world.response.content
+    AtTheNamePageStep().execute(name)
 
 
-@step(u'I am taken to a login screen')
-def i_am_taken_to_a_login_screen(step):
-    if world.using_selenium:
+class TakenToALoginScreenStep(Step):
+    def selenium(self):
         assert world.browser.title.find("login") > -1
-    else:
+
+    def non_selenium(self):
         assert len(world.response.redirect_chain) > 0
         (url, status) = world.response.redirect_chain[0]
         assert status == 302, status
         assert "/login/" in url, "URL redirected to was %s" % url
 
 
+@step(u'I am taken to a login screen')
+def i_am_taken_to_a_login_screen(step):
+    TakenToALoginScreenStep().execute()
+
+
+class ThereIsNoSuchSiteStep(Step):
+    def selenium(self):
+        assert 'no such site' in world.browser.page_source
+
+    def non_selenium(self):
+        assert 'no such site' in world.response.content
+
+
 @step(u'there is no such site')
 def there_is_no_such_site(step):
-    if world.using_selenium:
-        assert 'no such site' in world.browser.page_source
-    else:
-        assert 'no such site' in world.response.content
+    ThereIsNoSuchSiteStep().execute()
+
+
+class ThereIsNotALinkStep(Step):
+    def non_selenium(self, text):
+        found = False
+        for a in world.dom.cssselect("a"):
+            if a.text and a.text.strip() == text:
+                found = True
+        assert not found
 
 
 @step(u'there is not an? "([^"]*)" link')
 def there_is_not_a_link(step, text):
-    found = False
-    for a in world.dom.cssselect("a"):
-        if a.text and a.text.strip() == text:
-            found = True
-    assert not found
+    ThereIsNotALinkStep().execute(text)
+
+
+class ThereIsALinkStep(Step):
+    def non_selenium(self, text):
+        found = False
+        for a in world.dom.cssselect("a"):
+            if a.text and a.text.strip() == text:
+                found = True
+        assert found
 
 
 @step(u'there is an? "([^"]*)" link')
 def there_is_a_link(step, text):
-    found = False
-    for a in world.dom.cssselect("a"):
-        if a.text and a.text.strip() == text:
-            found = True
-    assert found
+    ThereIsALinkStep().execute(text)
 
 
-@step(u'I click the "([^"]*)" link')
-def i_click_the_link(step, text):
-    if not world.using_selenium:
-        for a in world.dom.cssselect("a"):
-            if a.text:
-                if text.strip().lower() in a.text.strip().lower():
-                    href = a.attrib['href']
-                    response = world.client.get(django_url(href))
-                    world.dom = html.fromstring(response.content)
-                    return
-        assert False, "could not find the '%s' link" % text
-    else:
+class IClickTheLinkStep(Step):
+    def selenium(self, text):
         try:
             link = world.browser.find_element_by_partial_link_text(text)
             assert link.is_displayed()
@@ -203,33 +224,51 @@ def i_click_the_link(step, text):
                 world.browser.get_screenshot_as_file("/tmp/selenium.png")
                 assert False, link.location
 
+    def non_selenium(self, text):
+        for a in world.dom.cssselect("a"):
+            if a.text:
+                if text.strip().lower() in a.text.strip().lower():
+                    href = a.attrib['href']
+                    response = world.client.get(django_url(href))
+                    world.dom = html.fromstring(response.content)
+                    return
+        assert False, "could not find the '%s' link" % text
+
+
+@step(u'I click the "([^"]*)" link')
+def i_click_the_link(step, text):
+    IClickTheLinkStep.execute(text)
+
+
+class IFillInTheFormFieldStep(Step):
+    def selenium(self, value, field_name):
+        # note: relies on input having id set, not just name
+        world.browser.find_element_by_id(field_name).send_keys(value)
+
 
 @step(u'I fill in "([^"]*)" in the "([^"]*)" form field')
 def i_fill_in_the_form_field(step, value, field_name):
-    # note: relies on input having id set, not just name
-    if not world.using_selenium:
-        assert False, ("this step needs to be implemented for the "
-                       "django test client")
+    IFillInTheFormFieldStep().execute(value, field_name)
 
-    world.browser.find_element_by_id(field_name).send_keys(value)
+
+class ISubmitTheFormStep(Step):
+    def selenium(self, form_id):
+        world.browser.find_element_by_id(form_id).submit()
 
 
 @step(u'I submit the "([^"]*)" form')
-def i_submit_the_form(step, id):
-    if not world.using_selenium:
-        assert False, ("this step needs to be implemented for the "
-                       "django test client")
+def i_submit_the_form(step, form_id):
+    ISubmitTheFormStep().execute(form_id)
 
-    world.browser.find_element_by_id(id).submit()
+
+class IGoBackStep(Step):
+    def selenium(self):
+        world.browser.back()
 
 
 @step('I go back')
 def i_go_back(self):
-    """ need to back out of games currently"""
-    if not world.using_selenium:
-        assert False, ("this step needs to be implemented for the "
-                       "django test client")
-    world.browser.back()
+    IGoBackStep().execute()
 
 
 @step(u'I wait for (\d+) seconds')
@@ -237,39 +276,53 @@ def wait(step, seconds):
     time.sleep(int(seconds))
 
 
-@step(r'I see the header "(.*)"')
-def see_header(step, text):
-    if world.using_selenium:
+class ISeeTheHeaderStep(Step):
+    def selenium(self, text):
         assert text.strip() == world.browser.find_element_by_css_selector(
             ".hero-unit>h1").text.strip()
-    else:
+
+    def non_selenium(self, text):
         header = world.dom.cssselect('h1')[0]
         assert text.strip() == header.text_content().strip()
 
 
+@step(r'I see the header "(.*)"')
+def see_header(step, text):
+    ISeeTheHeaderStep().execute(text)
+
+
+class ISeeTheSidebarStep(Step):
+    def non_selenium(self):
+        assert len(world.dom.cssselect('#sidebar')) == 1
+
+
 @step(r'I see the sidebar')
 def see_sidebar(self):
-    if world.using_selenium:
-        assert False, "this step needs to be implemented for selenium"
-    else:
-        assert len(world.dom.cssselect('#sidebar')) == 1
+    ISeeTheSidebarStep().execute()
+
+
+class ISeeThePageTitleStep(Step):
+    def selenium(self, text):
+        assert text == world.browser.title
+
+    def non_selenium(self, text):
+        assert text == world.dom.find(".//title").text
 
 
 @step(r'I see the page title "(.*)"')
 def see_title(step, text):
-    if world.using_selenium:
-        assert text == world.browser.title
-    else:
-        assert text == world.dom.find(".//title").text
+    ISeeThePageTitleStep().execute(text)
 
 
-@step(u'I type "([^"]*)" for ([^"]*)')
-def i_type_value_for_field(step, value, field):
-    if not world.using_selenium:
-        assert False, "not implemented in the django test client"
-    else:
+class ITypeValueForFieldStep(Step):
+    def selenium(self, value, field):
         selector = "input[name=%s]" % field
         elt = world.browser.find_element_by_css_selector(selector)
         assert elt is not None, "Cannot locate input field named %s" % field
         elt.clear()
         elt.send_keys(value)
+
+
+@step(u'I type "([^"]*)" for ([^"]*)')
+def i_type_value_for_field(step, value, field):
+    ITypeValueForFieldStep().execute(value, field)

@@ -91,15 +91,37 @@ def a_gated_stand(step):
         title="test stand",
         hostname="0.0.0.0:8002")
 
+class Step(object):
+    """ a base class for abstracting out selenium vs django test client"""
+    def execute(self, *args, **kwargs):
+        """ concrete template method. do not override """
+        if world.using_selenium:
+            self.selenium_execute(*args, **kwargs)
+        else:
+            self.non_selenium_execute(*args, **kwargs)
 
-@step(r'I access the url "(.*)"')
-def access_url(step, url):
-    if world.using_selenium:
+    def selenium_execute(self, *args, **kwargs):
+        """ "virtual" method. override for selenium"""
+        assert False, "not implemented for selenium"
+
+    def non_selenium_execute(self, *args, **kwargs):
+        """ "virtual" method. override for test client"""
+        assert False, "not implemented for django test client"
+
+
+class UrlAccessStep(Step):
+    def selenium_execute(self, url):
         world.browser.get(django_url(url))
-    else:
+
+    def non_selenium_execute(self, url):
         response = world.client.get(django_url(url))
         world.dom = html.fromstring(response.content)
         world.response = response
+
+
+@step(r'I access the url "(.*)"')
+def access_url(step, url):
+    UrlAccessStep().execute(url)
 
 
 @step(u'I am not logged in')

@@ -138,13 +138,9 @@ class AccessChecker(object):
         return StandGroup.objects.filter(stand=self.stand)
 
     def in_edit_group(self):
-        allowed_groups = {
-            g.group.name for g in self.standgroups()
-            if g.access in ["admin", "faculty", "ta"]
-        }
-        user_groups = {
-            g.name for g in self.user.groups.all()
-        }
+        allowed_groups = {g.group.name for g in self.standgroups()
+                          if g.access in ["admin", "faculty", "ta"]}
+        user_groups = {g.name for g in self.user.groups.all()}
         return len(allowed_groups.intersection(user_groups)) > 0
 
     def user_group_can_x(self, permission):

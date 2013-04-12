@@ -5,6 +5,7 @@ This also serves as a good test that the lettuce and selenium
 stuff is all hooked up properly and running.
 
     Scenario: Index Page Load
+        Given an ungated stand
         Given I am not logged in
         When I access the url "/first/"
         Then I am on the first section

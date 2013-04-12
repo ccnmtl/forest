@@ -31,4 +31,4 @@ Feature: Gates
         Given a gated stand
         Given I am not logged in
         When I access the first section
-#        Then I am at the log in page
+        Then I am at the log in page

@@ -124,18 +124,24 @@ def populate_stand(stand):
 
 @step(r'an ungated stand')
 def an_ungated_stand(step):
+    Stand.objects.all().delete()
     world.stand = Stand.objects.create(
         title="test stand",
-        hostname="test.example.com")
+        hostname="test.example.com",
+        gated=False,
+        )
     populate_stand(world.stand)
 
 
 @step(r'a gated stand')
 def a_gated_stand(step):
     # TODO: gate it
+    Stand.objects.all().delete()
     world.stand = Stand.objects.create(
         title="test stand",
-        hostname="test.example.com")
+        hostname="test.example.com",
+        gated=True,
+        )
     populate_stand(world.stand)
 
 
@@ -169,8 +175,13 @@ class UrlAccessStep(Step):
     def non_selenium(self, url):
         response = world.client.get(
             django_url(url),
-            HTTP_HOST="test.example.com")
-        world.dom = html.fromstring(response.content)
+            HTTP_HOST="test.example.com",
+            follow=True)
+        try:
+            world.dom = html.fromstring(response.content)
+        except:
+            # sometimes lxml can't parse it
+            world.dom = None
         world.response = response
 
 

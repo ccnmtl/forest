@@ -69,6 +69,9 @@ def page(request, path):
         if not request.user.is_anonymous():
             return permission_denied(request)
         return HttpResponseRedirect("/accounts/login/?next=/")
+    if (request.stand.gated
+            and request.user.is_anonymous()):
+        return HttpResponseRedirect("/accounts/login/?next=/")
     can_edit = request.stand.can_edit(request.user)
     can_admin = request.stand.can_admin(request.user)
 

@@ -141,14 +141,14 @@ class AccessChecker(object):
         allowed_groups = {g.group.name for g in self.standgroups()
                           if g.access in ["admin", "faculty", "ta"]}
         user_groups = {g.name for g in self.user.groups.all()}
-        return len(allowed_groups.intersection(user_groups)) > 0
+        return len(allowed_groups & user_groups) > 0
 
     def user_group_can_x(self, permission):
         """check if the user is in a group that has access"""
         allowed_groups = {g.group.name for g in self.standgroups()
                           if permission == "view" or g.access == permission}
         user_groups = {g.name for g in self.user.groups.all()}
-        return len(allowed_groups.intersection(user_groups)) > 0
+        return len(allowed_groups & user_groups) > 0
 
 
 class Stand(models.Model):

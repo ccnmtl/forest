@@ -15,6 +15,27 @@ add_introspection_rules(
      "django_extensions.db.fields.UUIDField"])
 
 
+class AccessChecker(object):
+    def __init__(self, stand):
+        self.stand = stand
+
+    def can_edit(self, user):
+        if not user:
+            return False
+        if user.is_anonymous():
+            return False
+        if user.is_superuser:
+            return True
+        r = StandUser.objects.filter(stand=self.stand, user=user)
+        if r.count() > 0:
+            su = r[0]
+            if su.access in ["admin", "faculty", "ta"]:
+                return True
+        if self.stand.in_edit_group(user):
+            return True
+        return False
+
+
 class Stand(models.Model):
     title = models.CharField(max_length=256, default=u"", blank=True,
                              null=True)
@@ -40,20 +61,7 @@ class Stand(models.Model):
         return sha1.hexdigest()
 
     def can_edit(self, user):
-        if not user:
-            return False
-        if user.is_anonymous():
-            return False
-        if user.is_superuser:
-            return True
-        r = StandUser.objects.filter(stand=self, user=user)
-        if r.count() > 0:
-            su = r[0]
-            if su.access in ["admin", "faculty", "ta"]:
-                return True
-        if self.in_edit_group(user):
-            return True
-        return False
+        return AccessChecker(self).can_edit(user)
 
     def in_edit_group(self, user):
         allowed_groups = []

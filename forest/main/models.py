@@ -20,7 +20,7 @@ class AccessChecker(object):
         self.stand = stand
         self.user = user
 
-    def standusers(self):
+    def standuser(self):
         return StandUser.objects.filter(stand=self.stand, user=self.user)
 
     def can_edit(self):
@@ -30,7 +30,7 @@ class AccessChecker(object):
             return False
         if self.user.is_superuser:
             return True
-        r = self.standusers()
+        r = self.standuser()
         if r.count() > 0:
             su = r[0]
             if su.access in ["admin", "faculty", "ta"]:
@@ -48,7 +48,7 @@ class AccessChecker(object):
             return False
         if self.user.is_superuser:
             return True
-        r = self.standusers()
+        r = self.standuser()
         if r.count() > 0:
             return True
         if self.user_group_can_x("view"):
@@ -62,7 +62,7 @@ class AccessChecker(object):
             return False
         if self.user.is_superuser:
             return True
-        r = self.standusers()
+        r = self.standuser()
         if r.count() > 0:
             su = r[0]
             if su.access == "admin":

@@ -15,7 +15,69 @@ add_introspection_rules(
      "django_extensions.db.fields.UUIDField"])
 
 
+class RequireUser(object):
+    def check(self, checker):
+        if not checker.user:
+            return False
+
+
+class DenyAnonymous(object):
+    def check(self, checker):
+        if checker.user.is_anonymous():
+            return False
+
+
+class AllowSuperUser(object):
+    def check(self, checker):
+        if checker.user.is_superuser:
+            return True
+
+
+class AllowOpen(object):
+    def check(self, checker):
+        if checker.stand.access == "open":
+            return True
+
+
+class AllowEditUser(object):
+    def check(self, checker):
+        if checker._access_in(["admin", "faculty", "ta"]):
+            return True
+
+
+class AllowInEditGroup(object):
+    def check(self, checker):
+        if checker.in_edit_group():
+            return True
+
+
+class AllowStandUser(object):
+    def check(self, checker):
+        r = checker.standuser()
+        if r.count() > 0:
+            return True
+
+
+class AllowUserGroupCanView(object):
+    def check(self, checker):
+        if checker.user_group_can_x("view"):
+            return True
+
+
+class AllowAdminUser(object):
+    def check(self, checker):
+        if checker._access_in(["admin"]):
+            return True
+
+
+class AllowInAdminGroup(object):
+    def check(self, checker):
+        if checker.user_group_can_x("admin"):
+            return True
+
+
 class AccessChecker(object):
+    """ centralize access control policy checks """
     def __init__(self, stand, user):
         self.stand = stand
         self.user = user
@@ -31,47 +93,46 @@ class AccessChecker(object):
                 return True
         return False
 
-    def can_edit(self):
-        if not self.user:
-            return False
-        if self.user.is_anonymous():
-            return False
-        if self.user.is_superuser:
-            return True
-        if self._access_in(["admin", "faculty", "ta"]):
-            return True
-        if self.in_edit_group():
-            return True
+    def check(self, policies):
+        """ call each policy implementation in order
+        short-circuiting out as soon as any of them
+        give us an explicity ALLOW/DENY """
+        for p in policies:
+            status = p.check(self)
+            if status is not None:
+                return status
         return False
+
+    def can_edit(self):
+        policies = [
+            RequireUser(),
+            DenyAnonymous(),
+            AllowSuperUser(),
+            AllowEditUser(),
+            AllowInEditGroup(),
+        ]
+        return self.check(policies)
 
     def can_view(self):
-        if self.stand.access == "open":
-            return True
-        if not self.user:
-            return False
-        if self.user.is_anonymous():
-            return False
-        if self.user.is_superuser:
-            return True
-        r = self.standuser()
-        if r.count() > 0:
-            return True
-        if self.user_group_can_x("view"):
-            return True
-        return False
+        policies = [
+            AllowOpen(),
+            RequireUser(),
+            DenyAnonymous(),
+            AllowSuperUser(),
+            AllowStandUser(),
+            AllowUserGroupCanView(),
+        ]
+        return self.check(policies)
 
     def can_admin(self):
-        if not self.user:
-            return False
-        if self.user.is_anonymous():
-            return False
-        if self.user.is_superuser:
-            return True
-        if self._access_in(["admin"]):
-            return True
-        if self.user_group_can_x("admin"):
-            return True
-        return False
+        policies = [
+            RequireUser(),
+            DenyAnonymous(),
+            AllowSuperUser(),
+            AllowAdminUser(),
+            AllowInAdminGroup(),
+        ]
+        return self.check(policies)
 
     def standgroups(self):
         return StandGroup.objects.filter(stand=self.stand)

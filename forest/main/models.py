@@ -29,6 +29,7 @@ class Stand(models.Model):
                       ('whitelist', 'Whitelisted Users Only'))
     access = models.CharField(max_length=256, default="open",
                               choices=ACCESS_CHOICES)
+    gated = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.title

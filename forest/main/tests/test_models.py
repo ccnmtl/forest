@@ -48,6 +48,9 @@ class StandModelTest(TestCase):
         self.stand.make_default_tree()
         assert len(self.stand.get_root().get_children()) > 0
 
+    def test_default_gating(self):
+        assert not self.stand.gated
+
 
 class ModelAuthTests(TestCase):
     def setUp(self):

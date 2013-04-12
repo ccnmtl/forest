@@ -51,6 +51,22 @@ class AccessChecker(object):
             return True
         return False
 
+    def can_admin(self, user):
+        if not user:
+            return False
+        if user.is_anonymous():
+            return False
+        if user.is_superuser:
+            return True
+        r = StandUser.objects.filter(stand=self.stand, user=user)
+        if r.count() > 0:
+            su = r[0]
+            if su.access == "admin":
+                return True
+        if self.stand.user_group_can_x(user, "admin"):
+            return True
+        return False
+
 
 class Stand(models.Model):
     title = models.CharField(max_length=256, default=u"", blank=True,
@@ -107,20 +123,7 @@ class Stand(models.Model):
         return False
 
     def can_admin(self, user):
-        if not user:
-            return False
-        if user.is_anonymous():
-            return False
-        if user.is_superuser:
-            return True
-        r = StandUser.objects.filter(stand=self, user=user)
-        if r.count() > 0:
-            su = r[0]
-            if su.access == "admin":
-                return True
-        if self.user_group_can_x(user, "admin"):
-            return True
-        return False
+        return AccessChecker(self).can_admin(user)
 
     def available_pageblocks(self):
         enabled = [pb.block for pb in self.standavailablepageblock_set.all()]

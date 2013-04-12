@@ -47,7 +47,7 @@ class AccessChecker(object):
         r = StandUser.objects.filter(stand=self.stand, user=user)
         if r.count() > 0:
             return True
-        if self.stand.user_group_can_x(user, "view"):
+        if self.user_group_can_x(user, "view"):
             return True
         return False
 
@@ -63,7 +63,7 @@ class AccessChecker(object):
             su = r[0]
             if su.access == "admin":
                 return True
-        if self.stand.user_group_can_x(user, "admin"):
+        if self.user_group_can_x(user, "admin"):
             return True
         return False
 
@@ -71,6 +71,19 @@ class AccessChecker(object):
         allowed_groups = []
         for g in StandGroup.objects.filter(stand=self.stand):
             if g.access in ["admin", "faculty", "ta"]:
+                allowed_groups.append(g.group.name)
+        for g in user.groups.all():
+            if g.name in allowed_groups:
+                # bail as soon as we find a group affil that's allowed
+                return True
+        return False
+
+    def user_group_can_x(self, user, permission):
+        """check if the user is in a group that has access"""
+
+        allowed_groups = []
+        for g in StandGroup.objects.filter(stand=self.stand):
+            if permission == "view" or g.access == permission:
                 allowed_groups.append(g.group.name)
         for g in user.groups.all():
             if g.name in allowed_groups:
@@ -108,19 +121,6 @@ class Stand(models.Model):
 
     def can_view(self, user):
         return AccessChecker(self).can_view(user)
-
-    def user_group_can_x(self, user, permission):
-        """check if the user is in a group that has access"""
-
-        allowed_groups = []
-        for g in StandGroup.objects.filter(stand=self):
-            if permission == "view" or g.access == permission:
-                allowed_groups.append(g.group.name)
-        for g in user.groups.all():
-            if g.name in allowed_groups:
-                # bail as soon as we find a group affil that's allowed
-                return True
-        return False
 
     def can_admin(self, user):
         return AccessChecker(self).can_admin(user)

@@ -31,7 +31,7 @@ class AccessChecker(object):
             su = r[0]
             if su.access in ["admin", "faculty", "ta"]:
                 return True
-        if self.stand.in_edit_group(user):
+        if self.in_edit_group(user):
             return True
         return False
 
@@ -67,6 +67,17 @@ class AccessChecker(object):
             return True
         return False
 
+    def in_edit_group(self, user):
+        allowed_groups = []
+        for g in StandGroup.objects.filter(stand=self.stand):
+            if g.access in ["admin", "faculty", "ta"]:
+                allowed_groups.append(g.group.name)
+        for g in user.groups.all():
+            if g.name in allowed_groups:
+                # bail as soon as we find a group affil that's allowed
+                return True
+        return False
+
 
 class Stand(models.Model):
     title = models.CharField(max_length=256, default=u"", blank=True,
@@ -97,17 +108,6 @@ class Stand(models.Model):
 
     def can_view(self, user):
         return AccessChecker(self).can_view(user)
-
-    def in_edit_group(self, user):
-        allowed_groups = []
-        for g in StandGroup.objects.filter(stand=self):
-            if g.access in ["admin", "faculty", "ta"]:
-                allowed_groups.append(g.group.name)
-        for g in user.groups.all():
-            if g.name in allowed_groups:
-                # bail as soon as we find a group affil that's allowed
-                return True
-        return False
 
     def user_group_can_x(self, user, permission):
         """check if the user is in a group that has access"""

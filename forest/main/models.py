@@ -16,76 +16,77 @@ add_introspection_rules(
 
 
 class AccessChecker(object):
-    def __init__(self, stand):
+    def __init__(self, stand, user):
         self.stand = stand
+        self.user = user
 
-    def can_edit(self, user):
-        if not user:
+    def can_edit(self):
+        if not self.user:
             return False
-        if user.is_anonymous():
+        if self.user.is_anonymous():
             return False
-        if user.is_superuser:
+        if self.user.is_superuser:
             return True
-        r = StandUser.objects.filter(stand=self.stand, user=user)
+        r = StandUser.objects.filter(stand=self.stand, user=self.user)
         if r.count() > 0:
             su = r[0]
             if su.access in ["admin", "faculty", "ta"]:
                 return True
-        if self.in_edit_group(user):
+        if self.in_edit_group():
             return True
         return False
 
-    def can_view(self, user):
+    def can_view(self):
         if self.stand.access == "open":
             return True
-        if not user:
+        if not self.user:
             return False
-        if user.is_anonymous():
+        if self.user.is_anonymous():
             return False
-        if user.is_superuser:
+        if self.user.is_superuser:
             return True
-        r = StandUser.objects.filter(stand=self.stand, user=user)
+        r = StandUser.objects.filter(stand=self.stand, user=self.user)
         if r.count() > 0:
             return True
-        if self.user_group_can_x(user, "view"):
+        if self.user_group_can_x("view"):
             return True
         return False
 
-    def can_admin(self, user):
-        if not user:
+    def can_admin(self):
+        if not self.user:
             return False
-        if user.is_anonymous():
+        if self.user.is_anonymous():
             return False
-        if user.is_superuser:
+        if self.user.is_superuser:
             return True
-        r = StandUser.objects.filter(stand=self.stand, user=user)
+        r = StandUser.objects.filter(stand=self.stand, user=self.user)
         if r.count() > 0:
             su = r[0]
             if su.access == "admin":
                 return True
-        if self.user_group_can_x(user, "admin"):
+        if self.user_group_can_x("admin"):
             return True
         return False
 
-    def in_edit_group(self, user):
+    def in_edit_group(self):
         allowed_groups = []
         for g in StandGroup.objects.filter(stand=self.stand):
             if g.access in ["admin", "faculty", "ta"]:
                 allowed_groups.append(g.group.name)
-        for g in user.groups.all():
+        for g in self.user.groups.all():
             if g.name in allowed_groups:
                 # bail as soon as we find a group affil that's allowed
                 return True
         return False
 
-    def user_group_can_x(self, user, permission):
+    def user_group_can_x(self, permission):
         """check if the user is in a group that has access"""
 
         allowed_groups = []
         for g in StandGroup.objects.filter(stand=self.stand):
             if permission == "view" or g.access == permission:
                 allowed_groups.append(g.group.name)
-        for g in user.groups.all():
+        for g in self.user.groups.all():
             if g.name in allowed_groups:
                 # bail as soon as we find a group affil that's allowed
                 return True
@@ -117,13 +118,13 @@ class Stand(models.Model):
         return sha1.hexdigest()
 
     def can_edit(self, user):
-        return AccessChecker(self).can_edit(user)
+        return AccessChecker(self, user).can_edit()
 
     def can_view(self, user):
-        return AccessChecker(self).can_view(user)
+        return AccessChecker(self, user).can_view()
 
     def can_admin(self, user):
-        return AccessChecker(self).can_admin(user)
+        return AccessChecker(self, user).can_admin()
 
     def available_pageblocks(self):
         enabled = [pb.block for pb in self.standavailablepageblock_set.all()]

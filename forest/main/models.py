@@ -35,6 +35,22 @@ class AccessChecker(object):
             return True
         return False
 
+    def can_view(self, user):
+        if self.stand.access == "open":
+            return True
+        if not user:
+            return False
+        if user.is_anonymous():
+            return False
+        if user.is_superuser:
+            return True
+        r = StandUser.objects.filter(stand=self.stand, user=user)
+        if r.count() > 0:
+            return True
+        if self.stand.user_group_can_x(user, "view"):
+            return True
+        return False
+
 
 class Stand(models.Model):
     title = models.CharField(max_length=256, default=u"", blank=True,
@@ -63,6 +79,9 @@ class Stand(models.Model):
     def can_edit(self, user):
         return AccessChecker(self).can_edit(user)
 
+    def can_view(self, user):
+        return AccessChecker(self).can_view(user)
+
     def in_edit_group(self, user):
         allowed_groups = []
         for g in StandGroup.objects.filter(stand=self):
@@ -72,23 +91,6 @@ class Stand(models.Model):
             if g.name in allowed_groups:
                 # bail as soon as we find a group affil that's allowed
                 return True
-        return False
-
-    def can_view(self, user):
-        if self.access == "open":
-            return True
-        if not user:
-            return False
-        if user.is_anonymous():
-            return False
-        if user.is_superuser:
-            return True
-        r = StandUser.objects.filter(stand=self, user=user)
-        if r.count() > 0:
-            return True
-        if self.user_group_can_x(user, "view"):
-            return True
-
         return False
 
     def user_group_can_x(self, user, permission):

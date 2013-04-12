@@ -71,9 +71,12 @@ class AccessChecker(object):
             return True
         return False
 
+    def standgroups(self):
+        return StandGroup.objects.filter(stand=self.stand)
+
     def in_edit_group(self):
         allowed_groups = []
-        for g in StandGroup.objects.filter(stand=self.stand):
+        for g in self.standgroups():
             if g.access in ["admin", "faculty", "ta"]:
                 allowed_groups.append(g.group.name)
         for g in self.user.groups.all():
@@ -86,7 +89,7 @@ class AccessChecker(object):
         """check if the user is in a group that has access"""
 
         allowed_groups = []
-        for g in StandGroup.objects.filter(stand=self.stand):
+        for g in self.standgroups():
             if permission == "view" or g.access == permission:
                 allowed_groups.append(g.group.name)
         for g in self.user.groups.all():

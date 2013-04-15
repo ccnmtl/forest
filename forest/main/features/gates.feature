@@ -12,7 +12,7 @@ Feature: Gates
         Given I am logged in
         Given a clear history
         When I access the fourth section
-#        Then I am on the first section
+        Then I am on the first section
 
     Scenario: Progress one section at a time
         Given a gated stand

@@ -79,6 +79,7 @@ def page(request, path):
     return generic_view_page(
         request, path,
         hierarchy=hierarchy,
+        gated=request.stand.gated,
         extra_context=dict(
             stand=request.stand,
             can_edit=can_edit,

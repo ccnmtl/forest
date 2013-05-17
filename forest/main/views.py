@@ -1,9 +1,12 @@
+from cStringIO import StringIO
+from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
 from pagetree.helpers import get_section_from_path
 from pagetree.generic.views import generic_view_page
 from pagetree.generic.views import generic_instructor_page
 from pagetree.generic.views import generic_edit_page
 from django.contrib.auth.decorators import login_required
+from epubbuilder import epub
 from forest.main.models import get_stand, Stand
 from forest.main.models import StandUser, User, Group, StandGroup
 from forest.main.models import StandAvailablePageBlock
@@ -17,6 +20,7 @@ from pagetree_export.exportimport import export_zip, import_zip
 import os
 from annoying.decorators import render_to
 from django.shortcuts import render
+from zipfile import ZipFile
 
 
 class stand_admin(object):
@@ -141,7 +145,6 @@ def edit_stand(request):
         return HttpResponseRedirect("/_stand/")
     else:
         is_seed_stand = True
-        from django.conf import settings
         if not settings.DEBUG:
             # in production
             is_seed_stand = (request.stand.hostname ==
@@ -159,7 +162,6 @@ default_css = """
 @login_required
 @render_to("main/add_stand.html")
 def add_stand(request):
-    from django.conf import settings
     if not request.user.is_staff:
         return HttpResponse("only staff may access this")
     form = StandForm()
@@ -319,7 +321,6 @@ def delete_stand_group(request, id):
 @render_to("main/manage_blocks.html")
 @stand_admin()
 def manage_blocks(request):
-    from django.conf import settings
     if request.method == "POST":
         for block in settings.PAGEBLOCKS:
             enabled = request.POST.get(block, False)
@@ -376,7 +377,72 @@ def exporter(request):
     os.unlink(zip_filename)
     return resp
 
-from zipfile import ZipFile
+
+def section_html(section):
+    """ return a quick and dirty HTML version of the
+    section suitable for epub """
+    parts = [
+        """<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" """,
+        """"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">""",
+        """<html xmlns="http://www.w3.org/1999/xhtml">""",
+        """<head><title>%s</title></head>""" % section.label,
+        "<body>",
+    ]
+
+    if section.pageblock_set.all().count() == 0:
+        parts.append("<p>[EMPTY SECTION]</p>")
+
+    for block in section.pageblock_set.all():
+        if block.label:
+            parts.append("<h2>" + block.label + "</h2>")
+        if block.content_object.display_name != "Text Block":
+            parts.append(
+                "<p>Unrenderable Block: %s</p>" %
+                block.content_object.display_name)
+            continue
+        parts.append(block.render())
+    parts.append("</body></html>")
+    return "\n".join(parts)
+
+
+@login_required
+@stand_admin()
+def epub_exporter(request):
+    hierarchy = request.get_host()
+    section = get_section_from_path('/', hierarchy=hierarchy)
+
+    im_book = epub.EpubBook(template_dir=settings.EPUB_TEMPLATE_DIR)
+    im_book.setTitle(request.stand.title)
+    im_book.addCreator('CCNMTL')
+    im_book.addMeta('date', '2013', event='publication')
+
+    im_book.addTitlePage()
+    im_book.addTocPage()
+
+    depth_first_traversal = section.get_annotated_list()
+    for (i, (s, ai)) in enumerate(depth_first_traversal):
+        # skip the root
+        if s.is_root():
+            continue
+        print i, s, ai
+        title = s.label
+        if s.label == '':
+            title = "chapter %d" % i
+        print "adding as %s" % title
+        n = im_book.addHtml('', '%d.html' % i,
+                            section_html(s))
+        im_book.addSpineItem(n)
+        depth = ai['level']
+        if depth == 1:
+            depth = None
+        im_book.addTocMapNode(n.destPath, title, depth=depth)
+
+    out = im_book.make_epub()
+    resp = HttpResponse(out.getvalue(),
+                        mimetype="application/x-zip-compressed")
+    resp['Content-Disposition'] = ("attachment; filename=%s.epub" %
+                                   section.hierarchy.name)
+    return resp
 
 
 @render_to("main/import.html")

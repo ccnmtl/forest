@@ -100,6 +100,8 @@ TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), "templates"),
 )
 
+EPUB_TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "templates/epub/")
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',

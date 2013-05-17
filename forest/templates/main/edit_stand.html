@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load waffle_tags %}
 {% load bootstrap %}
 {% block title %}Edit Stand{% endblock %}
 {% block content %}
@@ -17,6 +18,20 @@
 <p><a href="blocks/">Manage Available Pageblocks</a></p>
 <p>Or go to the <a href="/edit/">Page edit interface</a></p>
 {% if is_seed_stand %}<p>you can also <a href="add/">create a new Stand</a></p>{% endif %}
+
+{% flag 'epub' %}
+<h3>Download EPUB</h3>
+<div class="alert"><b>Warning!</b> This is still highly
+experimental and currently, only
+text blocks are supported. There are also known issues
+with sites that have duplicate section titles. Use
+at your own risk.</div>
+
+<a href="_epub/" class="btn">Download EPUB</a>
+
+<hr />
+{% endflag %}
+
 <ul>Coming soon:
 <li>export and import</li>
 <li>flatpages</li>

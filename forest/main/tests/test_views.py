@@ -211,6 +211,14 @@ class AddStandTests(TestCase):
         )
         assert response.status_code == 302
 
+    def test_epub_download(self):
+        self.u.is_superuser = True
+        self.u.save()
+        response = self.c.get("/_epub/",
+                              HTTP_HOST="test.example.com")
+        self.assertEquals(response.status_code, 200)
+        assert 'x-zip-compressed' in response['Content-Type']
+
 
 class ViewPageTests(TestCase):
     def setUp(self):

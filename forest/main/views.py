@@ -424,11 +424,9 @@ def epub_exporter(request):
         # skip the root
         if s.is_root():
             continue
-        print i, s, ai
         title = s.label
         if s.label == '':
             title = "chapter %d" % i
-        print "adding as %s" % title
         n = im_book.addHtml('', '%d.html' % i,
                             section_html(s))
         im_book.addSpineItem(n)

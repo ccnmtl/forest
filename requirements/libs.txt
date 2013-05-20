@@ -35,4 +35,4 @@ requirements/src/ipdb-0.7.tar.gz
 requirements/src/lettuce-0.2.14.tar.gz
 requirements/src/selenium-2.29.0.tar.gz
 requirements/src/Genshi-0.7.tar.gz
-requirements/src/epubbuilder-0.1.3.tar.gz
+requirements/src/epubbuilder-0.1.4.tar.gz

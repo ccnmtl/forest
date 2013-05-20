@@ -424,7 +424,7 @@ def epub_exporter(request):
         # skip the root
         if s.is_root():
             continue
-        if s.hierarchy != hierarchy:
+        if s.hierarchy.name != hierarchy:
             continue
         title = s.label
         if s.label == '':

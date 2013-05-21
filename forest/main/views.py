@@ -1,6 +1,7 @@
 from cStringIO import StringIO
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
+from django.template.loader import render_to_string
 from pagetree.helpers import get_section_from_path
 from pagetree.generic.views import generic_view_page
 from pagetree.generic.views import generic_instructor_page
@@ -395,31 +396,20 @@ def image_epub_filename(block):
 def section_html(section):
     """ return a quick and dirty HTML version of the
     section suitable for epub """
-    parts = [
-        """<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" """,
-        """"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">""",
-        """<html xmlns="http://www.w3.org/1999/xhtml">""",
-        """<head><title>%s</title></head>""" % section.label,
-        "<body>",
-    ]
-
-    if section.pageblock_set.all().count() == 0:
-        parts.append("<p>[EMPTY SECTION]</p>")
-
+    blocks = []
     for block in section.pageblock_set.all():
-        if block.label:
-            parts.append("<h2>" + block.label + "</h2>")
         if is_block_allowed(block):
-            parts.append(block.render())
+            blocks.append(block)
         elif is_image_block(block):
-            parts.append("<img src=\"%s\" />" % image_epub_filename(block))
+            block.is_image_block = True
+            block.epub_image_filename = image_epub_filename(block)
+            blocks.append(block)
         else:
-            parts.append(
-                "<p>Unrenderable Block: %s</p>" %
-                block.content_object.display_name)
+            block.unrenderable = True
+            blocks.append(block)
 
-    parts.append("</body></html>")
-    return "\n".join(parts)
+    return render_to_string('epub/section.html',
+                            dict(section=section, blocks=blocks))
 
 
 @login_required

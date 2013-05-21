@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>{{section.label}}</title></head>
+<body>
+{% if not section.pageblock_set.all.count %}
+<p>[EMPTY SECTION]</p>
+{% else %}
+
+{% for block in blocks %}
+  {% if block.label %}
+    <h2>{{block.label}}</h2>
+  {% endif %}
+
+  {% if block.unrenderable %}
+    <p><i>Unrenderable Block: {{block.content_object.display_name}}</i></p>
+  {% else %}
+    {% if block.is_image_block %}
+      <div><img src="{{block.epub_image_filename}}" /></div>
+    {% else %}
+      {{block.render|safe}}
+    {% endif %}
+  {% endif %}
+
+{% endfor %}
+
+{% endif %}
+</body>
+</html>

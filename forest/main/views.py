@@ -378,6 +378,10 @@ def exporter(request):
     return resp
 
 
+def block_allowed(block):
+    return block.content_object.display_name in settings.EPUB_ALLOWED_BLOCKS
+
+
 def section_html(section):
     """ return a quick and dirty HTML version of the
     section suitable for epub """
@@ -395,12 +399,13 @@ def section_html(section):
     for block in section.pageblock_set.all():
         if block.label:
             parts.append("<h2>" + block.label + "</h2>")
-        if block.content_object.display_name != "Text Block":
+        if block_allowed(block):
+            parts.append(block.render())
+        else:
             parts.append(
                 "<p>Unrenderable Block: %s</p>" %
                 block.content_object.display_name)
-            continue
-        parts.append(block.render())
+
     parts.append("</body></html>")
     return "\n".join(parts)
 

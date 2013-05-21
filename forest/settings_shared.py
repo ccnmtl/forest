@@ -147,6 +147,10 @@ PAGEBLOCKS = ['pageblocks.TextBlock',
               'fridgeblock.FridgeBlock',
               ]
 
+# these are by their display names for now
+EPUB_ALLOWED_BLOCKS = [
+    'Text Block', 'HTML Block', 'Pull Quote']
+
 INTERNAL_IPS = ('127.0.0.1', )
 DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.version.VersionDebugPanel',

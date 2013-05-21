@@ -1,4 +1,3 @@
-from cStringIO import StringIO
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
 from django.template.loader import render_to_string

@@ -378,16 +378,16 @@ def exporter(request):
     return resp
 
 
-def block_allowed(block):
+def is_block_allowed(block):
     return block.content_object.display_name in settings.EPUB_ALLOWED_BLOCKS
 
 
-def image_block(block):
+def is_image_block(block):
     return block.content_object.display_name == "Image Block"
 
 
 def image_epub_filename(block):
-    assert image_block(block)
+    assert is_image_block(block)
     return "images/%d-%s" % (
         block.pk, os.path.basename(block.block().image.name))
 
@@ -409,9 +409,9 @@ def section_html(section):
     for block in section.pageblock_set.all():
         if block.label:
             parts.append("<h2>" + block.label + "</h2>")
-        if block_allowed(block):
+        if is_block_allowed(block):
             parts.append(block.render())
-        elif image_block(block):
+        elif is_image_block(block):
             parts.append("<img src=\"%s\" />" % image_epub_filename(block))
         else:
             parts.append(
@@ -438,7 +438,7 @@ def epub_exporter(request):
 
     # gather images from all the blocks in the site
     for pb in PageBlock.objects.filter(section__hierarchy__name=hierarchy):
-        if image_block(pb):
+        if is_image_block(pb):
             fullpath = os.path.join(settings.MEDIA_ROOT, pb.block().image.name)
             im_book.addImage(fullpath, image_epub_filename(pb))
 

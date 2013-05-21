@@ -15,7 +15,7 @@ from restclient import GET
 import httplib2
 import simplejson
 from munin.helpers import muninview
-from pagetree.models import Section
+from pagetree.models import Section, PageBlock
 from pagetree_export.exportimport import export_zip, import_zip
 import os
 from annoying.decorators import render_to
@@ -382,6 +382,16 @@ def block_allowed(block):
     return block.content_object.display_name in settings.EPUB_ALLOWED_BLOCKS
 
 
+def image_block(block):
+    return block.content_object.display_name == "Image Block"
+
+
+def image_epub_filename(block):
+    assert image_block(block)
+    return "images/%d-%s" % (
+        block.pk, os.path.basename(block.block().image.name))
+
+
 def section_html(section):
     """ return a quick and dirty HTML version of the
     section suitable for epub """
@@ -401,6 +411,8 @@ def section_html(section):
             parts.append("<h2>" + block.label + "</h2>")
         if block_allowed(block):
             parts.append(block.render())
+        elif image_block(block):
+            parts.append("<img src=\"%s\" />" % image_epub_filename(block))
         else:
             parts.append(
                 "<p>Unrenderable Block: %s</p>" %
@@ -423,6 +435,12 @@ def epub_exporter(request):
 
     im_book.addTitlePage()
     im_book.addTocPage()
+
+    # gather images from all the blocks in the site
+    for pb in PageBlock.objects.filter(section__hierarchy__name=hierarchy):
+        if image_block(pb):
+            fullpath = os.path.join(settings.MEDIA_ROOT, pb.block().image.name)
+            im_book.addImage(fullpath, image_epub_filename(pb))
 
     depth_first_traversal = section.get_annotated_list()
     for (i, (s, ai)) in enumerate(depth_first_traversal):

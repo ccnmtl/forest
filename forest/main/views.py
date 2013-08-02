@@ -504,6 +504,12 @@ def cloner(request):
     form = StandForm(fake_request.POST)
     stand = form.save()
 
+    # copy pageblocks over:
+    for pb in old_stand.standavailablepageblock_set.all():
+        StandAvailablePageBlock.objects.create(
+            stand=stand,
+            block=pb.block)
+
     StandUser.objects.create(stand=stand, user=request.user,
                              access="admin")
     if request.POST.get('copy_userperms'):

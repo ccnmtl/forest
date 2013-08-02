@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.test.client import Client
-from forest.main.models import Stand
+from forest.main.models import Stand, StandAvailablePageBlock
 from django.contrib.auth.models import User, Group
 
 
@@ -112,6 +112,20 @@ class AddStandTests(TestCase):
             hostname="test.example.com",
             access="open",
         )
+        PAGEBLOCKS = [
+            'pageblocks.TextBlock',
+            'pageblocks.HTMLBlock',
+            'pageblocks.PullQuoteBlock',
+            'pageblocks.ImageBlock',
+            'pageblocks.ImagePullQuoteBlock',
+            'quizblock.Quiz',
+            'careermapblock.CareerMap',
+            'fridgeblock.FridgeBlock',
+        ]
+
+        for pb in PAGEBLOCKS:
+            StandAvailablePageBlock.objects.create(stand=self.stand, block=pb)
+
         self.c = Client()
         self.c.login(username="testuser", password="test")
 
@@ -184,6 +198,11 @@ class AddStandTests(TestCase):
         assert response.status_code == 200
         response = self.c.get("/welcome/", HTTP_HOST="cloned.example.com")
         assert "no such site" not in response.content
+
+        response = self.c.get("/_stand/blocks/",
+                              HTTP_HOST="cloned.example.com")
+        for pb in self.stand.standavailablepageblock_set.all():
+            self.assertTrue(pb.block in response.content)
 
         response = self.c.get("/_stand/delete/",
                               HTTP_HOST="cloned.example.com")

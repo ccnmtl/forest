@@ -504,12 +504,6 @@ def cloner(request):
     form = StandForm(fake_request.POST)
     stand = form.save()
 
-    # copy pageblocks over:
-    for pb in old_stand.standavailablepageblock_set.all():
-        StandAvailablePageBlock.objects.create(
-            stand=stand,
-            block=pb.block)
-
     StandUser.objects.create(stand=stand, user=request.user,
                              access="admin")
     if request.POST.get('copy_userperms'):
@@ -522,16 +516,13 @@ def cloner(request):
         StandAvailablePageBlock.objects.create(
             stand=stand, block=old_sapb.block).save()
 
-    hierarchy = request.get_host()
-    section = get_section_from_path('/', hierarchy=hierarchy)
-    zip_filename = export_zip(section.hierarchy)
+    old_hierarchy = old_stand.get_hierarchy()
+    d = old_hierarchy.as_dict()
 
-    zipfile = ZipFile(zip_filename)
-
-    hierarchy_name = new_hierarchy
-    hierarchy = import_zip(zipfile, hierarchy_name)
-
-    os.unlink(zip_filename)
+    # eventually, pagetree.hierarchy needs a .from_dict() method
+    # that will overwrite the root
+    for c in d['sections'][0]['children']:
+        stand.get_root().add_child_section_from_dict(c)
 
     if new_hierarchy.endswith(".forest.ccnmtl.columbia.edu"):
         # if it's a *.forest site, just send them on their way

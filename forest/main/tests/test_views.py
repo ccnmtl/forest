@@ -126,6 +126,20 @@ class AddStandTests(TestCase):
         for pb in PAGEBLOCKS:
             StandAvailablePageBlock.objects.create(stand=self.stand, block=pb)
 
+        self.stand.get_root().add_child_section_from_dict(
+            {
+                'label': 'Different Welcome',
+                'slug': 'differentwelcome',
+                'pageblocks': [
+                    {'label': 'Welcome to your new Forest Site',
+                     'css_extra': '',
+                     'block_type': 'Text Block',
+                     'body': 'You should now use the edit link to add content',
+                     },
+                ],
+                'children': [],
+            })
+
         self.c = Client()
         self.c.login(username="testuser", password="test")
 
@@ -196,8 +210,10 @@ class AddStandTests(TestCase):
             HTTP_HOST="test.example.com",
         )
         assert response.status_code == 200
-        response = self.c.get("/welcome/", HTTP_HOST="cloned.example.com")
+        response = self.c.get("/differentwelcome/",
+                              HTTP_HOST="cloned.example.com")
         assert "no such site" not in response.content
+        self.assertFalse('404: Page Not Found' in response.content)
 
         response = self.c.get("/_stand/blocks/",
                               HTTP_HOST="cloned.example.com")

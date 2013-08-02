@@ -60,6 +60,9 @@ class Stand(models.Model):
         section = get_section_from_path("/", hierarchy=self.hostname)
         return section.hierarchy.get_root()
 
+    def get_hierarchy(self):
+        return get_section_from_path("/", hierarchy=self.hostname).hierarchy
+
     def make_default_tree(self):
         """ when a new stand is created, we want to populate it
         with at least one Section and a bit of content to get things

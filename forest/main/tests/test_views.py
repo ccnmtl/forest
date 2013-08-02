@@ -171,10 +171,10 @@ class AddStandTests(TestCase):
     def test_clone_stand(self):
         self.u.is_superuser = True
         self.u.save()
-        response = self.c.get("/clone/", HTTP_HOST="test.example.com")
+        response = self.c.get("/_stand/clone/", HTTP_HOST="test.example.com")
         assert response.status_code == 200
         response = self.c.post(
-            "/clone/",
+            "/_stand/clone/",
             dict(
                 new_hierarchy="cloned.example.com",
                 copy_userperms="1",

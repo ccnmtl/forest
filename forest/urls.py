@@ -12,7 +12,6 @@ urlpatterns = patterns(
     (r'^export/$', 'forest.main.views.exporter'),
     (r'^_epub/$', 'forest.main.views.epub_exporter'),
     (r'^import/$', 'forest.main.views.importer'),
-    (r'^clone/$', 'forest.main.views.cloner'),
 
     ('^accounts/', include('djangowind.urls')),
     (r'^admin/', include(admin.site.urls)),
@@ -53,6 +52,7 @@ urlpatterns = patterns(
      'forest.main.views.manage_blocks'),
     (r'^_stand/css/$', 'forest.main.views.css'),
     (r'^_stand/delete/$', 'forest.main.views.delete_stand'),
+    (r'^_stand/clone/$', 'forest.main.views.cloner'),
     (r'^_quiz/', include('quizblock.urls')),
     (r'^_careermap/', include('careermapblock.urls')),
     (r'^_fridge/', include('fridgeblock.urls')),

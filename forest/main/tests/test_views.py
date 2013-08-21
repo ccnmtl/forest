@@ -30,7 +30,7 @@ class SimpleTest(TestCase):
         # we don't care about that here. We just want to know
         # that the smoketests are runnable and not erroring out
         # themselves
-        response = self.c.get('/smoketest/')
+        response = self.c.get('/_smoketest/')
         self.assertEquals(response.status_code, 200)
 
     def test_css(self):

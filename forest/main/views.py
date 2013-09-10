@@ -16,11 +16,9 @@ import httplib2
 import simplejson
 from munin.helpers import muninview
 from pagetree.models import Section, PageBlock
-from pagetree_export.exportimport import export_zip, import_zip
 import os
 from annoying.decorators import render_to
 from django.shortcuts import render
-from zipfile import ZipFile
 
 
 class stand_admin(object):
@@ -362,22 +360,6 @@ def total_standusers(request):
     return [("standusers", StandUser.objects.all().count())]
 
 
-@login_required
-@stand_admin()
-def exporter(request):
-    hierarchy = request.get_host()
-    section = get_section_from_path('/', hierarchy=hierarchy)
-    zip_filename = export_zip(section.hierarchy)
-
-    with open(zip_filename) as zipfile:
-        resp = HttpResponse(zipfile.read())
-    resp['Content-Disposition'] = ("attachment; filename=%s.zip" %
-                                   section.hierarchy.name)
-
-    os.unlink(zip_filename)
-    return resp
-
-
 def is_block_allowed(block):
     return block.content_object.display_name in settings.EPUB_ALLOWED_BLOCKS
 
@@ -455,27 +437,6 @@ def epub_exporter(request):
     resp['Content-Disposition'] = ("attachment; filename=%s.epub" %
                                    section.hierarchy.name)
     return resp
-
-
-@render_to("main/import.html")
-@login_required
-@stand_admin()
-def importer(request):
-    if request.method == "GET":
-        return {}
-    f = request.FILES['file']
-    zipfile = ZipFile(f)
-
-    # If we exported the morx.com site, and we are now
-    # visiting http://fleem.com/import/, we don't want
-    # to touch the morx.com hierarchy -- instead we want
-    # to import the bundle to the fleem.com hierarchy.
-    hierarchy_name = request.get_host()
-    hierarchy = import_zip(zipfile, hierarchy_name)
-
-    url = hierarchy.get_absolute_url()
-    url = '/' + url.lstrip('/')  # sigh
-    return HttpResponseRedirect(url)
 
 
 @render_to("main/add_stand.html")

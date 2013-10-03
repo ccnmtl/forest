@@ -39,7 +39,7 @@ Pillow==1.7.8
 
 django-smartif==0.1
 python-ldap==2.4.13
-djangowind==0.10.4
+djangowind==0.11.0
 sorl==3.1
 tagging==0.3-pre
 template_utils==0.4p2

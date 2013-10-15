@@ -48,8 +48,8 @@ django-nose==1.2
 django-pagetree==0.12.3
 django-pageblocks==0.5.11
 django-quizblock==0.6.12
-django-careermapblock==0.2
-django-fridgeblock==0.3
+django-careermapblock==0.2.16
+django-fridgeblock==0.3.1
 django-appconf==0.4.1
 django_compressor==1.1.1
 django-annoying==0.7.6

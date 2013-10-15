@@ -15,7 +15,7 @@ simplejson==3.3.0
 smartypants==1.6.0.2
 uuid==1.30
 psycopg2==2.5.1
-django-treebeard==1.61
+django-treebeard==2.0b2
 nose==1.1.2
 versiontools==1.8.2
 statsd==0.5.1

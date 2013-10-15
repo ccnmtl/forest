@@ -220,3 +220,8 @@ LOGIN_REDIRECT_URL = "/"
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 
 SOUTH_AUTO_FREEZE_APP = True
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+}

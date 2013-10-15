@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
-from django.views.generic.simple import direct_to_template
+from django.views.generic import TemplateView
 import os.path
 admin.autodiscover()
 
@@ -55,8 +55,7 @@ urlpatterns = patterns(
     (r'^_careermap/', include('careermapblock.urls')),
     (r'^_fridge/', include('fridgeblock.urls')),
     ('_smoketest/', include('smoketest.urls')),
-    (r'^_stats/', direct_to_template,
-     {'template': 'main/stats.html'}),
+    (r'^_stats/$', TemplateView.as_view(template_name="main/stats.html")),
     (r'^edit/(?P<path>.*)$', 'forest.main.views.edit_page',
      {}, 'edit-page'),
     (r'^instructor/(?P<path>.*)$',

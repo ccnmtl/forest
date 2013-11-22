@@ -50,23 +50,6 @@ def permission_denied(request, message=""):
                   dictionary=dict(message=message), status=403)
 
 
-class stand(object):
-    def __init__(*args, **kwargs):
-        pass
-
-    def __call__(self, func):
-        def stand_func(request, *args, **kwargs):
-            stand = get_stand(request.get_host())
-            if not stand:
-                return HttpResponse("no such site '%s'" % request.get_host())
-            request.stand = stand
-            items = func(request, *args, **kwargs)
-            if isinstance(items, dict):
-                items['stand'] = stand
-            return items
-        return stand_func
-
-
 class StandMixin(object):
     def dispatch(self, *args, **kwargs):
         stand = get_stand(self.request.get_host())
@@ -166,7 +149,7 @@ class EditView(LoggedInMixin, StandMixin, GetPostView):
             request, path, hierarchy=hierarchy,
             extra_context=dict(
                 can_admin=can_admin,
-                stand=stand,
+                stand=request.stand,
                 available_pageblocks=request.stand.available_pageblocks(),
             ),
         )

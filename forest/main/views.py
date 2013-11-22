@@ -18,8 +18,7 @@ from forest.main.forms import StandForm
 from restclient import GET
 import httplib2
 import simplejson
-from munin.helpers import muninview
-from pagetree.models import Section, PageBlock
+from pagetree.models import PageBlock
 import os
 from annoying.decorators import render_to
 from django.shortcuts import render
@@ -374,24 +373,6 @@ def manage_blocks(request):
                                                    block=block)
         all_blocks.append(dict(name=block, enabled=r.count()))
     return dict(all_blocks=all_blocks)
-
-
-@muninview(config="""graph_title Total Stands
-graph_vlabel stands""")
-def total_stands(request):
-    return [("stands", Stand.objects.all().count())]
-
-
-@muninview(config="""graph_title Total Sections
-graph_vlabel sections""")
-def total_sections(request):
-    return [("sections", Section.objects.all().count())]
-
-
-@muninview(config="""graph_title Total StandUsers
-graph_vlabel standusers""")
-def total_standusers(request):
-    return [("standusers", StandUser.objects.all().count())]
 
 
 def is_block_allowed(block):

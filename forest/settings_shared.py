@@ -117,7 +117,6 @@ INSTALLED_APPS = (
     'template_utils',
     'typogrify',
     'raven.contrib.django',
-    'munin',
     'pagetree',
     'pageblocks',
     'forest.main',

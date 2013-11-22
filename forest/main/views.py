@@ -157,7 +157,8 @@ class InstructorView(LoggedInMixin, StandMixin, GetPostView):
 class EditView(LoggedInMixin, StandMixin, GetPostView):
     def handler(self, request, path):
         if not request.stand.can_edit(request.user):
-            return permission_denied(request, "You are not an admin for this site")
+            return permission_denied(request,
+                                     "You are not an admin for this site")
         can_admin = request.stand.can_admin(request.user)
         hierarchy = request.get_host()
 
@@ -195,8 +196,7 @@ class EditStandView(StandAdminMixin, View):
             request, self.template_name,
             dict(stand=request.stand,
                  form=StandForm(instance=request.stand),
-                 is_seed_stand=is_seed_stand
-            ))
+                 is_seed_stand=is_seed_stand))
 
 default_css = """
 #header { background: #262; }
@@ -231,15 +231,14 @@ def add_stand(request):
     return dict(form=form)
 
 
-@login_required
-@stand_admin()
-def delete_stand(request):
-    if request.method == "POST":
+class DeleteStandView(StandAdminMixin, View):
+    def post(self, request):
         request.stand.get_root().hierarchy.delete()
         request.stand.get_root().delete()
         request.stand.delete()
         return HttpResponse("""Stand has been deleted. Thank you""")
-    else:
+
+    def get(self, request):
         return HttpResponse("""
 <form action="." method="post">
 Are you sure? <input type="submit" value="YES!" />

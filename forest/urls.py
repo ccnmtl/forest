@@ -50,7 +50,7 @@ urlpatterns = patterns(
     (r'^_stand/blocks/$',
      'forest.main.views.manage_blocks'),
     (r'^_stand/css/$', views.CSSView.as_view()),
-    (r'^_stand/delete/$', 'forest.main.views.delete_stand'),
+    (r'^_stand/delete/$', views.DeleteStandView.as_view()),
     (r'^_stand/clone/$', 'forest.main.views.cloner'),
     (r'^_quiz/', include('quizblock.urls')),
     (r'^_careermap/', include('careermapblock.urls')),

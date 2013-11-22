@@ -31,7 +31,7 @@ urlpatterns = patterns(
     (r'^uploads/(?P<path>.*)$',
      'django.views.static.serve',
      {'document_root': settings.MEDIA_ROOT}),
-    (r'^_stand/$', 'forest.main.views.edit_stand'),
+    (r'^_stand/$', views.EditStandView.as_view()),
     (r'^_stand/add/$', 'forest.main.views.add_stand'),
     (r'^_stand/users/$', 'forest.main.views.stand_users'),
     (r'^_stand/users/(?P<id>\d+)/$',

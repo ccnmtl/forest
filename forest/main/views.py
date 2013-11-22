@@ -79,6 +79,24 @@ class StandMixin(object):
         return items
 
 
+class StandAdminMixin(object):
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        stand = get_stand(self.request.get_host())
+        if not stand:
+            return HttpResponse("no such site '%s'" % self.request.get_host())
+        if not stand.can_admin(self.request.user):
+            return permission_denied(
+                self.request,
+                "You do not have admin permission.")
+        self.request.stand = stand
+        items = super(StandAdminMixin, self).dispatch(*args, **kwargs)
+        if isinstance(items, dict):
+            items['stand'] = stand
+            items['can_admin'] = True
+        return items
+
+
 class LoggedInMixin(object):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
@@ -158,25 +176,27 @@ class CSSView(StandMixin, View):
         return HttpResponse(request.stand.css, content_type="text/css")
 
 
-@login_required
-@render_to('main/edit_stand.html')
-@stand_admin()
-def edit_stand(request):
-    if request.method == "POST":
+class EditStandView(StandAdminMixin, View):
+    template_name = 'main/edit_stand.html'
+
+    def post(self, request):
         form = StandForm(request.POST, instance=request.stand)
         if form.is_valid():
             form.save()
         return HttpResponseRedirect("/_stand/")
-    else:
+
+    def get(self, request):
         is_seed_stand = True
         if not settings.DEBUG:
             # in production
             is_seed_stand = (request.stand.hostname ==
                              "forest.ccnmtl.columbia.edu")
-        return dict(stand=request.stand,
-                    form=StandForm(instance=request.stand),
-                    is_seed_stand=is_seed_stand
-                    )
+        return render(
+            request, self.template_name,
+            dict(stand=request.stand,
+                 form=StandForm(instance=request.stand),
+                 is_seed_stand=is_seed_stand
+            ))
 
 default_css = """
 #header { background: #262; }

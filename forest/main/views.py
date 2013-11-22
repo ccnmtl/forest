@@ -2,6 +2,8 @@ from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
 from django.template.loader import render_to_string
 from django.views.generic.base import View
+from django.views.generic.edit import DeleteView
+from django.views.generic.list import ListView
 from django.utils.decorators import method_decorator
 from pagetree.helpers import get_section_from_path
 from pagetree.generic.views import generic_view_page
@@ -237,10 +239,8 @@ Are you sure? <input type="submit" value="YES!" />
 """)
 
 
-@login_required
-@stand_admin()
-def stand_add_user(request):
-    if request.method == "POST":
+class StandAddUserView(StandAdminMixin, View):
+    def post(self, request):
         username = request.POST.get('user', '')
         if username == "":
             username = request.POST.get('uni', '')
@@ -273,34 +273,33 @@ def stand_add_user(request):
         access = request.POST.get('access')
         StandUser.objects.create(stand=request.stand, user=u,
                                  access=access)
-    return HttpResponseRedirect("/_stand/users/")
+        return HttpResponseRedirect("/_stand/users/")
 
 
-@login_required
-@render_to("main/edit_stand_user.html")
-@stand_admin()
-def edit_stand_user(request, id):
-    standuser = StandUser.objects.get(id=id)
-    if request.method == "POST":
+class EditStandUserView(StandAdminMixin, View):
+    template_name = "main/edit_stand_user.html"
+
+    def post(self, request, id):
+        standuser = StandUser.objects.get(id=id)
         standuser.access = request.POST.get("access", "student")
         standuser.save()
         return HttpResponseRedirect("/_stand/users/")
-    return dict(standuser=standuser)
+
+    def get(self, request, id):
+        standuser = StandUser.objects.get(id=id)
+        return render(request, self.template_name,
+                      dict(standuser=standuser))
 
 
-@login_required
-@stand_admin()
-def delete_stand_user(request, id):
-    standuser = StandUser.objects.get(id=id)
-    standuser.delete()
-    return HttpResponseRedirect("/_stand/users/")
+class DeleteStandUserView(StandAdminMixin, DeleteView):
+    model = StandUser
+    success_url = "/_stand/users/"
 
 
-@login_required
-@render_to("main/stand_users.html")
-@stand_admin()
-def stand_users(request):
-    return dict(all_users=User.objects.all())
+class StandUsersView(StandAdminMixin, ListView):
+    template_name = "main/stand_users.html"
+    model = User
+    context_object_name = "all_users"
 
 
 @login_required
@@ -324,11 +323,10 @@ def stand_add_group(request):
     return HttpResponseRedirect("/_stand/groups/")
 
 
-@login_required
-@render_to("main/stand_groups.html")
-@stand_admin()
-def stand_groups(request):
-    return dict(all_groups=Group.objects.all())
+class StandGroupsView(StandAdminMixin, ListView):
+    template_name = "main/stand_groups.html"
+    model = Group
+    context_object_name = "all_groups"
 
 
 @login_required

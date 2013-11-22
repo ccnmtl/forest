@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.test.client import Client
-from forest.main.models import Stand, StandAvailablePageBlock
+from forest.main.models import Stand, StandAvailablePageBlock, StandUser
 from django.contrib.auth.models import User, Group
 
 
@@ -256,6 +256,80 @@ class AddStandTests(TestCase):
             HTTP_HOST="test.example.com"
         )
         assert response.status_code == 302
+
+    def test_stand_add_user_new(self):
+        self.u.is_superuser = True
+        self.u.save()
+
+        response = self.c.post(
+            "/_stand/users/add/",
+            dict(
+                uni="seconduser",
+                access="student",
+            ),
+            HTTP_HOST="test.example.com"
+        )
+        assert response.status_code == 302
+
+    def test_stand_add_user_empty(self):
+        self.u.is_superuser = True
+        self.u.save()
+
+        response = self.c.post(
+            "/_stand/users/add/",
+            dict(
+                uni="",
+                access="student",
+            ),
+            HTTP_HOST="test.example.com"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, "no username or uni specified")
+
+    def test_edit_stand_user_form(self):
+        self.u.is_superuser = True
+        self.u.save()
+        su = StandUser.objects.create(
+            stand=self.stand, user=self.u,
+            access="admin")
+        response = self.c.get("/_stand/users/%d/" % su.id,
+                              HTTP_HOST="test.example.com")
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit_stand_user(self):
+        self.u.is_superuser = True
+        self.u.save()
+        su = StandUser.objects.create(
+            stand=self.stand, user=self.u,
+            access="admin")
+        response = self.c.post("/_stand/users/%d/" % su.id,
+                               dict(access="student"),
+                               HTTP_HOST="test.example.com")
+        self.assertEqual(response.status_code, 302)
+        su2 = StandUser.objects.get(id=su.id)
+        self.assertEqual(su2.access, "student")
+
+    def test_delete_stand_user(self):
+        self.u.is_superuser = True
+        self.u.save()
+        su = StandUser.objects.create(
+            stand=self.stand, user=self.u,
+            access="admin")
+        response = self.c.post("/_stand/users/%d/delete/" % su.id,
+                               HTTP_HOST="test.example.com")
+        self.assertEqual(response.status_code, 302)
+
+    def test_standusers(self):
+        self.u.is_superuser = True
+        self.u.save()
+        response = self.c.get("/_stand/users/", HTTP_HOST="test.example.com")
+        self.assertEqual(response.status_code, 200)
+
+    def test_standgroups(self):
+        self.u.is_superuser = True
+        self.u.save()
+        response = self.c.get("/_stand/groups/", HTTP_HOST="test.example.com")
+        self.assertEqual(response.status_code, 200)
 
     def test_epub_download(self):
         self.u.is_superuser = True

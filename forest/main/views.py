@@ -85,7 +85,15 @@ class LoggedInMixin(object):
         return super(LoggedInMixin, self).dispatch(*args, **kwargs)
 
 
-class PageView(StandMixin, View):
+class GetPostView(View):
+    def get(self, request, path):
+        return self.handler(request, path)
+
+    def post(self, request, path):
+        return self.handler(request, path)
+
+
+class PageView(StandMixin, GetPostView):
     def handler(self, request, path):
         if not request.stand.can_view(request.user):
             if not request.user.is_anonymous():
@@ -110,14 +118,8 @@ class PageView(StandMixin, View):
             no_root_fallback_url="/_stand/",
         )
 
-    def get(self, request, path):
-        return self.handler(request, path)
 
-    def post(self, request, path):
-        return self.handler(request, path)
-
-
-class InstructorView(LoggedInMixin, StandMixin, View):
+class InstructorView(LoggedInMixin, StandMixin, GetPostView):
     def handler(self, request, path):
         if not request.stand.can_view(request.user):
             if not request.user.is_anonymous():
@@ -133,14 +135,8 @@ class InstructorView(LoggedInMixin, StandMixin, View):
             )
         )
 
-    def get(self, request, path):
-        return self.handler(request, path)
 
-    def post(self, request, path):
-        return self.handler(request, path)
-
-
-class EditView(LoggedInMixin, StandMixin, View):
+class EditView(LoggedInMixin, StandMixin, GetPostView):
     def handler(self, request, path):
         if not request.stand.can_edit(request.user):
             return permission_denied(request, "You are not an admin for this site")
@@ -155,12 +151,6 @@ class EditView(LoggedInMixin, StandMixin, View):
                 available_pageblocks=request.stand.available_pageblocks(),
             ),
         )
-
-    def get(self, request, path):
-        return self.handler(request, path)
-
-    def post(self, request, path):
-        return self.handler(request, path)
 
 
 class CSSView(StandMixin, View):

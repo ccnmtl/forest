@@ -186,13 +186,13 @@ default_css = """
 """
 
 
-@login_required
-@render_to("main/add_stand.html")
-def add_stand(request):
-    if not request.user.is_staff:
-        return HttpResponse("only staff may access this")
-    form = StandForm()
-    if request.method == "POST":
+class AddStandView(LoggedInMixin, View):
+    template_name = "main/add_stand.html"
+
+    def post(self, request):
+        if not request.user.is_staff:
+            return HttpResponse("only staff may access this")
+        form = StandForm()
         form = StandForm(request.POST)
         hostname = request.POST.get('hostname', '')
         r = Stand.objects.filter(hostname=hostname)
@@ -210,8 +210,16 @@ def add_stand(request):
                 # if it's a *.forest site, just send them on their way
                 return HttpResponseRedirect("http://%s/_stand/" % hostname)
             else:
-                return dict(created=True, stand=stand, su=su)
-    return dict(form=form)
+                return render(request, self.template_name,
+                              dict(created=True, stand=stand, su=su))
+        return render(request, self.template_name, dict(form=form))
+
+    def get(self, request):
+        if not request.user.is_staff:
+            return HttpResponse("only staff may access this")
+        form = StandForm()
+        form = StandForm(request.POST)
+        return render(request, self.template_name, dict(form=form))
 
 
 class DeleteStandView(StandAdminMixin, View):

@@ -32,7 +32,7 @@ urlpatterns = patterns(
      'django.views.static.serve',
      {'document_root': settings.MEDIA_ROOT}),
     (r'^_stand/$', views.EditStandView.as_view()),
-    (r'^_stand/add/$', 'forest.main.views.add_stand'),
+    (r'^_stand/add/$', views.AddStandView.as_view()),
     (r'^_stand/users/$', 'forest.main.views.stand_users'),
     (r'^_stand/users/(?P<id>\d+)/$',
      'forest.main.views.edit_stand_user'),

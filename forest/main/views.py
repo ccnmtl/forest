@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
 from django.template.loader import render_to_string
+from django.views.generic.base import View
+from django.utils.decorators import method_decorator
 from pagetree.helpers import get_section_from_path
 from pagetree.generic.views import generic_view_page
 from pagetree.generic.views import generic_instructor_page
@@ -65,48 +67,77 @@ class stand(object):
         return stand_func
 
 
-@stand()
-def page(request, path):
-    if not request.stand.can_view(request.user):
-        if not request.user.is_anonymous():
-            return permission_denied(request)
-        return HttpResponseRedirect("/accounts/login/?next=/")
-    if (request.stand.gated
-            and request.user.is_anonymous()):
-        return HttpResponseRedirect("/accounts/login/?next=/")
-    can_edit = request.stand.can_edit(request.user)
-    can_admin = request.stand.can_admin(request.user)
-
-    hierarchy = request.get_host()
-    return generic_view_page(
-        request, path,
-        hierarchy=hierarchy,
-        gated=request.stand.gated,
-        extra_context=dict(
-            stand=request.stand,
-            can_edit=can_edit,
-            can_admin=can_admin,
-        ),
-        no_root_fallback_url="/_stand/",
-    )
+class StandMixin(object):
+    def dispatch(self, *args, **kwargs):
+        stand = get_stand(self.request.get_host())
+        if not stand:
+            return HttpResponse("no such site '%s'" % self.request.get_host())
+        self.request.stand = stand
+        items = super(StandMixin, self).dispatch(*args, **kwargs)
+        if isinstance(items, dict):
+            items['stand'] = stand
+        return items
 
 
-@login_required
-@stand()
-def instructor_page(request, path):
-    if not request.stand.can_view(request.user):
-        if not request.user.is_anonymous():
-            return permission_denied(request)
-        return HttpResponseRedirect("/accounts/login/?next=/")
-    # TODO: enforce that they are an instructor
-    hierarchy = request.get_host()
-    return generic_instructor_page(
-        request, path,
-        hierarchy=hierarchy,
-        extra_context=dict(
-            stand=request.stand,
+class LoggedInMixin(object):
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(LoggedInMixin, self).dispatch(*args, **kwargs)
+
+
+class PageView(StandMixin, View):
+    def handler(self, request, path):
+        if not request.stand.can_view(request.user):
+            if not request.user.is_anonymous():
+                return permission_denied(request)
+            return HttpResponseRedirect("/accounts/login/?next=/")
+        if (request.stand.gated
+                and request.user.is_anonymous()):
+            return HttpResponseRedirect("/accounts/login/?next=/")
+        can_edit = request.stand.can_edit(request.user)
+        can_admin = request.stand.can_admin(request.user)
+
+        hierarchy = request.get_host()
+        return generic_view_page(
+            request, path,
+            hierarchy=hierarchy,
+            gated=request.stand.gated,
+            extra_context=dict(
+                stand=request.stand,
+                can_edit=can_edit,
+                can_admin=can_admin,
+            ),
+            no_root_fallback_url="/_stand/",
         )
-    )
+
+    def get(self, request, path):
+        return self.handler(request, path)
+
+    def post(self, request, path):
+        return self.handler(request, path)
+
+
+class InstructorView(LoggedInMixin, StandMixin, View):
+    def handler(self, request, path):
+        if not request.stand.can_view(request.user):
+            if not request.user.is_anonymous():
+                return permission_denied(request)
+            return HttpResponseRedirect("/accounts/login/?next=/")
+        # TODO: enforce that they are an instructor
+        hierarchy = request.get_host()
+        return generic_instructor_page(
+            request, path,
+            hierarchy=hierarchy,
+            extra_context=dict(
+                stand=request.stand,
+            )
+        )
+
+    def get(self, request, path):
+        return self.handler(request, path)
+
+    def post(self, request, path):
+        return self.handler(request, path)
 
 
 @login_required

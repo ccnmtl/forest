@@ -2,6 +2,7 @@ from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
 from django.views.generic import TemplateView
+import forest.main.views as views
 import os.path
 admin.autodiscover()
 
@@ -58,7 +59,6 @@ urlpatterns = patterns(
     (r'^_stats/$', TemplateView.as_view(template_name="main/stats.html")),
     (r'^edit/(?P<path>.*)$', 'forest.main.views.edit_page',
      {}, 'edit-page'),
-    (r'^instructor/(?P<path>.*)$',
-     'forest.main.views.instructor_page'),
-    (r'^(?P<path>.*)$', 'forest.main.views.page'),
+    (r'^instructor/(?P<path>.*)$', views.InstructorView.as_view()),
+    (r'^(?P<path>.*)$', views.PageView.as_view()),
 )

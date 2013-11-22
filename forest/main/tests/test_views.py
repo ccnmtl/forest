@@ -25,6 +25,11 @@ class SimpleTest(TestCase):
         response = self.c.get('/', HTTP_HOST="test.example.com")
         self.assertEquals(response.status_code, 302)
 
+    def test_nonexistant_stand(self):
+        response = self.c.get('/', HTTP_HOST="fooble")
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.content, "no such site 'fooble'")
+
     def test_smoketests(self):
         # just request them to make sure they are covered
         # it's actually ok for the smoketests to return a "FAIL"
@@ -38,6 +43,12 @@ class SimpleTest(TestCase):
         response = self.c.get('/_stand/css/', HTTP_HOST="test.example.com")
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response['Content-Type'], "text/css")
+
+    def test_anon_gated(self):
+        # anon user, open access, gated
+        self.stand.gated = True
+        response = self.c.get("/", HTTP_HOST="test.example.com")
+        self.assertEquals(response.status_code, 302)
 
 
 class AuthTests(TestCase):
@@ -65,6 +76,18 @@ class AuthTests(TestCase):
         self.u.delete()
         self.u2.delete()
         self.stand.delete()
+
+    def test_anon(self):
+        # not logged, in so we should just get sent to the login screen
+        c2 = Client()
+        response = c2.get("/", HTTP_HOST="test.example.com")
+        self.assertEquals(response.status_code, 302)
+
+    def test_anon_instructor(self):
+        # not logged, in so we should just get sent to the login screen
+        c2 = Client()
+        response = c2.get("/instructor/", HTTP_HOST="test.example.com")
+        self.assertEquals(response.status_code, 302)
 
     def test_logged_in_not_authorized(self):
         response = self.c.get('/', HTTP_HOST="test.example.com")
@@ -109,6 +132,12 @@ class AuthTests(TestCase):
         response = self.c.get('/_stand/', HTTP_HOST="test.example.com")
         self.assertNotEquals(response.status_code, 403)
         assert "grumpycat.jpg" not in response.content
+
+    def test_logged_in_superuser_admin_nonexistant(self):
+        self.c.login(username="testuser2", password="test")
+        response = self.c.get('/_stand/', HTTP_HOST="fooble")
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.content, "no such site 'fooble'")
 
 
 class AddStandTests(TestCase):
@@ -160,6 +189,44 @@ class AddStandTests(TestCase):
         self.u.delete()
         self.stand.delete()
 
+    def test_edit_stand_form(self):
+        self.u.is_superuser = True
+        self.u.save()
+        response = self.c.get("/_stand/", HTTP_HOST="test.example.com")
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit_stand(self):
+        self.u.is_superuser = True
+        self.u.save()
+        response = self.c.post(
+            "/_stand/",
+            dict(title="new title",
+                 hostname="test.example.com",
+                 css="",
+                 description="new description",
+                 access="open",
+                 gated=""), HTTP_HOST="test.example.com"
+        )
+        self.assertEqual(response.status_code, 302)
+
+    def test_edit_stand_invalid(self):
+        self.u.is_superuser = True
+        self.u.save()
+        response = self.c.post(
+            "/_stand/",
+            dict(hostname=""), HTTP_HOST="test.example.com"
+        )
+        # haven't implemented form handling properly
+        # once it's in, this should be a 200 instead
+        self.assertEqual(response.status_code, 302)
+
+    def test_create_add_stand_form_not_staff(self):
+        self.u.is_staff = False
+        self.u.save()
+        response = self.c.get("/_stand/add/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, "only staff may access this")
+
     def test_create_new_stand(self):
         response = self.c.get("/_stand/add/")
         assert response.status_code == 200
@@ -173,6 +240,20 @@ class AddStandTests(TestCase):
                 description="",
             ))
         assert response.status_code == 200
+
+    def test_create_new_stand_invalid(self):
+        response = self.c.get("/_stand/add/")
+        assert response.status_code == 200
+        response = self.c.post(
+            "/_stand/add/",
+            dict(
+                hostname="",
+                title="test site",
+                css="",
+                access="open",
+                description="",
+            ))
+        self.assertEqual(response.status_code, 200)
 
     def test_create_new_forest_stand(self):
         response = self.c.post(
@@ -252,6 +333,21 @@ class AddStandTests(TestCase):
             "/_stand/users/add/",
             dict(
                 uni="seconduser",
+                access="student",
+            ),
+            HTTP_HOST="test.example.com"
+        )
+        assert response.status_code == 302
+
+    def test_stand_add_user_username(self):
+        self.u.is_superuser = True
+        self.u.save()
+        self.newu = User.objects.create(username="seconduser", is_staff=True)
+
+        response = self.c.post(
+            "/_stand/users/add/",
+            dict(
+                user="seconduser",
                 access="student",
             ),
             HTTP_HOST="test.example.com"
@@ -404,9 +500,85 @@ class AddStandTests(TestCase):
                               HTTP_HOST="test.example.com")
         self.assertEqual(response.status_code, 200)
 
+    def test_manage_blocks_disable_all(self):
+        self.u.is_superuser = True
+        self.u.save()
+        response = self.c.post(
+            "/_stand/blocks/",
+            dict(),
+            HTTP_HOST="test.example.com")
+        self.assertEqual(response.status_code, 302)
+
+    def test_manage_blocks(self):
+        self.u.is_superuser = True
+        self.u.save()
+        response = self.c.post(
+            "/_stand/blocks/",
+            {'pageblocks.TextBlock': '1'},
+            HTTP_HOST="test.example.com")
+        self.assertEqual(response.status_code, 302)
+
+    def test_manage_blocks_multi(self):
+        self.u.is_superuser = True
+        self.u.save()
+        # first, disable them all
+        response = self.c.post(
+            "/_stand/blocks/",
+            dict(),
+            HTTP_HOST="test.example.com")
+        # then turn textblock back on
+        response = self.c.post(
+            "/_stand/blocks/",
+            {'pageblocks.TextBlock': '1'},
+            HTTP_HOST="test.example.com")
+        self.assertEqual(response.status_code, 302)
+
     def test_epub_download(self):
         self.u.is_superuser = True
         self.u.save()
+        self.stand.get_root().add_child_section_from_dict(
+            {
+                'label': '',
+                'slug': 'differentwelcomenew',
+                'pageblocks': [
+                    {'label': 'Welcome to your new Forest Site',
+                     'css_extra': '',
+                     'block_type': 'Text Block',
+                     'body': 'You should now use the edit link to add content',
+                     },
+                    {'label': 'Image',
+                     'css_extra': '',
+                     'block_type': 'Image Block',
+                     'image': 'foo/bar.jpg',
+                     'caption': 'nothing',
+                     'alt': 'nothing',
+                     'lightbox': False,
+                     },
+                    {'label': 'Image2',
+                     'css_extra': '',
+                     'block_type': 'Image Pullquote',
+                     'image': 'foo/bar.jpg',
+                     'caption': 'nothing',
+                     'alt': 'nothing',
+                     },
+                ],
+                'children': [
+                    {
+                        'label': 'deep',
+                        'slug': 'deep',
+                        'pageblocks': [
+                            {
+                                'label': 'Deep',
+                                'css_extra': '',
+                                'block_type': 'Text Block',
+                                'body': ('You should now use the edit link '
+                                         'to add content'),
+                            },
+                        ],
+                    }
+                ],
+            })
+
         response = self.c.get("/_epub/",
                               HTTP_HOST="test.example.com")
         self.assertEquals(response.status_code, 200)

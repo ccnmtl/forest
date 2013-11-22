@@ -226,3 +226,5 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
 }
+
+SEED_STAND = "test.example.com"

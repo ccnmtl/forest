@@ -42,6 +42,7 @@ if SentryHandler not in map(type, logger.handlers):
     logger.propagate = False
     logger.addHandler(logging.StreamHandler())
 
+SEED_STAND = "forest.ccnmtl.columbia.edu"
 
 try:
     from local_settings import *

@@ -20,7 +20,7 @@ add_introspection_rules(
 class Stand(models.Model):
     title = models.CharField(max_length=256, default=u"", blank=True,
                              null=True)
-    hostname = models.CharField(max_length=256, db_index=True)
+    hostname = models.CharField(max_length=256, db_index=True, blank=False)
     created = models.DateTimeField(auto_now=True)
     css = models.TextField(default=u"", blank=True, null=True)
     description = models.TextField(default=u"", blank=True, null=True)

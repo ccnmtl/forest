@@ -34,10 +34,7 @@ class StandMixin(object):
         if not stand:
             return HttpResponse("no such site '%s'" % self.request.get_host())
         self.request.stand = stand
-        items = super(StandMixin, self).dispatch(*args, **kwargs)
-        if isinstance(items, dict):
-            items['stand'] = stand
-        return items
+        return super(StandMixin, self).dispatch(*args, **kwargs)
 
 
 class StandAdminMixin(object):
@@ -51,11 +48,7 @@ class StandAdminMixin(object):
                 self.request,
                 "You do not have admin permission.")
         self.request.stand = stand
-        items = super(StandAdminMixin, self).dispatch(*args, **kwargs)
-        if isinstance(items, dict):
-            items['stand'] = stand
-            items['can_admin'] = True
-        return items
+        return super(StandAdminMixin, self).dispatch(*args, **kwargs)
 
 
 class LoggedInMixin(object):
@@ -148,11 +141,7 @@ class EditStandView(StandAdminMixin, View):
         return HttpResponseRedirect("/_stand/")
 
     def get(self, request):
-        is_seed_stand = True
-        if not settings.DEBUG:
-            # in production
-            is_seed_stand = (request.stand.hostname ==
-                             "forest.ccnmtl.columbia.edu")
+        is_seed_stand = (request.stand.hostname == settings.SEED_STAND)
         return render(
             request, self.template_name,
             dict(stand=request.stand,

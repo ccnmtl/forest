@@ -75,6 +75,11 @@ class AuthTests(TestCase):
         self.assertEquals(response.status_code, 403)
         assert "grumpycat.jpg" in response.content
 
+    def test_logged_in_not_authorized_instructor(self):
+        response = self.c.get('/instructor/', HTTP_HOST="test.example.com")
+        self.assertEquals(response.status_code, 403)
+        assert "grumpycat.jpg" in response.content
+
     def test_logged_in_not_authorized_admin(self):
         response = self.c.get('/_stand/', HTTP_HOST="test.example.com")
         self.assertEquals(response.status_code, 403)
@@ -89,6 +94,12 @@ class AuthTests(TestCase):
     def test_logged_in_superuser_edit(self):
         self.c.login(username="testuser2", password="test")
         response = self.c.get('/edit/', HTTP_HOST="test.example.com")
+        self.assertNotEquals(response.status_code, 403)
+        assert "grumpycat.jpg" not in response.content
+
+    def test_logged_in_superuser_instructor(self):
+        self.c.login(username="testuser2", password="test")
+        response = self.c.get('/instructor/', HTTP_HOST="test.example.com")
         self.assertNotEquals(response.status_code, 403)
         assert "grumpycat.jpg" not in response.content
 

@@ -38,6 +38,9 @@ class StandModelTest(TestCase):
     def test_get_stand(self):
         assert get_stand("test.example.com") == self.stand
 
+    def test_get_stand_empty(self):
+        assert get_stand("") is None
+
     def test_available_pageblocks(self):
         assert self.stand.available_pageblocks() == []
 

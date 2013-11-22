@@ -20,30 +20,7 @@ import httplib2
 import simplejson
 from pagetree.models import PageBlock
 import os
-from annoying.decorators import render_to
 from django.shortcuts import render
-
-
-class stand_admin(object):
-    def __init__(*args, **kwargs):
-        pass
-
-    def __call__(self, func):
-        def admin_func(request, *args, **kwargs):
-            stand = get_stand(request.get_host())
-            if not stand:
-                return HttpResponse("no such site '%s'" % request.get_host())
-            if not stand.can_admin(request.user):
-                return permission_denied(
-                    request,
-                    "You do not have admin permission.")
-            request.stand = stand
-            items = func(request, *args, **kwargs)
-            if isinstance(items, dict):
-                items['stand'] = stand
-                items['can_admin'] = True
-            return items
-        return admin_func
 
 
 def permission_denied(request, message=""):
@@ -301,10 +278,8 @@ class StandUsersView(StandAdminMixin, ListView):
     context_object_name = "all_users"
 
 
-@login_required
-@stand_admin()
-def stand_add_group(request):
-    if request.method == "POST":
+class StandAddGroupView(StandAdminMixin, View):
+    def post(self, request):
         group_id = request.POST.get('group', '')
         if group_id == "":
             return HttpResponse("no group selected")
@@ -319,7 +294,7 @@ def stand_add_group(request):
             return HttpResponseRedirect("/_stand/groups/%d/" % r[0].id)
         StandGroup.objects.create(stand=request.stand,
                                   group=group, access=access)
-    return HttpResponseRedirect("/_stand/groups/")
+        return HttpResponseRedirect("/_stand/groups/")
 
 
 class StandGroupsView(StandAdminMixin, ListView):
@@ -328,31 +303,29 @@ class StandGroupsView(StandAdminMixin, ListView):
     context_object_name = "all_groups"
 
 
-@login_required
-@render_to("main/edit_stand_group.html")
-@stand_admin()
-def edit_stand_group(request, id):
-    standgroup = StandGroup.objects.get(id=id)
-    if request.method == "POST":
+class EditStandGroupView(StandAdminMixin, View):
+    template_name = "main/edit_stand_group.html"
+
+    def post(self, request, id):
+        standgroup = StandGroup.objects.get(id=id)
         standgroup.access = request.POST.get("access", "student")
         standgroup.save()
         return HttpResponseRedirect("/_stand/groups/")
-    return dict(standgroup=standgroup)
+
+    def get(self, request, id):
+        standgroup = StandGroup.objects.get(id=id)
+        return render(request, self.template_name, dict(standgroup=standgroup))
 
 
-@login_required
-@stand_admin()
-def delete_stand_group(request, id):
-    standgroup = StandGroup.objects.get(id=id)
-    standgroup.delete()
-    return HttpResponseRedirect("/_stand/groups/")
+class DeleteStandGroupView(StandAdminMixin, DeleteView):
+    model = StandGroup
+    success_url = "/_stand/groups/"
 
 
-@login_required
-@render_to("main/manage_blocks.html")
-@stand_admin()
-def manage_blocks(request):
-    if request.method == "POST":
+class ManageBlocksView(StandAdminMixin, View):
+    template_name = "main/manage_blocks.html"
+
+    def post(self, request):
         for block in settings.PAGEBLOCKS:
             enabled = request.POST.get(block, False)
             r = StandAvailablePageBlock.objects.filter(stand=request.stand,
@@ -367,12 +340,13 @@ def manage_blocks(request):
                     r.delete()
         return HttpResponseRedirect("/_stand/blocks/")
 
-    all_blocks = []
-    for block in settings.PAGEBLOCKS:
-        r = StandAvailablePageBlock.objects.filter(stand=request.stand,
-                                                   block=block)
-        all_blocks.append(dict(name=block, enabled=r.count()))
-    return dict(all_blocks=all_blocks)
+    def get(self, request):
+        all_blocks = []
+        for block in settings.PAGEBLOCKS:
+            r = StandAvailablePageBlock.objects.filter(stand=request.stand,
+                                                       block=block)
+            all_blocks.append(dict(name=block, enabled=r.count()))
+        return render(request, self.template_name, dict(all_blocks=all_blocks))
 
 
 def is_block_allowed(block):
@@ -408,100 +382,96 @@ def section_html(section):
                             dict(section=section, blocks=blocks))
 
 
-@login_required
-@stand_admin()
-def epub_exporter(request):
-    hierarchy = request.get_host()
-    section = get_section_from_path('/', hierarchy=hierarchy)
+class EpubExporterView(StandAdminMixin, View):
+    def get(self, request):
+        hierarchy = request.get_host()
+        section = get_section_from_path('/', hierarchy=hierarchy)
 
-    im_book = epub.EpubBook(template_dir=settings.EPUB_TEMPLATE_DIR)
-    im_book.setTitle(request.stand.title)
-    im_book.addCreator('CCNMTL')
-    im_book.addMeta('date', '2013', event='publication')
+        im_book = epub.EpubBook(template_dir=settings.EPUB_TEMPLATE_DIR)
+        im_book.setTitle(request.stand.title)
+        im_book.addCreator('CCNMTL')
+        im_book.addMeta('date', '2013', event='publication')
 
-    im_book.addTitlePage()
-    im_book.addTocPage()
+        im_book.addTitlePage()
+        im_book.addTocPage()
 
-    # gather images from all the blocks in the site
-    for pb in PageBlock.objects.filter(section__hierarchy__name=hierarchy):
-        if is_image_block(pb):
-            fullpath = os.path.join(settings.MEDIA_ROOT, pb.block().image.name)
-            im_book.addImage(fullpath, image_epub_filename(pb))
+        # gather images from all the blocks in the site
+        for pb in PageBlock.objects.filter(section__hierarchy__name=hierarchy):
+            if is_image_block(pb):
+                fullpath = os.path.join(settings.MEDIA_ROOT,
+                                        pb.block().image.name)
+                im_book.addImage(fullpath, image_epub_filename(pb))
 
-    depth_first_traversal = section.get_annotated_list()
-    for (i, (s, ai)) in enumerate(depth_first_traversal):
-        # skip the root
-        if s.is_root():
-            continue
-        if s.hierarchy.name != hierarchy:
-            continue
-        title = s.label
-        if s.label == '':
-            title = "chapter %d" % i
-        n = im_book.addHtml('', '%d.html' % i,
-                            section_html(s))
-        im_book.addSpineItem(n)
-        depth = ai['level']
-        if depth == 1:
-            depth = None
-        im_book.addTocMapNode(n.destPath, title, depth=depth)
+        depth_first_traversal = section.get_annotated_list()
+        for (i, (s, ai)) in enumerate(depth_first_traversal):
+            # skip the root
+            if s.is_root():
+                continue
+            if s.hierarchy.name != hierarchy:
+                continue
+            title = s.label
+            if s.label == '':
+                title = "chapter %d" % i
+            n = im_book.addHtml('', '%d.html' % i,
+                                section_html(s))
+            im_book.addSpineItem(n)
+            depth = ai['level']
+            if depth == 1:
+                depth = None
+            im_book.addTocMapNode(n.destPath, title, depth=depth)
 
-    out = im_book.make_epub()
-    resp = HttpResponse(out.getvalue(),
-                        mimetype="application/x-zip-compressed")
-    resp['Content-Disposition'] = ("attachment; filename=%s.epub" %
-                                   section.hierarchy.name)
-    return resp
-
-
-@render_to("main/add_stand.html")
-def cloner_created(request, ctx):
-    return ctx
+        out = im_book.make_epub()
+        resp = HttpResponse(out.getvalue(),
+                            mimetype="application/x-zip-compressed")
+        resp['Content-Disposition'] = ("attachment; filename=%s.epub" %
+                                       section.hierarchy.name)
+        return resp
 
 
-@render_to("main/clone.html")
-@login_required
-@stand_admin()
-def cloner(request):
-    if request.method == "GET":
-        return {}
+class ClonerView(StandAdminMixin, View):
+    template_name = "main/clone.html"
 
-    new_hierarchy = request.POST['new_hierarchy']
+    def get(self, request):
+        return render(request, self.template_name, {})
 
-    old_stand = get_stand(request.get_host())
+    def post(self, request):
+        new_hierarchy = request.POST['new_hierarchy']
 
-    fake_request = HttpRequest()
-    fake_request.method = "POST"
-    fake_request.POST['hostname'] = new_hierarchy
-    fake_request.POST['title'] = old_stand.title
-    fake_request.POST['css'] = old_stand.css
-    fake_request.POST['description'] = old_stand.description
-    fake_request.POST['access'] = old_stand.access
-    form = StandForm(fake_request.POST)
-    stand = form.save()
+        old_stand = get_stand(request.get_host())
 
-    StandUser.objects.create(stand=stand, user=request.user,
-                             access="admin")
-    if request.POST.get('copy_userperms'):
-        q = StandUser.objects.filter(stand=old_stand)
-        for standuser in q.exclude(user=request.user):
-            StandUser.objects.create(stand=stand, user=standuser.user,
-                                     access=standuser.access).save()
+        fake_request = HttpRequest()
+        fake_request.method = "POST"
+        fake_request.POST['hostname'] = new_hierarchy
+        fake_request.POST['title'] = old_stand.title
+        fake_request.POST['css'] = old_stand.css
+        fake_request.POST['description'] = old_stand.description
+        fake_request.POST['access'] = old_stand.access
+        form = StandForm(fake_request.POST)
+        stand = form.save()
 
-    for old_sapb in old_stand.standavailablepageblock_set.all():
-        StandAvailablePageBlock.objects.create(
-            stand=stand, block=old_sapb.block).save()
+        StandUser.objects.create(stand=stand, user=request.user,
+                                 access="admin")
+        if request.POST.get('copy_userperms'):
+            q = StandUser.objects.filter(stand=old_stand)
+            for standuser in q.exclude(user=request.user):
+                StandUser.objects.create(stand=stand, user=standuser.user,
+                                         access=standuser.access).save()
 
-    old_hierarchy = old_stand.get_hierarchy()
-    d = old_hierarchy.as_dict()
+        for old_sapb in old_stand.standavailablepageblock_set.all():
+            StandAvailablePageBlock.objects.create(
+                stand=stand, block=old_sapb.block).save()
 
-    # eventually, pagetree.hierarchy needs a .from_dict() method
-    # that will overwrite the root
-    for c in d['sections'][0]['children']:
-        stand.get_root().add_child_section_from_dict(c)
+        old_hierarchy = old_stand.get_hierarchy()
+        d = old_hierarchy.as_dict()
 
-    if new_hierarchy.endswith(".forest.ccnmtl.columbia.edu"):
-        # if it's a *.forest site, just send them on their way
-        return HttpResponseRedirect("http://%s/_stand/" % new_hierarchy)
-    else:
-        return cloner_created(request, dict(created=True, stand=stand))
+        # eventually, pagetree.hierarchy needs a .from_dict() method
+        # that will overwrite the root
+        for c in d['sections'][0]['children']:
+            stand.get_root().add_child_section_from_dict(c)
+
+        if new_hierarchy.endswith(".forest.ccnmtl.columbia.edu"):
+            # if it's a *.forest site, just send them on their way
+            return HttpResponseRedirect("http://%s/_stand/" % new_hierarchy)
+        else:
+            return render(request, "main/add_stand.html", dict(created=True,
+                                                               stand=stand))

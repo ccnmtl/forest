@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.test.client import Client
 from forest.main.models import Stand, StandAvailablePageBlock, StandUser
+from forest.main.models import StandGroup
 from django.contrib.auth.models import User, Group
 
 
@@ -329,6 +330,78 @@ class AddStandTests(TestCase):
         self.u.is_superuser = True
         self.u.save()
         response = self.c.get("/_stand/groups/", HTTP_HOST="test.example.com")
+        self.assertEqual(response.status_code, 200)
+
+    def test_stand_add_group(self):
+        self.u.is_superuser = True
+        self.u.save()
+        g = Group.objects.create(name="foo")
+        response = self.c.post(
+            "/_stand/groups/add/",
+            dict(group=g.id),
+            HTTP_HOST="test.example.com"
+        )
+        self.assertEqual(response.status_code, 302)
+
+    def test_stand_add_group_repeat(self):
+        self.u.is_superuser = True
+        self.u.save()
+        g = Group.objects.create(name="foo")
+        response = self.c.post(
+            "/_stand/groups/add/",
+            dict(group=g.id),
+            HTTP_HOST="test.example.com"
+        )
+        response = self.c.post(
+            "/_stand/groups/add/",
+            dict(group=g.id),
+            HTTP_HOST="test.example.com"
+        )
+        self.assertEqual(response.status_code, 302)
+
+    def test_stand_add_group_empty(self):
+        self.u.is_superuser = True
+        self.u.save()
+        response = self.c.post(
+            "/_stand/groups/add/",
+            dict(group=""),
+            HTTP_HOST="test.example.com"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, "no group selected")
+
+    def test_delete_stand_group(self):
+        self.u.is_superuser = True
+        self.u.save()
+        g = Group.objects.create(name="foo")
+        su = StandGroup.objects.create(
+            stand=self.stand, group=g,
+            access="admin")
+        response = self.c.post("/_stand/groups/%d/delete/" % su.id,
+                               HTTP_HOST="test.example.com")
+        self.assertEqual(response.status_code, 302)
+
+    def test_edit_stand_group(self):
+        self.u.is_superuser = True
+        self.u.save()
+        g = Group.objects.create(name="foo")
+        su = StandGroup.objects.create(
+            stand=self.stand, group=g,
+            access="admin")
+        response = self.c.post("/_stand/groups/%d/" % su.id,
+                               dict(access="student"),
+                               HTTP_HOST="test.example.com")
+        self.assertEqual(response.status_code, 302)
+
+    def test_edit_stand_group_form(self):
+        self.u.is_superuser = True
+        self.u.save()
+        g = Group.objects.create(name="foo")
+        su = StandGroup.objects.create(
+            stand=self.stand, group=g,
+            access="admin")
+        response = self.c.get("/_stand/groups/%d/" % su.id,
+                              HTTP_HOST="test.example.com")
         self.assertEqual(response.status_code, 200)
 
     def test_epub_download(self):

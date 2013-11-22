@@ -140,22 +140,27 @@ class InstructorView(LoggedInMixin, StandMixin, View):
         return self.handler(request, path)
 
 
-@login_required
-@stand()
-def edit_page(request, path):
-    if not request.stand.can_edit(request.user):
-        return permission_denied(request, "You are not an admin for this site")
-    can_admin = request.stand.can_admin(request.user)
-    hierarchy = request.get_host()
+class EditView(LoggedInMixin, StandMixin, View):
+    def handler(self, request, path):
+        if not request.stand.can_edit(request.user):
+            return permission_denied(request, "You are not an admin for this site")
+        can_admin = request.stand.can_admin(request.user)
+        hierarchy = request.get_host()
 
-    return generic_edit_page(
-        request, path, hierarchy=hierarchy,
-        extra_context=dict(
-            can_admin=can_admin,
-            stand=stand,
-            available_pageblocks=request.stand.available_pageblocks(),
-        ),
-    )
+        return generic_edit_page(
+            request, path, hierarchy=hierarchy,
+            extra_context=dict(
+                can_admin=can_admin,
+                stand=stand,
+                available_pageblocks=request.stand.available_pageblocks(),
+            ),
+        )
+
+    def get(self, request, path):
+        return self.handler(request, path)
+
+    def post(self, request, path):
+        return self.handler(request, path)
 
 
 @stand()

@@ -57,7 +57,7 @@ urlpatterns = patterns(
     (r'^_fridge/', include('fridgeblock.urls')),
     ('_smoketest/', include('smoketest.urls')),
     (r'^_stats/$', TemplateView.as_view(template_name="main/stats.html")),
-    (r'^edit/(?P<path>.*)$', 'forest.main.views.edit_page',
+    (r'^edit/(?P<path>.*)$', views.EditView.as_view(),
      {}, 'edit-page'),
     (r'^instructor/(?P<path>.*)$', views.InstructorView.as_view()),
     (r'^(?P<path>.*)$', views.PageView.as_view()),

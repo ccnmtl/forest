@@ -163,9 +163,9 @@ class EditView(LoggedInMixin, StandMixin, View):
         return self.handler(request, path)
 
 
-@stand()
-def css(request):
-    return HttpResponse(request.stand.css, content_type="text/css")
+class CSSView(StandMixin, View):
+    def get(self, request):
+        return HttpResponse(request.stand.css, content_type="text/css")
 
 
 @login_required

@@ -49,7 +49,7 @@ urlpatterns = patterns(
      'forest.main.views.delete_stand_group'),
     (r'^_stand/blocks/$',
      'forest.main.views.manage_blocks'),
-    (r'^_stand/css/$', 'forest.main.views.css'),
+    (r'^_stand/css/$', views.CSSView.as_view()),
     (r'^_stand/delete/$', 'forest.main.views.delete_stand'),
     (r'^_stand/clone/$', 'forest.main.views.cloner'),
     (r'^_quiz/', include('quizblock.urls')),

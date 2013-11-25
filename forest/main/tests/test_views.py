@@ -324,6 +324,40 @@ class AddStandTests(TestCase):
         assert response.status_code == 200
         assert "Stand has been deleted" in response.content
 
+    def test_clone_stand_forest(self):
+        self.u.is_superuser = True
+        self.u.save()
+        response = self.c.get("/_stand/clone/", HTTP_HOST="test.example.com")
+        assert response.status_code == 200
+        response = self.c.post(
+            "/_stand/clone/",
+            dict(
+                new_hierarchy="cloned.forest.ccnmtl.columbia.edu",
+            ),
+            HTTP_HOST="test.example.com",
+        )
+        assert response.status_code == 302
+        response = self.c.get("/differentwelcome/",
+                              HTTP_HOST="cloned.forest.ccnmtl.columbia.edu")
+        assert "no such site" not in response.content
+        self.assertFalse('404: Page Not Found' in response.content)
+
+        response = self.c.get("/_stand/blocks/",
+                              HTTP_HOST="cloned.forest.ccnmtl.columbia.edu")
+        for pb in self.stand.standavailablepageblock_set.all():
+            self.assertTrue(pb.block in response.content)
+
+        response = self.c.get("/_stand/delete/",
+                              HTTP_HOST="cloned.forest.ccnmtl.columbia.edu")
+        assert "Are you sure?" in response.content
+        response = self.c.post(
+            "/_stand/delete/",
+            dict(),
+            HTTP_HOST="cloned.forest.ccnmtl.columbia.edu",
+        )
+        assert response.status_code == 200
+        assert "Stand has been deleted" in response.content
+
     def test_stand_add_user(self):
         self.u.is_superuser = True
         self.u.save()

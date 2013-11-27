@@ -6,9 +6,9 @@ from django.views.generic.edit import DeleteView
 from django.views.generic.list import ListView
 from django.utils.decorators import method_decorator
 from pagetree.helpers import get_section_from_path
-from pagetree.generic.views import generic_view_page
-from pagetree.generic.views import generic_instructor_page
-from pagetree.generic.views import generic_edit_page
+from pagetree.generic.views import PageView as GenericPageView
+from pagetree.generic.views import InstructorView as GenericInstructorView
+from pagetree.generic.views import EditView as GenericEditView
 from django.contrib.auth.decorators import login_required
 from epubbuilder import epub
 from forest.main.models import get_stand, Stand
@@ -57,16 +57,31 @@ class LoggedInMixin(object):
         return super(LoggedInMixin, self).dispatch(*args, **kwargs)
 
 
-class GetPostView(View):
-    def get(self, request, path):
-        return self.handler(request, path)
+class PageView(StandMixin, GenericPageView):
+    no_root_fallback_url = "/_stand/"
 
-    def post(self, request, path):
-        return self.handler(request, path)
+    def get_gated(self):
+        return self.request.stand.gated
 
+    def get_extra_context(self):
+        context = super(PageView, self).get_extra_context()
+        can_edit = self.request.stand.can_edit(self.request.user)
+        can_admin = self.request.stand.can_admin(self.request.user)
+        context.update(
+            dict(
+                stand=self.request.stand,
+                can_edit=can_edit,
+                can_admin=can_admin))
+        return context
 
-class PageView(StandMixin, GetPostView):
-    def handler(self, request, path):
+    def get_section(self, path):
+        hierarchy = self.request.get_host()
+        return get_section_from_path(
+            path,
+            hierarchy_name=hierarchy,
+            hierarchy_base="/")
+
+    def perform_checks(self, request, path):
         if not request.stand.can_view(request.user):
             if not request.user.is_anonymous():
                 return permission_denied(request)
@@ -74,56 +89,54 @@ class PageView(StandMixin, GetPostView):
         if (request.stand.gated
                 and request.user.is_anonymous()):
             return HttpResponseRedirect("/accounts/login/?next=/")
-        can_edit = request.stand.can_edit(request.user)
-        can_admin = request.stand.can_admin(request.user)
-
-        hierarchy = request.get_host()
-        return generic_view_page(
-            request, path,
-            hierarchy=hierarchy,
-            gated=request.stand.gated,
-            extra_context=dict(
-                stand=request.stand,
-                can_edit=can_edit,
-                can_admin=can_admin,
-            ),
-            no_root_fallback_url="/_stand/",
-        )
+        return super(PageView, self).perform_checks(request, path)
 
 
-class InstructorView(LoggedInMixin, StandMixin, GetPostView):
-    def handler(self, request, path):
+class InstructorView(LoggedInMixin, StandMixin, GenericInstructorView):
+    def perform_checks(self, request, path):
         if not request.stand.can_view(request.user):
             if not request.user.is_anonymous():
                 return permission_denied(request)
             return HttpResponseRedirect("/accounts/login/?next=/")
-        # TODO: enforce that they are an instructor
-        hierarchy = request.get_host()
-        return generic_instructor_page(
-            request, path,
-            hierarchy=hierarchy,
-            extra_context=dict(
-                stand=request.stand,
-            )
-        )
+        return super(InstructorView, self).perform_checks(request, path)
+
+    def get_section(self, path):
+        hierarchy = self.request.get_host()
+        return get_section_from_path(
+            path,
+            hierarchy_name=hierarchy,
+            hierarchy_base="/")
+
+    def get_extra_context(self):
+        context = super(InstructorView, self).get_extra_context()
+        context.update(dict(stand=self.request.stand))
+        return context
 
 
-class EditView(LoggedInMixin, StandMixin, GetPostView):
-    def handler(self, request, path):
+class EditView(LoggedInMixin, StandMixin, GenericEditView):
+    def perform_checks(self, request, path):
         if not request.stand.can_edit(request.user):
             return permission_denied(request,
                                      "You are not an admin for this site")
-        can_admin = request.stand.can_admin(request.user)
-        hierarchy = request.get_host()
+        return super(EditView, self).perform_checks(request, path)
 
-        return generic_edit_page(
-            request, path, hierarchy=hierarchy,
-            extra_context=dict(
+    def get_section(self, path):
+        hierarchy = self.request.get_host()
+        return get_section_from_path(
+            path,
+            hierarchy_name=hierarchy,
+            hierarchy_base="/")
+
+    def get_extra_context(self):
+        context = super(EditView, self).get_extra_context()
+        can_admin = self.request.stand.can_admin(self.request.user)
+        context.update(
+            dict(
+                stand=self.request.stand,
                 can_admin=can_admin,
-                stand=request.stand,
-                available_pageblocks=request.stand.available_pageblocks(),
-            ),
-        )
+                available_pageblocks=self.request.stand.available_pageblocks(),
+            ))
+        return context
 
 
 class CSSView(StandMixin, View):

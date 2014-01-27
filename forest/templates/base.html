@@ -96,39 +96,34 @@
 </header>
 
 {% block primarynavtabs %}
-	<div class="navbar" id="primarynav">
-		<div class="navbar-inner">
-			<div class="container">
-				{% block moduletabs %}
-				<ul class="nav">
-					{% for section in modules %}
-					<li{% ifequal section.id module.id %} class="active"{% endifequal %}><a href="{{section.get_absolute_url}}">{{section.label}}</a></li>
-					{% endfor %}
-				</ul>
-				{% endblock %}
+	<nav class="navbar navbar-default" id="primarynav">
+		{% block moduletabs %}
+		<ul class="nav">
+			{% for section in modules %}
+			<li{% ifequal section.id module.id %} class="active"{% endifequal %}><a href="{{section.get_absolute_url}}">{{section.label}}</a></li>
+			{% endfor %}
+		</ul>
+		{% endblock %}
 
 		{% if not request.user.is_anonymous %}
-		<ul class="nav pull-right">
+		<ul class="nav navbar-nav pull-right">
 			{% block navrightextra %}
 			{% endblock %}
 
 			{% if can_edit %}
-			<li><a href="/edit{{request.path}}" class="btn-warning">edit</a></li>
 			{% if instructor_link %}
-			<li><a href="/instructor{{request.path}}" class="btn-info" >responses</a></li>
+			<li class="instructor-link"><a href="/instructor{{request.path}}" class="btn">responses</a></button></li>
 			{% endif %}
 			{% endif %}
 			{% if can_admin %}
-			<li><a href="/_stand/" class="btn-inverse">admin</a></li>
+			<li class="admin-link"><a href="/_stand/" class="btn">admin</a></li>
 			{% endif %}
 
 
 		</ul>
 		{% endif %}
 
-  </div>
-</div>
-</div>
+</nav>
 {% endblock %}
 
 {% endblock %}

@@ -23,6 +23,8 @@ height: 100%;
 body > .container {
 background-color: #fff;
 min-height: 100%;
+padding-left: 0px;
+padding-right: 0px;
 }
 
 #content {
@@ -32,13 +34,16 @@ min-height: 100%;
 a { color: green; }
 a:hover { color: green; }
 
-.navbar-top {
+.navbar-fixed-top {
   margin-bottom: 0px;
 }
 
-#primarynav .navbar-inner {
+#primarynav  {
 		background-color: green;
 		background-image: none;
+    margin-top: 0px;
+		margin-bottom: 0px;
+		border: 0px;
 }
 
 #primarynav li.active a {
@@ -48,10 +53,16 @@ a:hover { color: green; }
 
 #primarynav a {
    color: white;
-	 background-color: #696;
 }
 #primarynav a:hover {
 color: #fbf523;
+}
+
+#primarynav .admin-link {
+  background-color: #333;
+}
+#primarynav .instructor-link {
+  background-color: #f93;
 }
 
 .controls textarea {

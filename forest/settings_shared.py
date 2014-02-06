@@ -102,7 +102,7 @@ TEMPLATE_DIRS = (
 
 EPUB_TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "templates/epub/")
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -134,7 +134,7 @@ INSTALLED_APPS = (
     'waffle',
     'impersonate',
     'lettuce.django',
-)
+]
 
 PAGEBLOCKS = ['pageblocks.TextBlock',
               'pageblocks.HTMLBlock',

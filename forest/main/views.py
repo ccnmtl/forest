@@ -236,10 +236,13 @@ class StandAddUserView(StandAdminMixin, View):
                 if r.get('found', False):
                     u.last_name = r.get('lastname', r.get('sn', ''))
                     u.first_name = r.get('firstname', r.get('givenName', ''))
+            # two different ways that it fails when
+            # cdap.ccnmtl.columbia.edu
+            # (or whatever the CDAP server is set to)
+            # is probably not in /etc/hosts on this server
             except httplib2.ServerNotFoundError:
-                # cdap.ccnmtl.columbia.edu
-                # (or whatever the CDAP server is set to)
-                # is probably not in /etc/hosts on this server
+                pass
+            except IOError:
                 pass
             u.save()
         r = StandUser.objects.filter(stand=request.stand, user=u)

@@ -116,7 +116,6 @@ INSTALLED_APPS = [
     'smartif',
     'template_utils',
     'typogrify',
-    'raven.contrib.django',
     'pagetree',
     'pageblocks',
     'forest.main',
@@ -211,7 +210,7 @@ SESSION_COOKIE_HTTPONLY = True
 
 STATSD_CLIENT = 'statsd.client'
 STATSD_PREFIX = 'forest'
-STATSD_HOST = 'localhost'
+STATSD_HOST = '127.0.0.1'
 STATSD_PORT = 8125
 STATSD_PATCHES = ['django_statsd.patches.db', ]
 

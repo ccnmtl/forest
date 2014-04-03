@@ -240,9 +240,7 @@ class StandAddUserView(StandAdminMixin, View):
             # cdap.ccnmtl.columbia.edu
             # (or whatever the CDAP server is set to)
             # is probably not in /etc/hosts on this server
-            except httplib2.ServerNotFoundError:
-                pass
-            except IOError:
+            except (httplib2.ServerNotFoundError, IOError):
                 pass
             u.save()
         r = StandUser.objects.filter(stand=request.stand, user=u)

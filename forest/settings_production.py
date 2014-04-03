@@ -27,6 +27,9 @@ DATABASES = {
         }
 }
 
+STATICFILES_DIRS = ()
+STATIC_ROOT = "/var/www/forest/forest/media/"
+
 if 'migrate' not in sys.argv:
     INSTALLED_APPS.append('raven.contrib.django.raven_compat')
 

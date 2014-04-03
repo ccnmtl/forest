@@ -109,7 +109,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django.contrib.markup',
-    'staticmedia',
+    'django.contrib.staticfiles',
     'sorl.thumbnail',
     'django.contrib.admin',
     'tagging',
@@ -180,8 +180,18 @@ SERVER_EMAIL = "forest@ccnmtl.columbia.edu"
 STATICMEDIA_MOUNTS = (
     ('/sitemedia', 'sitemedia'),
 )
+STATIC_ROOT = ""
+STATICFILES_DIRS = (
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../media/")),
+)
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
 
-COMPRESS_URL = "/site_media/"
+
+COMPRESS_URL = "/media/"
 COMPRESS_ROOT = "media/"
 COMPRESS_PARSER = "compressor.parser.HtmlParser"
 

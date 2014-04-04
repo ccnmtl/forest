@@ -46,7 +46,7 @@ raven==4.0.3
 South==0.8.1
 django-nose==1.2
 django-markwhat==1.0
-django-pagetree==0.13.5
+django-pagetree==0.14.1
 django-pageblocks==0.5.11
 django-quizblock==0.6.13
 django-careermapblock==0.2.16

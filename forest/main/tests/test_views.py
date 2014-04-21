@@ -3,6 +3,7 @@ from django.test.client import Client
 from forest.main.models import Stand, StandAvailablePageBlock, StandUser
 from forest.main.models import StandGroup
 from django.contrib.auth.models import User, Group
+import httpretty
 
 
 class SimpleTest(TestCase):
@@ -388,9 +389,15 @@ class AddStandTests(TestCase):
         )
         assert response.status_code == 302
 
+    @httpretty.activate
     def test_stand_add_user_new(self):
         self.u.is_superuser = True
         self.u.save()
+
+        httpretty.register_uri(
+            httpretty.GET, "http://cdap.ccnmtl.columbia.edu/?uni=seconduser",
+            body='{"sn": "User", "givenName": "Second", "found": "True"}',
+            content_type="application/json")
 
         response = self.c.post(
             "/_stand/users/add/",

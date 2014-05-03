@@ -1,24 +1,70 @@
 {% extends "base.html" %}
 {% block title %}log in{% endblock %}
 
+{% block mastheadheader %}
+{% endblock %}
+
+{% block css %}
+<style type="text/css">
+input[type='text'], input[type='password'] {
+    display: block;
+    width: 50%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    color: #555555;
+    vertical-align: middle;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 
-<h2>Choose a Login Option...</h2>
+<div class="row">
+<div class="span6">
+    <h3>Choose a Login Option...</h3>
+    
+    <form method="get" action="{{ wind_base }}login" class="well">
+    
+    <input type="hidden" name="service" value="{{ wind_service }}" />
+    <input type="hidden" name="destination" value="http://{{ request.get_host }}/accounts/windlogin/?next={{ next }}" />
+    <p>If you have a Columbia University Network ID
+    	(UNI)... </p><input type="submit" value="Columbia Log In" class="btn btn-primary"/></p>
+    </form>
+    
+    <form method="post" action="." class="well">
+    <p>If you have a project account...</p>
+    
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <span>
+                <b>ERROR:</b> Invalid username or password.
+            </span>
+            Please try again. Note that both username and password are case-sensitive.
+        </p>
+    {% endif %}    
+    
+    <div class="form-group">
+        <label for="id_username">Username</label>
+        {{ form.username }}
+    </div>
+    <div class="form-group">
+        <label for="id_password">Password</label>
+        {{ form.password }}
+    </div>
+    
+    <input type="submit" value="Project Log In" class="btn btn-primary" />
+    <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+</div>    
+</div>
 
-<form method="get" action="{{ wind_base }}login" class="well">
-<input type="hidden" name="service" value="{{ wind_service }}" />
-<input type="hidden" name="destination" value="http://{{ request.get_host }}/accounts/windlogin/?next={{ next }}" />
-<p>If you have a Columbia University Network ID
-	(UNI)... </p><input type="submit" value="LOG IN" class="btn btn-primary"/></p>
-</form>
-
-<form method="post" action="." class="well">
-<p>If you have a project account...</p>
-
-<label for="id_username">Username: {{ form.username }}</label>
-<label for="id_password">Password: {{ form.password }}</label>
-
-<input type="submit" value="LOG IN" class="btn btn-primary" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
 {% endblock %}

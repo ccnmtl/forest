@@ -56,9 +56,9 @@
 			<ul class="nav navbar-nav navbar-right">
 				{% block usernav %}
 				{% if request.user.is_anonymous %}
-				<li><a href="/accounts/login/?next=/" class="btn btn-success">login</a></li>
+				<li><a href="/accounts/login/?next=/">login</a></li>
 				{% else %}
-<li class="navbar-text">
+                <li class="navbar-text">
                 <div class="btn-group">
                 <button type="button" class="btn btn-default btn-xs">
                 {% if request.user.last_name %}
@@ -90,11 +90,14 @@
 
 <div class="container">
 {% block masthead %}
+
+{% block mastheadheader %}
 <header class="subhead hidden-phone" id="masthead">
   <h1><a href="./" title="{{stand.title}}">{{stand.title}}</a></h1>
 	<h4 id="logo_ccnmtl"><a href="http://ccnmtl.columbia.edu" target="_blank" title="Columbia Center for New Media Teaching and Learning"><span>Produced by the Columbia Center for New Media Teaching and Learning</span></a></h4>
 </header>
-
+{% endblock %}
+    
 {% block primarynavtabs %}
 	<nav class="navbar navbar-default" id="primarynav">
 		{% block moduletabs %}

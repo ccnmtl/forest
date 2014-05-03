@@ -10,3 +10,5 @@ reports
 lettuce.db
 ghostdriver.log
 node_modules
+.project
+.pydevproject

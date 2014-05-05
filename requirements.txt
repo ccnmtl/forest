@@ -22,7 +22,7 @@ logilab-astng==0.24.1
 pylint==0.26.0
 fuzzywuzzy==0.1
 sure==1.1.7
-ipython==0.13.1
+ipython==0.13.2
 ipdb==0.7
 extras==0.0.3
 python-mimeparse==0.1.4
@@ -37,6 +37,7 @@ Pillow==2.3.0
 python-ldap==2.4.13
 urllib3==1.7.1
 httpretty==0.8.0
+six==1.2.0
 
 django-treebeard==2.0b2
 django-smartif==0.1
@@ -69,3 +70,4 @@ django-jenkins==0.14.0
 django-stagingcontext==0.1.0
 django-waffle==0.9.0
 django-impersonate==0.6.0
+django-extensions==1.1.1

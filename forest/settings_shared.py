@@ -146,6 +146,7 @@ INSTALLED_APPS = [
     'waffle',
     'impersonate',
     'lettuce.django',
+    'django_extensions',
 ]
 
 PAGEBLOCKS = ['pageblocks.TextBlock',

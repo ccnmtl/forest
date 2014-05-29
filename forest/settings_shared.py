@@ -146,6 +146,7 @@ INSTALLED_APPS = [
     'lettuce.django',
     'django_extensions',
     'django_markwhat',
+    'likertblock',
 ]
 
 PAGEBLOCKS = ['pageblocks.TextBlock',
@@ -156,6 +157,7 @@ PAGEBLOCKS = ['pageblocks.TextBlock',
               'quizblock.Quiz',
               'careermapblock.CareerMap',
               'fridgeblock.FridgeBlock',
+              'likertblock.Questionnaire',
               ]
 
 # these are by their display names for now

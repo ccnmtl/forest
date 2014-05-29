@@ -35,6 +35,7 @@ urlpatterns = patterns(
     (r'^_stand/delete/$', views.DeleteStandView.as_view()),
     (r'^_stand/clone/$', views.ClonerView.as_view()),
     (r'^_quiz/', include('quizblock.urls')),
+    (r'^_likert/', include('likertblock.urls')),
     (r'^_careermap/', include('careermapblock.urls')),
     (r'^_fridge/', include('fridgeblock.urls')),
     ('_smoketest/', include('smoketest.urls')),

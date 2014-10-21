@@ -11,5 +11,7 @@ sys.path.append('/var/www/forest/forest/')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'forest.settings_staging'
 
 import django.core.handlers.wsgi
+import django
+django.setup()
 
 application = django.core.handlers.wsgi.WSGIHandler()

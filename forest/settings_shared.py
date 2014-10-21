@@ -47,7 +47,6 @@ if 'test' in sys.argv or 'jenkins' in sys.argv:
         }
 
 
-SOUTH_TESTS_MIGRATE = False
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 NOSE_ARGS = [
@@ -133,7 +132,6 @@ INSTALLED_APPS = [
     'quizblock',
     'careermapblock',
     'fridgeblock',
-    'south',
     'django_nose',
     'compressor',
     'django_statsd',
@@ -143,7 +141,6 @@ INSTALLED_APPS = [
     'django_jenkins',
     'waffle',
     'impersonate',
-    'lettuce.django',
     'django_extensions',
     'django_markwhat',
     'likertblock',
@@ -179,10 +176,6 @@ SENTRY_REMOTE_URL = 'http://sentry.ccnmtl.columbia.edu/sentry/store/'
 # remember to set the SENTRY_KEY in a local_settings.py
 # as documented in the wiki
 SENTRY_SITE = 'forest'
-
-LETTUCE_APPS = (
-    'forest.main',
-)
 
 THUMBNAIL_SUBDIR = "thumbs"
 EMAIL_SUBJECT_PREFIX = "[forest] "
@@ -239,8 +232,6 @@ STATSD_PORT = 8125
 
 LOGIN_REDIRECT_URL = "/"
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
-
-SOUTH_AUTO_FREEZE_APP = True
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 

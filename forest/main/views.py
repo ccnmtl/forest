@@ -425,7 +425,7 @@ class EpubExporterView(StandAdminMixin, View):
 
         out = im_book.make_epub()
         resp = HttpResponse(out.getvalue(),
-                            mimetype="application/x-zip-compressed")
+                            content_type="application/x-zip-compressed")
         resp['Content-Disposition'] = ("attachment; filename=%s.epub" %
                                        section.hierarchy.name)
         return resp

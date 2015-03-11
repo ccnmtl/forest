@@ -68,6 +68,6 @@ django-smoketest==0.2.2
 django-jenkins==0.15.0
 django-stagingcontext==0.1.0
 django-waffle==0.9.0
-django-impersonate==0.8.0
+django-impersonate==0.9
 django-extensions==1.1.1
 django-likertblock==0.1.0

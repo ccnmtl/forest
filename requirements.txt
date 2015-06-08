@@ -45,7 +45,7 @@ djangowind==0.13.3
 sorl==3.1
 tagging==0.3-pre
 template_utils==0.4p2
-typogrify==1.0
+typogrify==2.0.7
 django-staticmedia==0.2.2
 django-indexer==0.2.1
 django-templatetag-sugar==0.1

@@ -34,7 +34,7 @@ epubbuilder==0.1.4
 Pillow==2.8.1
 python-ldap==2.4.18
 urllib3==1.7.1
-httpretty==0.8.0
+httpretty==0.8.10
 six==1.9.0
 sqlparse==0.1.14
 astroid==1.2.1

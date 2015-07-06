@@ -57,7 +57,7 @@ django-pageblocks==1.0.2
 django-quizblock==1.1.2
 django-careermapblock==0.2.17
 django-fridgeblock==0.3.3
-django-appconf==0.6
+django-appconf==1.0.1
 django-compressor==1.5
 django-annoying==0.8.1
 django-statsd-mozilla==0.3.14

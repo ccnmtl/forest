@@ -116,7 +116,6 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'django.contrib.admin',
     'tagging',
-    'smartif',
     'pagetree',
     'pageblocks',
     'forest.main',

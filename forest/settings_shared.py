@@ -117,7 +117,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'tagging',
     'smartif',
-    'typogrify',
     'pagetree',
     'pageblocks',
     'forest.main',

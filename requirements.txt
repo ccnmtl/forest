@@ -47,11 +47,11 @@ sorl==3.1
 tagging==0.3-pre
 django-staticmedia==0.2.2
 django-indexer==0.3.0
-django-templatetag-sugar==0.1
+django-templatetag-sugar==1.0
 django-paging==0.2.5
 raven==5.2.0
 django-markwhat==1.3
-django-pagetree==1.1.6
+django-pagetree==1.1.7
 django-pageblocks==1.0.3
 django-quizblock==1.1.3
 django-careermapblock==0.2.17

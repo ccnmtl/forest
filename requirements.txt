@@ -17,7 +17,7 @@ flake8==2.2.5
 unittest2==0.5.1
 logilab-common==1.0.2
 logilab-astng==0.24.1
-pylint==1.4.1
+pylint==1.4.4
 fuzzywuzzy==0.6.0
 sure==1.2.12
 ipython==3.0.0

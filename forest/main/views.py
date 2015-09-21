@@ -86,8 +86,8 @@ class PageView(StandMixin, GenericPageView):
             if not request.user.is_anonymous():
                 return permission_denied(request)
             return HttpResponseRedirect("/accounts/login/?next=/")
-        if (request.stand.gated
-                and request.user.is_anonymous()):
+        if (request.stand.gated and
+                request.user.is_anonymous()):
             return HttpResponseRedirect("/accounts/login/?next=/")
         return super(PageView, self).perform_checks(request, path)
 

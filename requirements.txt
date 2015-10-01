@@ -76,3 +76,7 @@ django-waffle==0.10.1
 django-impersonate==0.9.1
 django-extensions==1.4.9
 django-likertblock==0.1.1
+gunicorn==19.3.0
+django-ga-context==0.1.0
+
+ccnmtlsettings==0.1.0

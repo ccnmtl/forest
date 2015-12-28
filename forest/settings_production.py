@@ -8,7 +8,7 @@ locals().update(
         base=base,
         INSTALLED_APPS=INSTALLED_APPS,
         STATIC_ROOT=STATIC_ROOT,
-        s3static=False,
+        cloudfront="d3bol0ukcoxvkw",
 ))
 
 SEED_STAND = "forest.ccnmtl.columbia.edu"

@@ -54,7 +54,7 @@ boto==2.38.0
 python-dateutil==2.4.2
 
 django-treebeard==3.0
-djangowind==0.14.1
+djangowind==0.14.3
 sorl==3.1
 tagging==0.3-pre
 django-staticmedia==0.2.2

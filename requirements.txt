@@ -61,7 +61,7 @@ django-staticmedia==0.2.2
 django-indexer==0.3.0
 django-templatetag-sugar==1.0
 django-paging==0.2.5
-raven==5.2.0
+raven==5.10.1
 django-markwhat==1.4
 django-pagetree==1.1.7
 django-pageblocks==1.0.3

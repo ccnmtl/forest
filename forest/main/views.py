@@ -219,9 +219,8 @@ Are you sure? <input type="submit" value="YES!" />
 
 class StandAddUserView(StandAdminMixin, View):
     def post(self, request):
-        username = request.POST.get('user', '')
-        if username == "":
-            username = request.POST.get('uni', '')
+        username = request.POST.get(
+            'user', request.POST.get('uni', ''))
         try:
             u = User.objects.get(username=username)
         except User.DoesNotExist:

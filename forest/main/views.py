@@ -17,7 +17,7 @@ from forest.main.models import StandAvailablePageBlock
 from forest.main.forms import StandForm
 from restclient import GET
 import httplib2
-import simplejson
+import json
 from pagetree.models import PageBlock
 import os
 from django.shortcuts import render
@@ -231,7 +231,7 @@ class StandAddUserView(StandAdminMixin, View):
             u.email = u.username + "@columbia.edu"
             cdap_base = "http://cdap.ccnmtl.columbia.edu/"
             try:
-                r = simplejson.loads(GET(cdap_base + "?uni=%s" % u.username))
+                r = json.loads(GET(cdap_base + "?uni=%s" % u.username))
                 if r.get('found', False):
                     u.last_name = r.get('lastname', r.get('sn', ''))
                     u.first_name = r.get('firstname', r.get('givenName', ''))

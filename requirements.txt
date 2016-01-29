@@ -52,6 +52,7 @@ pyOpenSSL==0.15.1
 ndg-httpsclient==0.4.0
 boto==2.38.0
 python-dateutil==2.4.2
+contextlib2==0.5.1
 
 django-treebeard==3.0
 djangowind==0.14.3
@@ -61,7 +62,7 @@ django-staticmedia==0.2.2
 django-indexer==0.3.0
 django-templatetag-sugar==1.0
 django-paging==0.2.5
-raven==5.2.0
+raven==5.10.1
 django-markwhat==1.4
 django-pagetree==1.1.7
 django-pageblocks==1.0.3

@@ -17,7 +17,7 @@ from forest.main.models import StandAvailablePageBlock
 from forest.main.forms import StandForm
 from restclient import GET
 import httplib2
-import simplejson
+import json
 from pagetree.models import PageBlock
 import os
 from django.shortcuts import render
@@ -219,9 +219,8 @@ Are you sure? <input type="submit" value="YES!" />
 
 class StandAddUserView(StandAdminMixin, View):
     def post(self, request):
-        username = request.POST.get('user', '')
-        if username == "":
-            username = request.POST.get('uni', '')
+        username = request.POST.get(
+            'user', request.POST.get('uni', ''))
         try:
             u = User.objects.get(username=username)
         except User.DoesNotExist:
@@ -230,18 +229,7 @@ class StandAddUserView(StandAdminMixin, View):
             u = User(username=username, password='forest user')
             u.set_unusable_password()
             u.email = u.username + "@columbia.edu"
-            cdap_base = "http://cdap.ccnmtl.columbia.edu/"
-            try:
-                r = simplejson.loads(GET(cdap_base + "?uni=%s" % u.username))
-                if r.get('found', False):
-                    u.last_name = r.get('lastname', r.get('sn', ''))
-                    u.first_name = r.get('firstname', r.get('givenName', ''))
-            # two different ways that it fails when
-            # cdap.ccnmtl.columbia.edu
-            # (or whatever the CDAP server is set to)
-            # is probably not in /etc/hosts on this server
-            except (httplib2.ServerNotFoundError, IOError):
-                pass
+            self.populate_user_from_cdap(u)
             u.save()
         r = StandUser.objects.filter(stand=request.stand, user=u)
         if r.count() > 0:
@@ -253,6 +241,20 @@ class StandAddUserView(StandAdminMixin, View):
         StandUser.objects.create(stand=request.stand, user=u,
                                  access=access)
         return HttpResponseRedirect("/_stand/users/")
+
+    def populate_user_from_cdap(self, u):
+        cdap_base = "http://cdap.ccnmtl.columbia.edu/"
+        try:
+            r = json.loads(GET(cdap_base + "?uni=%s" % u.username))
+            if r.get('found', False):
+                u.last_name = r.get('lastname', r.get('sn', ''))
+                u.first_name = r.get('firstname', r.get('givenName', ''))
+        # two different ways that it fails when
+        # cdap.ccnmtl.columbia.edu
+        # (or whatever the CDAP server is set to)
+        # is probably not in /etc/hosts on this server
+        except (httplib2.ServerNotFoundError, IOError):
+            pass
 
 
 class EditStandUserView(StandAdminMixin, View):

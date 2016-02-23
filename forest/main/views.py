@@ -420,9 +420,7 @@ class EpubExporterView(StandAdminMixin, View):
             n = im_book.addHtml('', '%d.html' % i,
                                 section_html(s))
             im_book.addSpineItem(n)
-            depth = ai['level']
-            if depth == 1:
-                depth = None
+            depth = depth_from_ai(ai)
             im_book.addTocMapNode(n.destPath, title, depth=depth)
 
         out = im_book.make_epub()
@@ -431,6 +429,13 @@ class EpubExporterView(StandAdminMixin, View):
         resp['Content-Disposition'] = ("attachment; filename=%s.epub" %
                                        section.hierarchy.name)
         return resp
+
+
+def depth_from_ai(ai):
+    depth = ai['level']
+    if depth == 1:
+        depth = None
+    return depth
 
 
 class ClonerView(StandAdminMixin, View):

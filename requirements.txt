@@ -54,6 +54,7 @@ boto==2.38.0
 python-dateutil==2.4.2
 contextlib2==0.5.1
 
+django-bootstrap3==6.2.2
 django-treebeard==3.0
 djangowind==0.14.3
 sorl==3.1
@@ -64,7 +65,7 @@ django-templatetag-sugar==1.0
 django-paging==0.2.5
 raven==5.10.1
 django-markwhat==1.4
-django-pagetree==1.1.7
+django-pagetree==1.1.13
 django-pageblocks==1.0.3
 django-quizblock==1.1.4
 django-careermapblock==0.2.17

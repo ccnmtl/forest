@@ -1,6 +1,6 @@
 APP=forest
 JS_FILES=media/js/index.js
-MAX_COMPLEXITY=8
+MAX_COMPLEXITY=7
 
 all: jenkins
 

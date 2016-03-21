@@ -43,7 +43,7 @@ python-ldap==2.4.22
 urllib3==1.10.4
 httpretty==0.8.10
 six==1.10.0
-sqlparse==0.1.18
+sqlparse==0.1.19
 lazy-object-proxy==1.2.1
 wrapt==1.10.6
 astroid==1.4.1

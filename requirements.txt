@@ -67,7 +67,7 @@ raven==5.10.1
 django-markwhat==1.4
 django-pagetree==1.1.13
 django-pageblocks==1.0.3
-django-quizblock==1.1.4
+django-quizblock==1.2.0
 django-careermapblock==0.2.17
 django-fridgeblock==0.3.3
 django-appconf==1.0.1

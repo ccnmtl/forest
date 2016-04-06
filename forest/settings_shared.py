@@ -37,7 +37,6 @@ EPUB_TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "templates/epub/")
 INSTALLED_APPS += [  # noqa
     'bootstrap3',
     'sorl.thumbnail',
-    'tagging',
     'pagetree',
     'pageblocks',
     'forest.main',

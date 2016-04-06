@@ -58,7 +58,6 @@ django-bootstrap3==6.2.2
 django-treebeard==3.0
 djangowind==0.14.3
 sorl==3.1
-tagging==0.3-pre
 django-staticmedia==0.2.2
 django-indexer==0.3.0
 django-templatetag-sugar==1.0

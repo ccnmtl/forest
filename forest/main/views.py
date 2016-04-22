@@ -23,6 +23,10 @@ import os
 from django.shortcuts import render
 
 
+def context_processor(request):
+    return dict(MEDIA_URL=settings.MEDIA_URL)
+
+
 def permission_denied(request, message=""):
     return render(request, "403.html",
                   dictionary=dict(message=message), status=403)

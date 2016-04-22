@@ -1,3 +1,4 @@
+# flake8: noqa
 # Django settings for forest project.
 import os.path
 import sys
@@ -46,6 +47,10 @@ INSTALLED_APPS += [  # noqa
     'bootstrapform',
     'django_extensions',
     'likertblock',
+]
+
+TEMPLATE_CONTEXT_PROCESSORS += [  # noqa
+    'forest.main.views.context_processor',
 ]
 
 PAGEBLOCKS = ['pageblocks.TextBlock',

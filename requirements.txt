@@ -40,7 +40,6 @@ Genshi==0.7
 epubbuilder==0.1.4
 Pillow==3.0.0
 python-ldap==2.4.22
-urllib3==1.10.4
 httpretty==0.8.10
 six==1.10.0
 sqlparse==0.1.19

@@ -15,9 +15,6 @@ from forest.main.models import get_stand, Stand
 from forest.main.models import StandUser, User, Group, StandGroup
 from forest.main.models import StandAvailablePageBlock
 from forest.main.forms import StandForm
-import httplib2
-import json
-import requests
 from pagetree.models import PageBlock
 import os
 from django.shortcuts import render
@@ -233,7 +230,6 @@ class StandAddUserView(StandAdminMixin, View):
             u = User(username=username, password='forest user')
             u.set_unusable_password()
             u.email = u.username + "@columbia.edu"
-            self.populate_user_from_cdap(u)
             u.save()
         r = StandUser.objects.filter(stand=request.stand, user=u)
         if r.count() > 0:
@@ -245,20 +241,6 @@ class StandAddUserView(StandAdminMixin, View):
         StandUser.objects.create(stand=request.stand, user=u,
                                  access=access)
         return HttpResponseRedirect("/_stand/users/")
-
-    def populate_user_from_cdap(self, u):
-        cdap_base = "http://cdap.ccnmtl.columbia.edu/"
-        try:
-            r = json.loads(GET(cdap_base + "?uni=%s" % u.username))
-            if r.get('found', False):
-                u.last_name = r.get('lastname', r.get('sn', ''))
-                u.first_name = r.get('firstname', r.get('givenName', ''))
-        # two different ways that it fails when
-        # cdap.ccnmtl.columbia.edu
-        # (or whatever the CDAP server is set to)
-        # is probably not in /etc/hosts on this server
-        except (httplib2.ServerNotFoundError, IOError):
-            pass
 
 
 class EditStandUserView(StandAdminMixin, View):

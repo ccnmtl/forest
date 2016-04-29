@@ -37,7 +37,6 @@ Genshi==0.7
 epubbuilder==0.1.4
 Pillow==3.0.0
 python-ldap==2.4.22
-httpretty==0.8.14
 six==1.10.0
 sqlparse==0.1.19
 lazy-object-proxy==1.2.1
@@ -49,7 +48,6 @@ ndg-httpsclient==0.4.0
 boto==2.38.0
 python-dateutil==2.5.2
 contextlib2==0.5.1
-requests==2.9.1
 
 django-bootstrap3==7.0.1
 django-treebeard==3.0

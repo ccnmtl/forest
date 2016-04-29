@@ -15,9 +15,9 @@ from forest.main.models import get_stand, Stand
 from forest.main.models import StandUser, User, Group, StandGroup
 from forest.main.models import StandAvailablePageBlock
 from forest.main.forms import StandForm
-from restclient import GET
 import httplib2
 import json
+import requests
 from pagetree.models import PageBlock
 import os
 from django.shortcuts import render

@@ -46,7 +46,7 @@ pyasn1==0.1.8
 pyOpenSSL==0.15.1
 ndg-httpsclient==0.4.0
 boto==2.38.0
-python-dateutil==2.5.2
+python-dateutil==2.5.3
 contextlib2==0.5.1
 
 django-bootstrap3==7.0.1

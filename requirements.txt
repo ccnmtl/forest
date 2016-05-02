@@ -35,7 +35,7 @@ testscenarios==0.5.0
 python-subunit==1.1.0
 Genshi==0.7
 epubbuilder==0.1.4
-Pillow==3.0.0
+Pillow==3.2.0
 python-ldap==2.4.22
 six==1.10.0
 sqlparse==0.1.19

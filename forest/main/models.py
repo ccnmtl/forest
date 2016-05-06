@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 import hashlib
-from django.db.models import get_model
+from django.apps import apps
 from django.conf import settings
 from pagetree.helpers import get_section_from_path
 
@@ -43,7 +43,7 @@ class Stand(models.Model):
 
     def available_pageblocks(self):
         enabled = [pb.block for pb in self.standavailablepageblock_set.all()]
-        return [get_model(*pb.split('.')) for pb in settings.PAGEBLOCKS
+        return [apps.get_model(*pb.split('.')) for pb in settings.PAGEBLOCKS
                 if pb in enabled]
 
     def get_root(self):

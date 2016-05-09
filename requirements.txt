@@ -18,7 +18,7 @@ logilab-common==1.2.0
 logilab-astng==0.24.3
 pylint==1.5.5
 fuzzywuzzy==0.10.0
-sure==1.2.12
+sure==1.2.24
 traitlets==4.2.1
 ipython_genutils==0.1.0
 decorator==4.0.9

@@ -40,7 +40,7 @@ Pillow==3.2.0
 python-ldap==2.4.25
 six==1.10.0
 sqlparse==0.1.19
-lazy-object-proxy==1.2.1
+lazy-object-proxy==1.2.2
 wrapt==1.10.6
 astroid==1.4.5
 pyasn1==0.1.8

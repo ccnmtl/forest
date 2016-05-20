@@ -27,10 +27,10 @@ simplegeneric==0.8.1
 path.py==8.2.1
 ipython==4.2.0
 ipdb==0.10.0
-extras==0.0.3
+extras==1.0.0
 python-mimeparse==1.5.2
 fixtures==3.0.0
-testtools==2.1.0
+testtools==2.2.0
 testscenarios==0.5.0
 python-subunit==1.2.0
 Genshi==0.7

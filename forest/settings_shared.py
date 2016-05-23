@@ -71,6 +71,10 @@ EPUB_ALLOWED_BLOCKS = [
 COMPRESS_PRECOMPILERS = (
     ('text/less', 'lessc {infile} {outfile}'),
 )
+if 'test' in sys.argv or 'jenkins' in sys.argv:
+    COMPRESS_PRECOMPILERS = (
+        ('text/less', 'node_modules/less/bin/lessc {infile} {outfile}'),
+    )
 
 # WIND settings
 

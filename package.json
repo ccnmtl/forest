@@ -18,5 +18,8 @@
   "devDependencies": {
     "jshint": "~2.9.1-rc1",
     "jscs": "~2.7.0"
+  },
+  "dependencies": {
+    "less": "^2.7.1"
   }
 }

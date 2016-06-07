@@ -51,7 +51,7 @@ contextlib2==0.5.3
 
 django-bootstrap3==7.0.1
 django-treebeard==4.0.1
-djangowind==0.14.3
+djangowind==0.15.0
 sorl==3.1
 django-staticmedia==0.2.2
 django-templatetag-sugar==1.0

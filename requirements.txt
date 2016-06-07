@@ -41,7 +41,7 @@ six==1.10.0
 sqlparse==0.1.19
 lazy-object-proxy==1.2.2
 wrapt==1.10.8
-astroid==1.4.5
+astroid==1.4.6
 pyasn1==0.1.9
 pyOpenSSL==16.0.0
 ndg-httpsclient==0.4.0

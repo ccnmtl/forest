@@ -47,6 +47,7 @@ INSTALLED_APPS += [  # noqa
     'bootstrapform',
     'django_extensions',
     'likertblock',
+    'django.contrib.humanize',
 ]
 
 TEMPLATE_CONTEXT_PROCESSORS += [  # noqa

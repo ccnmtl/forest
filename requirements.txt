@@ -45,7 +45,7 @@ astroid==1.4.7
 pyasn1==0.1.9
 pyOpenSSL==16.0.0
 ndg-httpsclient==0.4.1
-boto==2.41.0
+boto==2.42.0
 python-dateutil==2.5.3
 contextlib2==0.5.3
 

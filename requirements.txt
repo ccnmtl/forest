@@ -38,7 +38,7 @@ epubbuilder==0.1.4
 Pillow==3.3.0
 ldap3==1.4.0
 six==1.10.0
-sqlparse==0.1.19
+sqlparse==0.2.0
 lazy-object-proxy==1.2.2
 wrapt==1.10.8
 astroid==1.4.7

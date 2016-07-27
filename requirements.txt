@@ -55,7 +55,7 @@ djangowind==0.15.0
 sorl==3.1
 django-staticmedia==0.2.2
 django-templatetag-sugar==1.0
-raven==5.22.0
+raven==5.23.0
 django-markwhat==1.5
 django-pagetree==1.2.1
 django-pageblocks==1.0.4

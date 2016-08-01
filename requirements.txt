@@ -49,7 +49,7 @@ pyOpenSSL==16.0.0
 ndg-httpsclient==0.4.2
 boto==2.42.0
 python-dateutil==2.5.3
-contextlib2==0.5.3
+contextlib2==0.5.4
 
 django-bootstrap3==7.0.1
 django-treebeard==4.0.1

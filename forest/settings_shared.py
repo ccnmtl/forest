@@ -77,11 +77,4 @@ if 'test' in sys.argv or 'jenkins' in sys.argv:
         ('text/less', 'node_modules/less/bin/lessc {infile} {outfile}'),
     )
 
-# WIND settings
-
-AUTHENTICATION_BACKENDS = ('djangowind.auth.WindAuthBackend',
-                           'django.contrib.auth.backends.ModelBackend',)
-WIND_BASE = "https://wind.columbia.edu/"
-WIND_SERVICE = "cnmtl_full_np"
-
 SEED_STAND = "test.example.com"

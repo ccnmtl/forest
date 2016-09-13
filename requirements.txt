@@ -21,7 +21,7 @@ logilab-astng==0.24.3
 pylint==1.6.4
 fuzzywuzzy==0.11.1
 sure==1.4.0
-traitlets==4.2.2
+traitlets==4.3.0
 ipython_genutils==0.1.0
 decorator==4.0.10
 pexpect==4.2.1

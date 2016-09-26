@@ -59,7 +59,7 @@ django-staticmedia==0.2.2
 django-templatetag-sugar==1.0
 raven==5.27.1
 django-markwhat==1.5
-django-pagetree==1.2.2
+django-pagetree==1.2.4
 django-pageblocks==1.0.4
 django-quizblock==1.2.2
 django-careermapblock==0.3.1

@@ -50,9 +50,9 @@ INSTALLED_APPS += [  # noqa
     'django.contrib.humanize',
 ]
 
-TEMPLATE_CONTEXT_PROCESSORS += [  # noqa
+TEMPLATES[0]['OPTIONS']['context_processors'].append(  # noqa
     'forest.main.views.context_processor',
-]
+)
 
 PAGEBLOCKS = ['pageblocks.TextBlock',
               'pageblocks.HTMLBlock',

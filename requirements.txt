@@ -45,7 +45,7 @@ lazy-object-proxy==1.2.2
 wrapt==1.10.8
 astroid==1.4.8
 pyasn1==0.1.9
-pyOpenSSL==16.1.0
+pyOpenSSL==16.2.0
 ndg-httpsclient==0.4.2
 boto==2.42.0
 python-dateutil==2.5.3

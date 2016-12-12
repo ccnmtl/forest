@@ -62,8 +62,10 @@ django-markwhat==1.5.1
 django-pagetree==1.2.4
 django-pageblocks==1.0.4
 django-quizblock==1.2.2
+
 django-careermapblock==0.4.0
-django-fridgeblock==0.4.0
+django-fridgeblock==0.5.0
+
 django-appconf==1.0.2
 rcssmin==1.0.6  # django-compressor
 rjsmin==1.0.12  # django-compressor

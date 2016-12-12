@@ -1,6 +1,6 @@
 --index-url https://pypi.ccnmtl.columbia.edu/
 Django==1.9.12
-lxml==3.6.4
+lxml==3.7.0
 feedparser==5.2.1
 Markdown==2.6.7
 simplejson==3.10.0
@@ -47,7 +47,7 @@ astroid==1.4.8
 pyasn1==0.1.9
 pyOpenSSL==16.2.0
 ndg-httpsclient==0.4.2
-boto==2.43.0
+boto==2.44.0
 python-dateutil==2.6.0
 contextlib2==0.5.4
 
@@ -58,12 +58,14 @@ sorl==3.1
 django-staticmedia==0.2.2
 django-templatetag-sugar==1.0
 raven==5.32.0
-django-markwhat==1.5
+django-markwhat==1.5.1
 django-pagetree==1.2.4
 django-pageblocks==1.0.4
 django-quizblock==1.2.2
-django-careermapblock==0.3.1
+
+django-careermapblock==0.4.0
 django-fridgeblock==0.5.0
+
 django-appconf==1.0.2
 rcssmin==1.0.6  # django-compressor
 rjsmin==1.0.12  # django-compressor

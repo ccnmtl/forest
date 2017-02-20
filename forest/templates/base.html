@@ -1,3 +1,4 @@
+{% load bootstrap3 %}
 {% load getroot %}
 {% load compress %}
 <!DOCTYPE html>
@@ -9,11 +10,10 @@
 			<meta name="description" content="Forest">
 			<meta name="author" content="CCNMTL">
 
+      <link href="{% bootstrap_css_url %}" rel="stylesheet">
 
 {% compress css %}
-    <link href="{{STATIC_URL}}bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="{{STATIC_URL}}bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-		<link href="{{STATIC_URL}}css/main.less" rel="stylesheet" type="text/less">
+		<link href="{{STATIC_URL}}css/main.less" rel="stylesheet" type="text/less" charset="utf-8">
 {% endcompress %}
 
 <script src="{{STATIC_URL}}js/jquery-1.7.2.min.js"></script>

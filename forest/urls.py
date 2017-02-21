@@ -45,3 +45,9 @@ urlpatterns = [
     url(r'^instructor/(?P<path>.*)$', views.InstructorView.as_view()),
     url(r'^(?P<path>.*)$', views.PageView.as_view()),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]

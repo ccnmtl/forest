@@ -26,7 +26,7 @@ def context_processor(request):
 
 def permission_denied(request, message=""):
     return render(request, "403.html",
-                  dictionary=dict(message=message), status=403)
+                  context=dict(message=message), status=403)
 
 
 class StandMixin(object):

@@ -45,14 +45,14 @@ sqlparse==0.2.2
 lazy-object-proxy==1.2.2
 wrapt==1.10.8
 astroid==1.4.9
-pyasn1==0.2.2
+pyasn1==0.2.3
 pyOpenSSL==16.2.0
 ndg-httpsclient==0.4.2
 boto==2.46.1
 python-dateutil==2.6.0
 contextlib2==0.5.4
 
-django-bootstrap3==8.1.0
+django-bootstrap3==8.2.1
 django-treebeard==4.1.0
 djangowind==0.16.1
 sorl==3.1
@@ -79,7 +79,7 @@ django-jenkins==0.110.0
 django-stagingcontext==0.1.0
 django-waffle==0.11.1
 django-impersonate==1.1
-django-extensions==1.7.6
+django-extensions==1.7.7
 django-likertblock==0.4.0
 gunicorn==19.6.0
 django-ga-context==0.1.0

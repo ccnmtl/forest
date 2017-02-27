@@ -52,7 +52,7 @@ boto==2.46.1
 python-dateutil==2.6.0
 contextlib2==0.5.4
 
-django-bootstrap3==8.1.0
+django-bootstrap3==8.2.1
 django-treebeard==4.1.0
 djangowind==0.16.1
 sorl==3.1

@@ -5,7 +5,7 @@ feedparser==5.2.1
 Markdown==2.6.8
 simplejson==3.10.0
 uuid==1.30
-psycopg2==2.6.2
+psycopg2==2.7
 versiontools==1.9.1
 statsd==3.2.1
 coverage==4.3.4

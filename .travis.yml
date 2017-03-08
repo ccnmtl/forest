@@ -1,9 +1,8 @@
 language: python
+dist: trusty
 sudo: false
 python:
   - "2.7"
-before_install:
-  - pip install --upgrade setuptools pip
 script:
   - npm install less
   - make

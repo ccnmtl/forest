@@ -70,7 +70,7 @@ EPUB_ALLOWED_BLOCKS = [
     'Text Block', 'HTML Block', 'Pull Quote']
 
 COMPRESS_PRECOMPILERS = (
-    ('text/less', 'lessc {infile} {outfile}'),
+    ('text/less', 'node_modules/less/bin/lessc {infile} {outfile}'),
 )
 if 'test' in sys.argv or 'jenkins' in sys.argv:
     COMPRESS_PRECOMPILERS = (

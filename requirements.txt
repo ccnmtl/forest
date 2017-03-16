@@ -43,7 +43,7 @@ ldap3==2.2.1
 six==1.10.0
 sqlparse==0.2.3
 lazy-object-proxy==1.2.2
-wrapt==1.10.8
+wrapt==1.10.10
 astroid==1.4.9
 pyasn1==0.2.3
 pyOpenSSL==16.2.0

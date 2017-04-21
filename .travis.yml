@@ -5,6 +5,6 @@ python:
   - "2.7"
 script:
   - npm install less
-  - make
+  - make jenkins
 notifications:
   slack: ccnmtl:GizSNscLWJLldjQrffB8mwgm

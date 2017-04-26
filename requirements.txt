@@ -51,7 +51,7 @@ pyOpenSSL==17.0.0
 ndg-httpsclient==0.4.2
 boto==2.46.1
 python-dateutil==2.6.0
-contextlib2==0.5.4
+contextlib2==0.5.5
 
 django-bootstrap3==8.2.2
 django-treebeard==4.1.0

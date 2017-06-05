@@ -57,7 +57,7 @@ python-dateutil==2.6.0
 contextlib2==0.5.5
 
 django-bootstrap3==8.2.3
-django-treebeard==4.1.0
+django-treebeard==4.1.1
 djangowind==1.0.0
 sorl==3.1
 django-staticmedia==0.2.2

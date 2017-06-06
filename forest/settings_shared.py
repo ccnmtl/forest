@@ -21,6 +21,14 @@ CACHES = {
 }
 
 if 'test' in sys.argv or 'jenkins' in sys.argv:
+    # These are all the fake hostnames used in forest's tests
+    ALLOWED_HOSTS = [
+        'fooble',
+        'test.example.com',
+        'cloned.example.com',
+        'cloned.forest.ccnmtl.columbia.edu',
+    ]
+
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
@@ -68,9 +76,5 @@ PAGEBLOCKS = ['pageblocks.TextBlock',
 # these are by their display names for now
 EPUB_ALLOWED_BLOCKS = [
     'Text Block', 'HTML Block', 'Pull Quote']
-
-COMPRESS_PRECOMPILERS = (
-    ('text/less', 'node_modules/less/bin/lessc {infile} {outfile}'),
-)
 
 SEED_STAND = "test.example.com"

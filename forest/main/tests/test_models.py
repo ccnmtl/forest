@@ -124,8 +124,8 @@ class ModelAuthTests(TestCase):
 
     def test_anon_user(self):
         class StubUser(object):
-            def is_anonymous(self):
-                return True
+            is_anonymous = True
+
         u = StubUser()
         assert not self.open_stand.can_edit(u)
         assert not self.group_stand.can_edit(u)

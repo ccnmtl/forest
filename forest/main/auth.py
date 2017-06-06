@@ -9,7 +9,7 @@ class RequireUser(object):
 
 class DenyAnonymous(object):
     def check(self, checker):
-        if checker.user.is_anonymous():
+        if checker.user.is_anonymous:
             return False
 
 

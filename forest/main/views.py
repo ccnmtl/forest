@@ -162,6 +162,7 @@ class EditStandView(StandAdminMixin, View):
                  form=StandForm(instance=request.stand),
                  is_seed_stand=is_seed_stand))
 
+
 default_css = """
 #header { background: #262; }
 """

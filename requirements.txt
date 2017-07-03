@@ -41,7 +41,7 @@ olefile==0.44
 
 ldap3==2.2.4
 
-Pillow==4.1.1
+Pillow==4.2.0
 
 six==1.10.0
 sqlparse==0.2.3

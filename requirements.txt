@@ -41,7 +41,7 @@ olefile==0.44
 
 ldap3==2.2.4
 
-Pillow==4.2.0
+Pillow==4.2.1
 
 six==1.10.0
 sqlparse==0.2.3
@@ -51,7 +51,7 @@ astroid==1.5.3
 pyasn1==0.2.3
 pyOpenSSL==17.1.0
 ndg-httpsclient==0.4.2
-boto==2.47.0
+boto==2.48.0
 python-dateutil==2.6.1
 contextlib2==0.5.5
 

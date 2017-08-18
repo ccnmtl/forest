@@ -1,7 +1,7 @@
 Django==1.10.7 # pyup: <1.11
 lxml==3.8.0
 feedparser==5.2.1
-Markdown==2.6.8
+Markdown==2.6.9
 simplejson==3.11.1
 uuid==1.30
 psycopg2==2.7.3

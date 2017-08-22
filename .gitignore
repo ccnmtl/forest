@@ -12,3 +12,4 @@ ghostdriver.log
 node_modules
 .project
 .pydevproject
+package-lock.json

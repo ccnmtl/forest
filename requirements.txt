@@ -19,7 +19,7 @@ logilab-common==1.4.1
 logilab-astng==0.24.3
 editdistance==0.4
 pylint==1.8.1
-fuzzywuzzy==0.15.1
+fuzzywuzzy==0.16.0
 sure==1.4.7
 traitlets==4.3.2
 ipython_genutils==0.2.0

@@ -39,7 +39,7 @@ Genshi==0.7
 requirements/src/epubbuilder-0.1.4.tar.gz
 olefile==0.44
 
-ldap3==2.4
+ldap3==2.4.1
 
 Pillow==5.0.0
 

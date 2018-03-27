@@ -87,7 +87,7 @@ typing==3.6.4 # needed for django-extensions
 django-likertblock==0.4.0
 gunicorn==19.7.1
 django-ga-context==0.1.0
-django-storages==1.6.5
+django-storages==1.6.6
 django-cacheds3storage==0.1.2
 django-smtp-ssl==1.0
 

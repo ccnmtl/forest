@@ -55,7 +55,7 @@ boto==2.48.0
 python-dateutil==2.7.2
 contextlib2==0.5.5
 
-django-bootstrap3==9.1.0
+django-bootstrap3==10.0.0
 django-treebeard==4.2.1
 djangowind==1.1.0
 requirements/src/sorl-3.1.tar.gz

@@ -20,7 +20,7 @@ logilab-astng==0.24.3
 editdistance==0.4
 pylint==1.8.4
 fuzzywuzzy==0.16.0
-sure==1.4.9
+sure==1.4.11
 traitlets==4.3.2
 ipython_genutils==0.2.0
 decorator==4.2.1

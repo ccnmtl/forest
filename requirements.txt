@@ -56,7 +56,7 @@ contextlib2==0.5.5
 
 django-bootstrap3==10.0.1
 django-treebeard==4.2.1
-djangowind==1.1.0
+djangowind==1.2.1
 requirements/src/sorl-3.1.tar.gz
 django-staticmedia==0.2.2
 django-templatetag-sugar==1.0

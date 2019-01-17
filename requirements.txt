@@ -1,5 +1,5 @@
 Django==1.10.8 # pyup: <1.11
-lxml==4.2.5
+lxml==4.3.0
 feedparser==5.2.1
 Markdown==2.6.11
 simplejson==3.16.0
@@ -40,14 +40,14 @@ olefile==0.46
 
 ldap3==2.5.2
 
-Pillow==5.3.0
+Pillow==5.4.1
 
 six==1.12.0
 sqlparse==0.2.4
 lazy-object-proxy==1.3.1
 wrapt==1.10.11
 astroid==1.6.5 # pyup: <2.0.0
-pyasn1==0.4.4
+pyasn1==0.4.5
 pyOpenSSL==18.0.0
 ndg-httpsclient==0.5.1
 boto==2.49.0
@@ -80,7 +80,7 @@ django-smoketest==1.1.0
 django-jenkins==0.110.0
 django-stagingcontext==0.1.0
 django-waffle==0.15.1
-django-impersonate==1.3
+django-impersonate==1.4
 django-extensions==2.1.4
 typing==3.6.6 # needed for django-extensions
 django-likertblock==0.4.0
@@ -91,7 +91,7 @@ django-cacheds3storage==0.1.2
 django-smtp-ssl==1.0
 
 ccnmtlsettings==1.4.0
-pytz==2018.7
+pytz==2018.9
 
 pbr==5.1.1
 PyYAML>=3.10.0 # MIT

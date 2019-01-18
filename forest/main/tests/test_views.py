@@ -136,8 +136,8 @@ class AuthTests(TestCase):
     def test_logged_in_superuser_admin_nonexistant(self):
         self.c.login(username="testuser2", password="test")
         response = self.c.get('/_stand/', HTTP_HOST="fooble")
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.content, "no such site 'fooble'")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, "no such site 'fooble'")
 
 
 class AddStandTests(TestCase):
@@ -293,7 +293,7 @@ class AddStandTests(TestCase):
         self.u.is_superuser = True
         self.u.save()
         response = self.c.get("/_stand/clone/", HTTP_HOST="test.example.com")
-        assert response.status_code == 200
+        self.assertEqual(response.status_code, 200)
         response = self.c.post(
             "/_stand/clone/",
             dict(
@@ -302,10 +302,11 @@ class AddStandTests(TestCase):
             ),
             HTTP_HOST="test.example.com",
         )
-        assert response.status_code == 200
+
+        self.assertEqual(response.status_code, 200)
         response = self.c.get("/differentwelcome/",
                               HTTP_HOST="cloned.example.com")
-        assert "no such site" not in response.content
+        self.assertNotContains(response, 'no such site')
         self.assertFalse('404: Page Not Found' in response.content)
 
         response = self.c.get("/_stand/blocks/",
@@ -315,20 +316,20 @@ class AddStandTests(TestCase):
 
         response = self.c.get("/_stand/delete/",
                               HTTP_HOST="cloned.example.com")
-        assert "Are you sure?" in response.content
+        self.assertContains(response, 'Are you sure?')
         response = self.c.post(
             "/_stand/delete/",
             dict(),
             HTTP_HOST="cloned.example.com",
         )
-        assert response.status_code == 200
-        assert "Stand has been deleted" in response.content
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Stand has been deleted")
 
     def test_clone_stand_forest(self):
         self.u.is_superuser = True
         self.u.save()
         response = self.c.get("/_stand/clone/", HTTP_HOST="test.example.com")
-        assert response.status_code == 200
+        self.assertEqual(response.status_code, 200)
         response = self.c.post(
             "/_stand/clone/",
             dict(
@@ -345,7 +346,7 @@ class AddStandTests(TestCase):
         response = self.c.get("/_stand/blocks/",
                               HTTP_HOST="cloned.forest.ccnmtl.columbia.edu")
         for pb in self.stand.standavailablepageblock_set.all():
-            self.assertTrue(pb.block in response.content)
+            self.assertContains(response, pb.block)
 
         response = self.c.get("/_stand/delete/",
                               HTTP_HOST="cloned.forest.ccnmtl.columbia.edu")
@@ -386,7 +387,7 @@ class AddStandTests(TestCase):
             ),
             HTTP_HOST="test.example.com"
         )
-        assert response.status_code == 302
+        self.assertEqual(response.status_code, 302)
 
     def test_stand_add_user_new(self):
         self.u.is_superuser = True

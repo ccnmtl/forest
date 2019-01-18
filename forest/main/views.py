@@ -84,11 +84,11 @@ class PageView(StandMixin, GenericPageView):
 
     def perform_checks(self, request, path):
         if not request.stand.can_view(request.user):
-            if not request.user.is_anonymous():
+            if not request.user.is_anonymous:
                 return permission_denied(request)
             return HttpResponseRedirect("/accounts/login/?next=/")
         if (request.stand.gated and
-                request.user.is_anonymous()):
+                request.user.is_anonymous):
             return HttpResponseRedirect("/accounts/login/?next=/")
         return super(PageView, self).perform_checks(request, path)
 
@@ -96,7 +96,7 @@ class PageView(StandMixin, GenericPageView):
 class InstructorView(LoggedInMixin, StandMixin, GenericInstructorView):
     def perform_checks(self, request, path):
         if not request.stand.can_view(request.user):
-            if not request.user.is_anonymous():
+            if not request.user.is_anonymous:
                 return permission_denied(request)
             return HttpResponseRedirect("/accounts/login/?next=/")
         return super(InstructorView, self).perform_checks(request, path)

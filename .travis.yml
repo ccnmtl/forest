@@ -5,6 +5,7 @@ python:
   - "2.7"
 script:
   - npm install less
+  - make flake8
   - make
 notifications:
   slack: ccnmtl:GizSNscLWJLldjQrffB8mwgm

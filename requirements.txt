@@ -6,7 +6,7 @@ simplejson==3.16.0
 psycopg2==2.7.7
 versiontools==1.9.1
 statsd==3.3.0
-coverage==4.5.2
+coverage==4.5.3
 pyflakes==2.1.1
 pep8==1.7.1
 mccabe==0.6.1

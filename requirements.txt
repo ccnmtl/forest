@@ -16,7 +16,7 @@ configparser==3.7.3
 flake8==3.7.7
 logilab-common==1.4.2
 logilab-astng==0.24.3
-editdistance==0.5.2
+editdistance==0.5.3
 pylint==1.9.4 # pyup: <2.0.0
 fuzzywuzzy==0.17.0
 sure==1.4.11

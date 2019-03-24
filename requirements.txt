@@ -38,7 +38,7 @@ Genshi==0.7.1
 requirements/src/epubbuilder-0.2.1-py2.py3-none-any.whl
 olefile==0.46
 
-ldap3==2.5.2
+ldap3==2.6
 
 Pillow==5.4.1
 
